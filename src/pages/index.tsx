@@ -30,6 +30,11 @@ export default function Home() {
             <h3>설정 &rarr;</h3>
             <p>나만의 공간을 바꾸어보세요.</p>
           </Link>
+
+          <Link href="/login" className={styles.card}>
+            <h3>로그인 &rarr;</h3>
+            <p>더욱 다양한 경험을 해보세요.</p>
+          </Link>
         </div>
       </Main>
 
