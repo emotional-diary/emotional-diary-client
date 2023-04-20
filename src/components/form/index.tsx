@@ -1,79 +1,50 @@
+import React from 'react';
 import router from 'next/router';
-import styled from 'styled-components';
 
 import { Typography } from '@components/typography';
-
-const FormContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-`;
-
-const Form = styled.form`
-  display: flex;
-  flex-direction: column;
-  min-width: 320px;
-  background-color: #f2f2f2;
-  border-radius: 10px;
-  padding: 30px;
-  box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
-`;
-
-const Input = styled.input`
-  width: 100%;
-  padding: 10px;
-  margin: 0 0 10px;
-  border: none;
-  border-radius: 5px;
-  background-color: #ffffff;
-  box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.2);
-  font-size: 16px;
-
-  &:hover {
-    box-shadow: 0px 0px 5px 0px rgba(57, 70, 255, 0.699);
-  }
-  &:focus {
-    outline: none;
-    box-shadow: 0px 0px 5px 0px rgba(57, 70, 255, 0.699);
-  }
-`;
-
-const Label = styled.label`
-  font-size: 16px;
-  margin-bottom: 5px;
-  cursor: pointer;
-`;
-
-const Button = styled.button`
-  background: #50b801;
-  border: 0;
-  border-radius: 4px;
-  color: #fff;
-  cursor: pointer;
-  font-size: 16px;
-  font-weight: 600;
-  line-height: 1;
-  padding: 10px 20px;
-  transition: all 0.2s ease-in-out;
-  white-space: nowrap;
-  &:hover {
-    background: #42a306;
-  }
-`;
-
-const IconButton = styled.button`
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  padding: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
+import { FormContainer, Form, Label, Input, Button, IconButton } from './style';
 
 const LoginForm = () => {
+  const [user, setUser] = React.useState<{ email: string; password: string }>({
+    email: '',
+    password: '',
+  });
+  const [isLogin, setIsLogin] = React.useState<boolean>(false);
+
+  const handleUserChange = React.useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setUser({
+        ...user,
+        [e.target.name]: e.target.value,
+      });
+    },
+    [user]
+  );
+
+  const handleLogin = async () => {
+    const res = await fetch('/api/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        user,
+      }),
+    });
+
+    if (res.status === 200) {
+      setIsLogin(true);
+    } else {
+      alert('로그인에 실패했습니다.');
+    }
+  };
+
+  React.useEffect(() => {
+    if (isLogin) {
+      router.push('/');
+    }
+  }, [isLogin]);
+
   return (
     <FormContainer>
       <Typography.h3 style={{ borderBottom: '1px solid green' }}>
@@ -82,7 +53,13 @@ const LoginForm = () => {
 
       <Form>
         <Label htmlFor="email">이메일</Label>
-        <Input id="email" type="text" name="email" placeholder="이메일" />
+        <Input
+          id="email"
+          type="text"
+          name="email"
+          placeholder="이메일"
+          onChange={handleUserChange}
+        />
 
         <Label htmlFor="password">비밀번호</Label>
         <Input
@@ -90,6 +67,7 @@ const LoginForm = () => {
           type="password"
           name="password"
           placeholder="비밀번호"
+          onChange={handleUserChange}
         />
 
         <Typography.body2
@@ -106,7 +84,7 @@ const LoginForm = () => {
         <Button
           type="submit"
           style={{ marginTop: '20px' }}
-          onClick={() => console.log('로그인')}
+          onClick={() => handleLogin()}
         >
           시작하기
         </Button>
@@ -137,6 +115,136 @@ const LoginForm = () => {
 };
 
 const SignUpForm = () => {
+  const [user, setUser] = React.useState({
+    nickname: '',
+    email: '',
+    password: '',
+    birthday: '',
+    gender: '',
+  });
+  const [passwordCheck, setPasswordCheck] = React.useState<string>('');
+  const [emailAuth, setEmailAuth] = React.useState<{
+    level: number;
+    number: string;
+  }>({ level: 0, number: '' });
+  const [terms, setTerms] = React.useState<boolean>(false);
+
+  const handleUserChange = React.useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setUser({
+        ...user,
+        [e.target.name]: e.target.value,
+      });
+    },
+    [user]
+  );
+
+  const handlePasswordCheckChange = React.useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setPasswordCheck(e.target.value);
+    },
+    []
+  );
+
+  const signupValidation = () => {
+    if (user.nickname === '') {
+      alert('닉네임을 입력해 주세요.');
+      return false;
+    }
+
+    if (user.email === '') {
+      alert('이메일을 입력해 주세요.');
+      return false;
+    }
+
+    if (user.password === '') {
+      alert('비밀번호를 입력해 주세요.');
+      return false;
+    }
+
+    if (passwordCheck === '') {
+      alert('비밀번호 확인을 입력해 주세요.');
+      return false;
+    }
+
+    if (user.password !== passwordCheck) {
+      alert('비밀번호가 일치하지 않습니다.');
+      return false;
+    }
+
+    return true;
+  };
+
+  const handleSignUp = async () => {
+    if (!signupValidation()) {
+      return;
+    }
+
+    const res = await fetch('/api/signup', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        user,
+      }),
+    });
+
+    if (res.status === 200) {
+      router.push('/');
+    } else {
+      alert('회원가입에 실패했습니다.');
+    }
+  };
+
+  const handleEmailAuth = async () => {
+    const res = await fetch('/api/emailAuth', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email: user.email,
+      }),
+    });
+
+    if (res.status === 200) {
+      setEmailAuth({
+        level: 1,
+        number: '',
+      });
+    } else {
+      alert('다시 시도해 주세요.');
+    }
+  };
+
+  const handleEmailAuthCheck = async () => {
+    const res = await fetch('/api/emailAuthCheck', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email: user.email,
+        authNumber: emailAuth.number,
+      }),
+    });
+
+    if (res.status === 200) {
+      alert('이메일 인증에 성공했습니다.');
+      setEmailAuth({
+        level: 2,
+        number: '',
+      });
+    } else {
+      alert('이메일 인증에 실패했습니다.');
+    }
+  };
+
+  const handleTerms = () => {
+    setTerms(!terms);
+  };
+
   return (
     <FormContainer>
       <Typography.h3 style={{ borderBottom: '1px solid green' }}>
@@ -144,11 +252,54 @@ const SignUpForm = () => {
       </Typography.h3>
 
       <Form>
-        <Label htmlFor="username">이름</Label>
-        <Input type="text" id="username" name="username" placeholder="이름" />
+        <Label htmlFor="nickname">닉네임</Label>
+        <Input
+          type="text"
+          id="nickname"
+          name="nickname"
+          placeholder="닉네임"
+          onChange={handleUserChange}
+        />
 
         <Label htmlFor="email">이메일</Label>
-        <Input type="email" id="email" name="email" placeholder="이메일" />
+        <div style={{ display: 'flex', marginBottom: '10px' }}>
+          <Input
+            type="email"
+            id="email"
+            name="email"
+            placeholder="이메일"
+            style={{ margin: 0 }}
+            onChange={handleUserChange}
+          />
+          <Button
+            type="button"
+            style={{ marginLeft: '10px' }}
+            onClick={() => handleEmailAuth()}
+          >
+            이메일 인증
+          </Button>
+
+          {emailAuth.level === 1 && (
+            <div>
+              <Input
+                type="text"
+                id="emailAuthNumber"
+                name="emailAuthNumber"
+                placeholder="인증번호"
+                onChange={e =>
+                  setEmailAuth({ ...emailAuth, number: e.target.value })
+                }
+              />
+              <Button
+                type="button"
+                style={{ marginLeft: '10px' }}
+                onClick={() => handleEmailAuthCheck()}
+              >
+                인증번호 확인
+              </Button>
+            </div>
+          )}
+        </div>
 
         <Label htmlFor="password">비밀번호</Label>
         <Input
@@ -156,6 +307,16 @@ const SignUpForm = () => {
           id="password"
           name="password"
           placeholder="비밀번호"
+          onChange={handleUserChange}
+        />
+
+        <Label htmlFor="passwordCheck">비밀번호 확인</Label>
+        <Input
+          type="password"
+          id="passwordCheck"
+          name="passwordCheck"
+          placeholder="비밀번호 확인"
+          onChange={handlePasswordCheckChange}
         />
 
         <Label htmlFor="birthday">생년월일</Label>
@@ -164,13 +325,41 @@ const SignUpForm = () => {
           id="birthday"
           name="birthday"
           placeholder="생년월일"
+          onChange={handleUserChange}
         />
+
+        <label htmlFor="gender" style={{ marginBottom: '5px' }}>
+          성별
+        </label>
+        <div>
+          <Label>
+            <input
+              type="radio"
+              name="gender"
+              value="male"
+              checked={user.gender === 'male'}
+              onChange={handleUserChange}
+            />
+            남성
+          </Label>
+
+          <Label>
+            <input
+              type="radio"
+              name="gender"
+              value="female"
+              checked={user.gender === 'female'}
+              onChange={handleUserChange}
+            />
+            여성
+          </Label>
+        </div>
 
         <Button
           style={{
             marginTop: '20px',
           }}
-          onClick={() => console.log('회원가입')}
+          onClick={() => handleSignUp()}
         >
           가입하기
         </Button>
@@ -178,12 +367,5 @@ const SignUpForm = () => {
     </FormContainer>
   );
 };
-
-{
-  /*
-    <a href="#">이메일 인증</a>
-    <a href="#">이메일 재전송</a>
-  */
-}
 
 export { LoginForm, SignUpForm };
