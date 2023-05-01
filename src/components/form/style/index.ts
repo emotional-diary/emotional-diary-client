@@ -58,6 +58,12 @@ export const Button = styled.button`
   &:hover {
     background: #42a306;
   }
+  &:disabled {
+    opacity: 0.5;
+    cursor: default;
+    background-color: #ccc;
+    color: #666;
+  }
 `;
 
 export const IconButton = styled.button`
@@ -68,4 +74,9 @@ export const IconButton = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
+`;
+
+export const FormErrorMessage = styled.div`
+  color: red;
+  margin-bottom: 10px;
 `;
