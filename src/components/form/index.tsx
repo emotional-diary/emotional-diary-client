@@ -18,7 +18,52 @@ const LoginForm = () => {
     email: '',
     password: '',
   });
+  const [validation, setValidation] = React.useState<
+    Pick<Validation, 'email' | 'password'>
+  >({
+    email: { status: false, message: '' },
+    password: { status: false, message: '' },
+  });
   const [isLogin, setIsLogin] = React.useState<boolean>(false);
+
+  const validateEmail = () => {
+    const regex = /^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[a-zA-Z0-9]+$/;
+    if (!regex.test(user.email)) {
+      return false;
+    }
+    return true;
+  };
+
+  const validatePassword = () => {
+    const regex = /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,16}$/;
+    if (!regex.test(user.password)) {
+      return false;
+    }
+    return true;
+  };
+
+  const loginValidation = () => {
+    const email = validateEmail();
+    const password = validatePassword();
+
+    setValidation({
+      email: {
+        status: email ? true : false,
+        message: email ? '' : '이메일 형식이 올바르지 않아요.',
+      },
+      password: {
+        status: password ? true : false,
+        message: password
+          ? ''
+          : '비밀번호는 영문, 숫자, 특수문자를 포함한 8자 이상 16자 이하로 입력해 주세요.',
+      },
+    });
+
+    if (email && password) {
+      return true;
+    }
+    return false;
+  };
 
   const handleUserChange = React.useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -34,7 +79,11 @@ const LoginForm = () => {
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
     e.preventDefault();
-    const res = await fetch('/api/login', {
+    if (!loginValidation()) {
+      return;
+    }
+
+    const res = await fetch('/api/user/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -47,7 +96,13 @@ const LoginForm = () => {
     if (res.status === 200) {
       setIsLogin(true);
     } else {
-      alert('로그인에 실패했습니다.');
+      setValidation({
+        ...validation,
+        password: {
+          status: true,
+          message: '이메일이나 비밀번호가 올바르지 않아요.',
+        },
+      });
     }
   };
 
@@ -56,6 +111,8 @@ const LoginForm = () => {
       router.push('/');
     }
   }, [isLogin]);
+
+  console.log(validation);
 
   return (
     <FormContainer>
@@ -73,6 +130,11 @@ const LoginForm = () => {
           onChange={handleUserChange}
           maxLength={254}
         />
+        {validation.email.message && (
+          <FormErrorMessage style={{ color: 'red', marginBottom: '8px' }}>
+            {validation.email.message}
+          </FormErrorMessage>
+        )}
 
         <Label htmlFor="password">비밀번호</Label>
         <Input
@@ -83,6 +145,11 @@ const LoginForm = () => {
           onChange={handleUserChange}
           maxLength={128}
         />
+        {validation.password.message && (
+          <FormErrorMessage style={{ color: 'red', marginBottom: '8px' }}>
+            {validation.password.message}
+          </FormErrorMessage>
+        )}
 
         <Typography.body2
           style={{
@@ -233,17 +300,7 @@ const SignUpForm = () => {
         ...validation,
         email: {
           status: false,
-          message: '이메일 형식이 올바르지 않습니다.',
-        },
-      });
-      return false;
-    }
-    if (user.email.length > 254) {
-      setValidation({
-        ...validation,
-        email: {
-          status: false,
-          message: '이메일은 254자 이하로 입력해 주세요.',
+          message: '이메일 형식이 올바르지 않아요.',
         },
       });
       return false;
