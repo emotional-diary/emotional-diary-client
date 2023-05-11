@@ -12,6 +12,7 @@ import {
   FormErrorMessage,
 } from './style';
 import { Timer as EmailAuthTimer } from './timer';
+import axios from 'axios';
 
 const LoginForm = () => {
   const [user, setUser] = React.useState<{ email: string; password: string }>({
@@ -19,7 +20,7 @@ const LoginForm = () => {
     password: '',
   });
   const [validation, setValidation] = React.useState<
-    Pick<Validation, 'email' | 'password'>
+    Pick<UserValidation, 'email' | 'password'>
   >({
     email: { status: false, message: '' },
     password: { status: false, message: '' },
@@ -106,6 +107,16 @@ const LoginForm = () => {
     }
   };
 
+  const handleSocialLogin =
+    (social: Social) =>
+    async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+      e.preventDefault();
+      try {
+        const res = await axios.get(`/api/oauth/${social}`);
+        window.location.href = res.data.url;
+      } catch {}
+    };
+
   React.useEffect(() => {
     if (isLogin) {
       router.push('/');
@@ -170,7 +181,10 @@ const LoginForm = () => {
           시작하기
         </Button>
 
-        <IconButton style={{ marginTop: '10px' }}>
+        <IconButton
+          style={{ marginTop: '10px' }}
+          onClick={handleSocialLogin('kakao')}
+        >
           <img
             src={'/images/kakao_login.png'}
             alt={'kakao_login'}
@@ -195,24 +209,6 @@ const LoginForm = () => {
   );
 };
 
-interface User {
-  nickname: string;
-  email: string;
-  password: string;
-  birthday: string;
-  gender: string;
-}
-
-type ValidationKeys = keyof User | 'passwordCheck';
-
-type Validation = Record<
-  ValidationKeys,
-  {
-    status: boolean;
-    message: string;
-  }
->;
-
 const SignUpForm = () => {
   const [user, setUser] = React.useState<User>({
     nickname: '',
@@ -229,7 +225,7 @@ const SignUpForm = () => {
   }>({ level: 0, code: '', reset: false });
   const [terms, setTerms] = React.useState<boolean>(false);
 
-  const [validation, setValidation] = React.useState<Validation>({
+  const [validation, setValidation] = React.useState<UserValidation>({
     nickname: { status: false, message: '' },
     email: { status: false, message: '' },
     password: { status: false, message: '' },
@@ -412,6 +408,7 @@ const SignUpForm = () => {
 
   const signupValidation = () => {
     const { nickname, email, password, passwordCheck } = validation;
+    console.log(validation);
     if (
       !nickname.status ||
       // !email.status ||
@@ -665,7 +662,7 @@ const SignUpForm = () => {
 
               <EmailAuthTimer
                 callback={expirateEmailAuth}
-                count={5}
+                count={300}
                 reset={emailAuth.reset}
               />
             </>
