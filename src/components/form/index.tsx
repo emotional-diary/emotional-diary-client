@@ -10,6 +10,7 @@ import {
   Button,
   IconButton,
   FormErrorMessage,
+  HrText,
 } from './style';
 import { Timer as EmailAuthTimer } from './timer';
 import axios from 'axios';
@@ -126,86 +127,135 @@ const LoginForm = () => {
   console.log(validation);
 
   return (
-    <FormContainer>
-      <Typography.h3 style={{ borderBottom: '1px solid green' }}>
-        환영해요, '감성일기'
-      </Typography.h3>
-
-      <Form>
-        <Label htmlFor="email">이메일</Label>
-        <Input
-          id="email"
-          type="email"
-          name="email"
-          placeholder="이메일"
-          onChange={handleUserChange}
-          maxLength={254}
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        width: '100%',
+        height: '100vh',
+      }}
+    >
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: '200px',
+          margin: '20px 0px',
+        }}
+      >
+        <img
+          src={'/images/icons/coffee_bean.png'}
+          alt={'coffee_bean'}
+          width={42}
+          height={29}
         />
-        {validation.email.message && (
-          <FormErrorMessage style={{ color: 'red', marginBottom: '8px' }}>
-            {validation.email.message}
-          </FormErrorMessage>
-        )}
-
-        <Label htmlFor="password">비밀번호</Label>
-        <Input
-          id="password"
-          type="password"
-          name="password"
-          placeholder="비밀번호"
-          onChange={handleUserChange}
-          maxLength={128}
-        />
-        {validation.password.message && (
-          <FormErrorMessage style={{ color: 'red', marginBottom: '8px' }}>
-            {validation.password.message}
-          </FormErrorMessage>
-        )}
-
-        <Typography.body2
+        <Typography.h2
           style={{
-            width: 'fit-content',
-            color: 'gray',
-            cursor: 'pointer',
+            fontWeight: 300,
+            color: '#FFF',
+            marginTop: '10px',
+            marginBottom: '0px',
           }}
-          onClick={() => console.log('비밀번호 찾기')}
         >
-          비밀번호를 잊으셨나요?
-        </Typography.body2>
-
-        <Button
-          type="submit"
-          style={{ marginTop: '20px' }}
-          onClick={handleLogin}
-        >
-          시작하기
-        </Button>
-
-        <IconButton
-          style={{ marginTop: '10px' }}
-          onClick={handleSocialLogin('kakao')}
-        >
-          <img
-            src={'/images/kakao_login.png'}
-            alt={'kakao_login'}
-            width={260}
-            height={'auto'}
+          감성일기
+        </Typography.h2>
+      </div>
+      <FormContainer style={{ borderRadius: '30px 30px 0px 0px' }}>
+        <Form>
+          <Label htmlFor="email">나의 이메일</Label>
+          <Input
+            id="email"
+            type="email"
+            name="email"
+            placeholder="이메일을 입력해 주세요"
+            onChange={handleUserChange}
+            maxLength={254}
           />
-        </IconButton>
+          {validation.email.message && (
+            <FormErrorMessage style={{ color: 'red', marginBottom: '8px' }}>
+              {validation.email.message}
+            </FormErrorMessage>
+          )}
 
-        <Typography.body1
-          style={{
-            textAlign: 'center',
-            marginTop: '20px',
-            cursor: 'pointer',
-          }}
-          onClick={() => router.push('/signup')}
-        >
-          아직 가입하지 않으셨나요?{' '}
-          <strong style={{ textDecoration: 'underline' }}>가입하기</strong>
-        </Typography.body1>
-      </Form>
-    </FormContainer>
+          <Label htmlFor="password">비밀번호</Label>
+          <Input
+            id="password"
+            type="password"
+            name="password"
+            placeholder="비밀번호를 입력해 주세요"
+            onChange={handleUserChange}
+            maxLength={128}
+          />
+          {validation.password.message && (
+            <FormErrorMessage style={{ color: 'red', marginBottom: '8px' }}>
+              {validation.password.message}
+            </FormErrorMessage>
+          )}
+
+          <Button
+            type="submit"
+            style={{ marginTop: '20px' }}
+            onClick={handleLogin}
+          >
+            로그인
+          </Button>
+
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              marginTop: '20px',
+            }}
+          >
+            <Typography.body2
+              style={{
+                color: 'gray',
+                cursor: 'pointer',
+                borderBottom: '1px solid #A6A6A6',
+              }}
+              onClick={() => console.log('비밀번호 찾기')}
+            >
+              비밀번호를 잊으셨나요?
+            </Typography.body2>
+
+            <Typography.body2
+              style={{
+                color: 'gray',
+                cursor: 'pointer',
+                borderBottom: '1px solid #A6A6A6',
+              }}
+              onClick={() => router.push('/signup')}
+            >
+              회원가입
+            </Typography.body2>
+          </div>
+
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              flexGrow: 1,
+              justifyContent: 'end',
+              alignItems: 'center',
+            }}
+          >
+            <HrText>또는</HrText>
+            <IconButton onClick={handleSocialLogin('kakao')}>
+              <img
+                src={'/images/kakao_login.png'}
+                alt={'kakao_login'}
+                width={260}
+                height={'auto'}
+              />
+            </IconButton>
+          </div>
+        </Form>
+      </FormContainer>
+    </div>
   );
 };
 

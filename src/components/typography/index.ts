@@ -19,12 +19,12 @@ const Typography = {
   body1: styled.div`
     font-size: 1rem;
     font-weight: 400;
-    line-height: 1.5;
+    line-height: 1.2;
   `,
   body2: styled.div`
     font-size: 0.875rem;
     font-weight: 400;
-    line-height: 1.5;
+    line-height: 1.2;
   `,
 };
 
