@@ -1,8 +1,23 @@
-html,
-body {
+@font-face {
+  font-family: 'GangwonEduAll';
+  font-style: normal;
+  src: url('https://cdn.jsdelivr.net/gh/webfontworld/gangwon/GangwonEduAllLight.woff') format('woff'),
+       url('https://cdn.jsdelivr.net/gh/webfontworld/gangwon/GangwonEduAllBold.woff') format('woff');
+  font-display: swap;
+}
+
+html, body {
   padding: 0;
   margin: 0;
-  font-family: 'Noto Sans KR', sans-serif;
+}
+body, input, button, select, textarea {
+  font-family: 'GangwonEduAll', sans-serif;
+  /* font-family: 'Sunflower', sans-serif; */
+}
+
+#__next {
+  height: 100%;
+  background-color: #2b625b;
 }
 
 a {
