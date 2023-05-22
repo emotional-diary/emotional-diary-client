@@ -11,6 +11,8 @@ import {
   IconButton,
   FormErrorMessage,
   HrText,
+  GenderButton,
+  GenderRadioButton,
 } from './style';
 import { Timer as EmailAuthTimer } from './timer';
 import axios from 'axios';
@@ -248,7 +250,7 @@ const LoginForm = () => {
               <img
                 src={'/images/kakao_login.png'}
                 alt={'kakao_login'}
-                width={260}
+                width={'100%'}
                 height={'auto'}
               />
             </IconButton>
@@ -609,18 +611,17 @@ const SignUpForm = () => {
   };
 
   return (
-    <FormContainer>
-      <Typography.h3 style={{ borderBottom: '1px solid green' }}>
-        환영해요, '감성일기'
-      </Typography.h3>
+    <FormContainer style={{ minHeight: '100vh' }}>
+      <img src={'/images/icons/coffee_bean.png'} />
+      <Typography.h3 style={{ marginTop: 10 }}>간편 회원 가입</Typography.h3>
 
       <Form>
-        <Label htmlFor="nickname">이름</Label>
+        <Label htmlFor="nickname">나의 이름</Label>
         <Input
           type="text"
           id="nickname"
           name="nickname"
-          placeholder="이름"
+          placeholder="성을 제외하고 이름만 적어주세요!"
           value={user.nickname}
           onChange={e => {
             if (!/^[가-힣ㄱ-ㅎㅏ-ㅣa-zA-Z]*$/.test(e.target.value)) {
@@ -637,7 +638,7 @@ const SignUpForm = () => {
           </FormErrorMessage>
         )}
 
-        <Label htmlFor="email">이메일</Label>
+        <Label htmlFor="email">나의 이메일</Label>
         <div
           style={{
             display: 'flex',
@@ -645,17 +646,13 @@ const SignUpForm = () => {
             marginBottom: '10px',
           }}
         >
-          <div
-            style={{
-              display: 'flex',
-            }}
-          >
+          <div style={{ position: 'relative' }}>
             <Input
               type="email"
               id="email"
               name="email"
-              placeholder="이메일"
-              style={{ margin: 0 }}
+              placeholder="이메일 형식에 맞춰 적어주세요!"
+              style={{ margin: 0, paddingRight: '110px' }}
               value={user.email}
               onChange={e => {
                 handleUserChange(e);
@@ -672,7 +669,14 @@ const SignUpForm = () => {
             />
             <Button
               type="button"
-              style={{ marginLeft: '10px' }}
+              style={{
+                height: 35,
+                position: 'absolute',
+                right: 10,
+                top: 10,
+                padding: '0px 10px',
+                marginLeft: '10px',
+              }}
               onClick={() => handleEmailAuth()}
             >
               {(emailAuth.level === 0 || emailAuth.level === 2) &&
@@ -683,26 +687,32 @@ const SignUpForm = () => {
 
           {emailAuth.level === 1 && (
             <>
-              <div
-                style={{
-                  display: 'flex',
-                  marginTop: '10px',
-                }}
-              >
+              <Label htmlFor="emailAuthCode" style={{ marginTop: 20 }}>
+                인증코드
+              </Label>
+              <div style={{ position: 'relative' }}>
                 <Input
                   type="text"
                   id="emailAuthCode"
                   name="emailAuthCode"
-                  placeholder="인증코드"
+                  placeholder="인증코드를 입력해주세요!"
                   style={{ margin: 0 }}
                   value={emailAuth.code}
                   onChange={e =>
                     setEmailAuth({ ...emailAuth, code: e.target.value })
                   }
+                  maxLength={8}
                 />
                 <Button
                   type="button"
-                  style={{ marginLeft: '10px' }}
+                  style={{
+                    height: 35,
+                    position: 'absolute',
+                    right: 10,
+                    top: 10,
+                    padding: '0px 10px',
+                    marginLeft: '10px',
+                  }}
                   onClick={() => handleEmailAuthCheck()}
                   disabled={emailAuth.code.length < 6}
                 >
@@ -729,7 +739,7 @@ const SignUpForm = () => {
           type="password"
           id="password"
           name="password"
-          placeholder="비밀번호"
+          placeholder="인증코드를 입력해주세요!"
           value={user.password}
           onChange={handleUserChange}
           onBlur={handleUserBlur}
@@ -741,12 +751,12 @@ const SignUpForm = () => {
           </FormErrorMessage>
         )}
 
-        <Label htmlFor="passwordCheck">비밀번호 확인</Label>
+        <Label htmlFor="passwordCheck">비밀번호 입력 확인</Label>
         <Input
           type="password"
           id="passwordCheck"
           name="passwordCheck"
-          placeholder="비밀번호 확인"
+          placeholder="위와 동일한 비밀번호를 입력해주세요!"
           value={passwordCheck}
           onChange={handlePasswordCheckChange}
           onBlur={handleUserBlur}
@@ -758,47 +768,50 @@ const SignUpForm = () => {
           </FormErrorMessage>
         )}
 
-        {/* TODO: 드롭다운 UI로 변경 */}
-        <Label htmlFor="birthday">생년월일</Label>
-        <Input
-          type="birthday"
-          id="birthday"
-          name="birthday"
-          placeholder="생년월일"
-          value={user.birthday}
-          onChange={handleUserChange}
-        />
-
-        <label htmlFor="gender" style={{ marginBottom: '5px' }}>
-          성별
-        </label>
-        <div>
-          <Label>
-            <input
+        <Label htmlFor="gender">나의 성별(선택)</Label>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            marginBottom: 10,
+          }}
+        >
+          <GenderButton selected={user.gender === 'male'}>
+            <GenderRadioButton
               type="radio"
               name="gender"
               value="male"
               checked={user.gender === 'male'}
               onChange={handleUserChange}
             />
-            남성
-          </Label>
-
-          <Label>
-            <input
+            남자
+          </GenderButton>
+          <GenderButton selected={user.gender === 'female'}>
+            <GenderRadioButton
               type="radio"
               name="gender"
               value="female"
               checked={user.gender === 'female'}
               onChange={handleUserChange}
             />
-            여성
-          </Label>
+            여자
+          </GenderButton>
         </div>
+
+        <Label htmlFor="birthday">내가 태어난날(선택)</Label>
+        <Input
+          type="birthday"
+          id="birthday"
+          name="birthday"
+          placeholder="6자리로 입력해주세요! 예)961024"
+          value={user.birthday}
+          onChange={handleUserChange}
+          maxLength={6}
+        />
 
         <Button
           style={{
-            marginTop: '20px',
+            marginTop: '30px',
           }}
           onClick={handleSignUp}
         >

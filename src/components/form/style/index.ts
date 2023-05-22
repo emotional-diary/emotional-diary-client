@@ -37,6 +37,7 @@ export const FormContainer = styled.div`
 export const Form = styled.form`
   display: flex;
   flex-direction: column;
+  width: 100%;
   height: 100%;
 `;
 
@@ -127,4 +128,21 @@ export const HrText = styled.div`
   &::after {
     margin-right: 0;
   }
+`;
+
+export const GenderButton = styled.label<{ selected: boolean }>`
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-width: calc(50% - 5px);
+  height: 55px;
+  background-color: ${props => (props.selected ? '#2b625b' : '#FFF')};
+  color: ${props => (props.selected ? '#FFF' : '#A6A6A6')};
+  border-radius: 12px;
+  cursor: pointer;
+`;
+
+export const GenderRadioButton = styled.input`
+  display: none;
 `;
