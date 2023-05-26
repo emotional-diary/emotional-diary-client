@@ -2,14 +2,20 @@ import styled, { css } from 'styled-components';
 
 interface ButtonProps {
   size?: 'small' | 'medium' | 'large';
+  color?: 'primary' | 'secondary' | 'white';
 }
 
-const getSizeStyles = (size: ButtonProps['size']) => {
+const getSizeStyles = (size: ButtonProps['size'] = 'medium') => {
   switch (size) {
     case 'small':
       return css`
         padding: 5px 10px;
-        font-size: 12px;
+        font-size: 13px;
+      `;
+    case 'medium':
+      return css`
+        padding: 10px 20px;
+        font-size: 16px;
       `;
     case 'large':
       return css`
@@ -17,7 +23,28 @@ const getSizeStyles = (size: ButtonProps['size']) => {
         font-size: 20px;
       `;
     default:
-      // 기본값인 'medium'일 때는 별도의 스타일을 적용하지 않습니다.
+      return null;
+  }
+};
+
+const getColorStyles = (color: ButtonProps['color'] = 'primary') => {
+  switch (color) {
+    case 'primary':
+      return css`
+        background: #2b625b;
+        color: #fff;
+      `;
+    case 'secondary':
+      return css`
+        background: #f5e9cd;
+        color: #000;
+      `;
+    case 'white':
+      return css`
+        background: #fff;
+        color: #000;
+      `;
+    default:
       return null;
   }
 };
@@ -71,20 +98,16 @@ export const Label = styled.label`
 
 export const Button = styled.button<ButtonProps>`
   height: 55px;
-  background: #2b625b;
   border: 0;
   border-radius: 12px;
   color: #fff;
-  cursor: pointer;
-  font-size: 16px;
   line-height: 1.2;
-  padding: 10px 20px;
-  ${({ size }) => getSizeStyles(size)}
+  ${({ size }) => getSizeStyles(size)};
+  ${({ color }) => getColorStyles(color)};
+  cursor: pointer;
   transition: all 0.2s ease-in-out;
   white-space: nowrap;
-  /* &:hover {
-    background: #42a306;
-  } */
+  box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.25);
   &:disabled {
     opacity: 0.5;
     cursor: default;

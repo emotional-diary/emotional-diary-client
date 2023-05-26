@@ -230,7 +230,7 @@ const LoginForm = () => {
                 cursor: 'pointer',
                 borderBottom: '1px solid #A6A6A6',
               }}
-              onClick={() => router.push('/signup')}
+              onClick={() => router.push('/terms')}
             >
               회원가입
             </Typography.body2>
@@ -261,7 +261,7 @@ const LoginForm = () => {
   );
 };
 
-const SignUpForm = () => {
+const SignUpForm = ({ social }: { social?: false | Social }) => {
   const [user, setUser] = React.useState<User>({
     nickname: '',
     email: '',
@@ -461,6 +461,13 @@ const SignUpForm = () => {
   const signupValidation = () => {
     const { nickname, email, password, passwordCheck } = validation;
     console.log(validation);
+
+    if (social) {
+      if (nickname.status) {
+        return true;
+      }
+    }
+
     if (
       !nickname.status ||
       // !email.status ||
@@ -493,7 +500,7 @@ const SignUpForm = () => {
     });
 
     if (res.status === 200) {
-      // router.push('/');
+      router.push('/signup/complete');
     } else {
       alert('회원가입에 실패했습니다.');
     }
@@ -609,6 +616,55 @@ const SignUpForm = () => {
   const handleTerms = () => {
     setTerms(!terms);
   };
+
+  if (social === 'kakao') {
+    return (
+      <FormContainer style={{ minHeight: '100vh' }}>
+        <img src={'/images/icons/coffee_bean.png'} />
+        <Typography.h3 style={{ marginTop: 10 }}>간편 회원 가입</Typography.h3>
+
+        <Form style={{ flexGrow: 1 }}>
+          <Label htmlFor="nickname">나의 이름</Label>
+          <Input
+            type="text"
+            id="nickname"
+            name="nickname"
+            placeholder="성을 제외하고 이름만 적어주세요!"
+            value={user.nickname}
+            onChange={e => {
+              if (!/^[가-힣ㄱ-ㅎㅏ-ㅣa-zA-Z]*$/.test(e.target.value)) {
+                return;
+              }
+              handleUserChange(e);
+            }}
+            onBlur={handleUserBlur}
+            maxLength={16}
+          />
+          {validation.nickname.message && (
+            <FormErrorMessage style={{ color: 'red', marginBottom: '8px' }}>
+              {validation.nickname.message}
+            </FormErrorMessage>
+          )}
+
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'flex-end',
+              flexGrow: 1,
+            }}
+          >
+            <Button
+              style={{ width: '100%', marginTop: 10 }}
+              onClick={handleSignUp}
+              disabled={user.nickname === ''}
+            >
+              가입하기
+            </Button>
+          </div>
+        </Form>
+      </FormContainer>
+    );
+  }
 
   return (
     <FormContainer style={{ minHeight: '100vh' }}>
