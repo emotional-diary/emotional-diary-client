@@ -43,7 +43,7 @@ export default class MyDocument extends Document {
             name="keywords"
             content="Emotional Diary, Ai, online diary, web diary, diary app"
           />
-          <meta name="apple-mobile-web-app-capable" content="yes"></meta>
+          <meta name="apple-mobile-web-app-capable" content="yes" />
 
           <link rel="manifest" href="/manifest.json" />
 
@@ -52,13 +52,13 @@ export default class MyDocument extends Document {
 
           {/* 파비콘 */}
           <link
-            href="/images/favicons/favicon-16x16.ico"
+            href="/images/favicons/favicon-16x16.png"
             rel="icon"
             type="image/png"
             sizes="16x16"
           />
           <link
-            href="/images/favicons/favicon-32x32.ico"
+            href="/images/favicons/favicon-32x32.png"
             rel="icon"
             type="image/png"
             sizes="32x32"
