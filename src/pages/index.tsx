@@ -1,52 +1,78 @@
-import Link from "next/link";
+import { GetServerSideProps } from 'next';
+import Link from 'next/link';
+import styled from 'styled-components';
 
-import styles from "../styles/Home.module.css";
-import { Container, Main, Footer } from "@components/layout";
+import { Container, Main, Footer, Header } from '@components/layout';
+import { Typography } from '@components/typography';
+import * as Icons from '@components/icons';
+import { useUserStore } from '../store';
+import { IconButton } from '@components/form/style';
 
-export default function Home() {
+interface Props {
+  profile: {
+    nickname: string;
+  };
+}
+
+const MessageOfToday = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 12px 16px;
+  background-color: #000;
+  color: #fff;
+  border-radius: 0px 10px 10px 0px;
+`;
+
+export default function Home({ ...props }: Props) {
+  const { user, setUser } = useUserStore();
+
+  if (!user?.nickname) {
+    setUser({
+      ...user,
+      nickname: props.profile.nickname,
+    });
+  }
+
+  console.log('user', user);
+  console.log('profile', props.profile);
+
   return (
     <Container>
-      <Main>
-        <h1 className={styles.title}>Emotional Diary</h1>
-        <p className={styles.description}>AI가 감정을 분석하는 다이어리</p>
+      <Header>
+        <MessageOfToday>
+          <Typography.body2>
+            {user.nickname ?? props.profile.nickname}님 오늘은 어떤 하루였나요?
+          </Typography.body2>
+        </MessageOfToday>
 
-        <div className={styles.grid}>
-          <Link href="/post/new" className={styles.card}>
-            <h3>새로운 일기 &rarr;</h3>
-            <p>오늘 하루는 어떻게 보냈을까요?</p>
-          </Link>
-
-          <Link href="/posts" className={styles.card}>
-            <h3>일기 목록 &rarr;</h3>
-            <p>추억이 담겨있어요.</p>
-          </Link>
-
-          <Link href="/mypage" className={styles.card}>
-            <h3>내 감성 &rarr;</h3>
-            <p>그동안 쌓아온 감성을 살펴보아요.</p>
-          </Link>
-
-          <Link href="/setting" className={styles.card}>
-            <h3>설정 &rarr;</h3>
-            <p>나만의 공간을 바꾸어보세요.</p>
-          </Link>
-
-          <Link href="/login" className={styles.card}>
-            <h3>로그인 &rarr;</h3>
-            <p>더욱 다양한 경험을 해보세요.</p>
-          </Link>
-        </div>
-      </Main>
-
-      <Footer>
-        <Link
-          href="https://www.notion.so/221fc3f4cac443919260bcf0ed246400"
-          target="_blank"
-          rel="noopener noreferrer"
+        <IconButton
+          style={{
+            marginLeft: 'auto',
+            marginRight: '20px',
+          }}
         >
-          Powered by EDT
-        </Link>
-      </Footer>
+          <Icons.User width={30} height={30} />
+        </IconButton>
+      </Header>
     </Container>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
+  const accessToken = req.cookies.accessToken;
+  const nickname = decodeURIComponent(accessToken || '');
+
+  if (!accessToken) {
+    res.writeHead(302, { Location: '/login' });
+    res.end();
+  }
+
+  return {
+    props: {
+      profile: {
+        nickname,
+      },
+    },
+  };
+};

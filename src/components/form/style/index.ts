@@ -76,7 +76,7 @@ export const Input = styled.input`
   border: none;
   border-radius: 12px;
   background-color: #ffffff;
-  font-size: 16px;
+  font-size: 14px;
 
   &:hover {
     box-shadow: 0px 0px 5px 0px rgba(57, 70, 255, 0.699);

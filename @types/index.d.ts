@@ -1,12 +1,15 @@
 interface User {
   nickname: string;
   email: string;
-  password: string;
   birthday: string;
   gender: string;
 }
 
-type UserValidationKeys = keyof User | 'passwordCheck';
+type JoinUser = User & {
+  password: string;
+};
+
+type UserValidationKeys = keyof JoinUser | 'passwordCheck';
 
 type UserValidation = Record<
   UserValidationKeys,

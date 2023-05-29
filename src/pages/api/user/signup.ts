@@ -11,13 +11,20 @@ const signup = async (req: NextApiRequest, res: NextApiResponse) => {
   const match = await compare(req.body.user.password, hashedPassword);
   console.log(match);
 
+  // 쿠키 설정
+  res.setHeader(
+    'Set-Cookie',
+    `accessToken=${encodeURIComponent(
+      req.body.user.nickname
+    )};Max-Age=3600;HttpOnly;Secure;Path=/`
+  );
+
+  delete req.body.user.password;
+
   res.status(200).json({
-    status: 'success',
-    data: {
-      user: {
-        ...req.body.user,
-        password: hashedPassword,
-      },
+    user: {
+      ...req.body.user,
+      // password: hashedPassword,
     },
   });
 };

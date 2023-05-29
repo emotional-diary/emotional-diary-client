@@ -16,6 +16,7 @@ import {
 } from './style';
 import { Timer as EmailAuthTimer } from './timer';
 import axios from 'axios';
+import { useUserStore } from '@store/index';
 
 const LoginForm = () => {
   const [user, setUser] = React.useState<{ email: string; password: string }>({
@@ -262,7 +263,8 @@ const LoginForm = () => {
 };
 
 const SignUpForm = ({ social }: { social?: false | Social }) => {
-  const [user, setUser] = React.useState<User>({
+  const { user, setUser } = useUserStore();
+  const [joinData, setJoinData] = React.useState<JoinUser>({
     nickname: '',
     email: '',
     password: '',
@@ -290,10 +292,10 @@ const SignUpForm = ({ social }: { social?: false | Social }) => {
     let koreanCount = 0;
     let englishCount = 0;
 
-    for (let i = 0; i < user.nickname.length; i++) {
-      if (/[가-힣]/.test(user.nickname[i])) {
+    for (let i = 0; i < joinData.nickname.length; i++) {
+      if (/[가-힣]/.test(joinData.nickname[i])) {
         koreanCount++;
-      } else if (/[a-zA-Z]/.test(user.nickname[i])) {
+      } else if (/[a-zA-Z]/.test(joinData.nickname[i])) {
         englishCount++;
       } else {
         setValidation({
@@ -343,7 +345,7 @@ const SignUpForm = ({ social }: { social?: false | Social }) => {
 
   const validateEmail = () => {
     const regex = /^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[a-zA-Z0-9]+$/;
-    if (!regex.test(user.email)) {
+    if (!regex.test(joinData.email)) {
       setValidation({
         ...validation,
         email: {
@@ -366,7 +368,7 @@ const SignUpForm = ({ social }: { social?: false | Social }) => {
 
   const validatePassword = () => {
     const regex = /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,16}$/;
-    if (!regex.test(user.password)) {
+    if (!regex.test(joinData.password)) {
       setValidation({
         ...validation,
         password: {
@@ -381,7 +383,7 @@ const SignUpForm = ({ social }: { social?: false | Social }) => {
   };
 
   const validatePasswordCheck = () => {
-    if (user.password !== passwordCheck) {
+    if (joinData.password !== passwordCheck) {
       setValidation({
         ...validation,
         passwordCheck: {
@@ -407,7 +409,7 @@ const SignUpForm = ({ social }: { social?: false | Social }) => {
     if (passwordCheck.length > 7) {
       validatePasswordCheck();
     }
-  }, [user.password, passwordCheck]);
+  }, [joinData.password, passwordCheck]);
 
   const handleUserBlur = (e: React.FocusEvent<HTMLInputElement>) => {
     switch (e.target.name) {
@@ -442,12 +444,12 @@ const SignUpForm = ({ social }: { social?: false | Social }) => {
 
   const handleUserChange = React.useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      setUser({
-        ...user,
+      setJoinData({
+        ...joinData,
         [e.target.name]: e.target.value,
       });
     },
-    [user]
+    [joinData]
   );
 
   console.log(validation);
@@ -489,17 +491,24 @@ const SignUpForm = ({ social }: { social?: false | Social }) => {
       return;
     }
 
-    const res = await fetch('/api/user/signup', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        user,
-      }),
+    const res = await axios.post('/api/user/signup', {
+      user: { ...joinData },
     });
+    // const res = await fetch('/api/user/signup', {
+    //   method: 'POST',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //   },
+    //   body: JSON.stringify({
+    //     user: { ...joinData },
+    //   }),
+    // });
 
     if (res.status === 200) {
+      console.log('회원가입 성공', res);
+      setUser({
+        ...res.data.user,
+      });
       router.push('/signup/complete');
     } else {
       alert('회원가입에 실패했습니다.');
@@ -517,7 +526,7 @@ const SignUpForm = ({ social }: { social?: false | Social }) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        email: user.email,
+        email: joinData.email,
       }),
     });
 
@@ -568,7 +577,7 @@ const SignUpForm = ({ social }: { social?: false | Social }) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        email: user.email,
+        email: joinData.email,
         authCode: emailAuth.code,
       }),
     });
@@ -630,7 +639,7 @@ const SignUpForm = ({ social }: { social?: false | Social }) => {
             id="nickname"
             name="nickname"
             placeholder="성을 제외하고 이름만 적어주세요!"
-            value={user.nickname}
+            value={joinData.nickname}
             onChange={e => {
               if (!/^[가-힣ㄱ-ㅎㅏ-ㅣa-zA-Z]*$/.test(e.target.value)) {
                 return;
@@ -656,7 +665,7 @@ const SignUpForm = ({ social }: { social?: false | Social }) => {
             <Button
               style={{ width: '100%', marginTop: 10 }}
               onClick={handleSignUp}
-              disabled={user.nickname === ''}
+              disabled={joinData.nickname === ''}
             >
               가입하기
             </Button>
@@ -678,7 +687,7 @@ const SignUpForm = ({ social }: { social?: false | Social }) => {
           id="nickname"
           name="nickname"
           placeholder="성을 제외하고 이름만 적어주세요!"
-          value={user.nickname}
+          value={joinData.nickname}
           onChange={e => {
             if (!/^[가-힣ㄱ-ㅎㅏ-ㅣa-zA-Z]*$/.test(e.target.value)) {
               return;
@@ -709,7 +718,7 @@ const SignUpForm = ({ social }: { social?: false | Social }) => {
               name="email"
               placeholder="이메일 형식에 맞춰 적어주세요!"
               style={{ margin: 0, paddingRight: '110px' }}
-              value={user.email}
+              value={joinData.email}
               onChange={e => {
                 handleUserChange(e);
                 // 이메일 인증버튼을 누르고 이메일을 수정할 경우 인증 상태 초기화
@@ -730,14 +739,16 @@ const SignUpForm = ({ social }: { social?: false | Social }) => {
                 position: 'absolute',
                 right: 10,
                 top: 10,
-                padding: '0px 10px',
+                padding: '10px 10px',
                 marginLeft: '10px',
               }}
               onClick={() => handleEmailAuth()}
             >
-              {(emailAuth.level === 0 || emailAuth.level === 2) &&
-                '이메일 인증'}
-              {emailAuth.level === 1 && '이메일 재전송'}
+              <Typography.body2>
+                {(emailAuth.level === 0 || emailAuth.level === 2) &&
+                  '이메일 인증'}
+                {emailAuth.level === 1 && '이메일 재전송'}
+              </Typography.body2>
             </Button>
           </div>
 
@@ -766,13 +777,13 @@ const SignUpForm = ({ social }: { social?: false | Social }) => {
                     position: 'absolute',
                     right: 10,
                     top: 10,
-                    padding: '0px 10px',
+                    padding: '10px 10px',
                     marginLeft: '10px',
                   }}
                   onClick={() => handleEmailAuthCheck()}
                   disabled={emailAuth.code.length < 6}
                 >
-                  인증코드 확인
+                  <Typography.body2>인증코드 확인</Typography.body2>
                 </Button>
               </div>
 
@@ -795,8 +806,8 @@ const SignUpForm = ({ social }: { social?: false | Social }) => {
           type="password"
           id="password"
           name="password"
-          placeholder="인증코드를 입력해주세요!"
-          value={user.password}
+          placeholder="비밀번호를 입력해주세요!"
+          value={joinData.password}
           onChange={handleUserChange}
           onBlur={handleUserBlur}
           maxLength={128}
@@ -832,22 +843,22 @@ const SignUpForm = ({ social }: { social?: false | Social }) => {
             marginBottom: 10,
           }}
         >
-          <GenderButton selected={user.gender === 'male'}>
+          <GenderButton selected={joinData.gender === 'male'}>
             <GenderRadioButton
               type="radio"
               name="gender"
               value="male"
-              checked={user.gender === 'male'}
+              checked={joinData.gender === 'male'}
               onChange={handleUserChange}
             />
             남자
           </GenderButton>
-          <GenderButton selected={user.gender === 'female'}>
+          <GenderButton selected={joinData.gender === 'female'}>
             <GenderRadioButton
               type="radio"
               name="gender"
               value="female"
-              checked={user.gender === 'female'}
+              checked={joinData.gender === 'female'}
               onChange={handleUserChange}
             />
             여자
@@ -860,7 +871,7 @@ const SignUpForm = ({ social }: { social?: false | Social }) => {
           id="birthday"
           name="birthday"
           placeholder="6자리로 입력해주세요! 예)961024"
-          value={user.birthday}
+          value={joinData.birthday}
           onChange={handleUserChange}
           maxLength={6}
         />

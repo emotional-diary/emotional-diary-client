@@ -14,6 +14,7 @@ export default function SignUpComplete() {
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
+          margin: 'auto 0',
         }}
       >
         <div
@@ -25,15 +26,10 @@ export default function SignUpComplete() {
             marginBottom: '12px',
           }}
         >
-          <Icons.Heart />
-          <Icons.HeartWhite />
+          <Icons.Heart width={22} height={20} />
+          <Icons.HeartWhite width={35} height={33} />
         </div>
-        <img
-          src={'/images/icons/coffee.png'}
-          alt={'coffee'}
-          width={76}
-          height={53}
-        />
+        <Icons.Coffee width={76} height={53} />
         <Typography.h2 style={{ color: '#FFF' }}>
           가입을 축하해요!
         </Typography.h2>
