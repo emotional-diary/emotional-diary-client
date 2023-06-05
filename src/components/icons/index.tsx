@@ -146,24 +146,31 @@ export const HeartWhite = ({ width = 36, height = 34 }) => {
   );
 };
 
-export const User = ({ width = 20, height = 20 }) => {
+export const User = ({ width = 24, height = 24 }) => {
   const color = '#FFF';
   return (
     <svg
       width={width}
       height={height}
-      viewBox={`0 0 20 20`}
+      viewBox={`0 0 24 24`}
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
-      <rect width="20" height="20" rx="3" fill={color} fillOpacity="0.2" />
-      <circle cx="10" cy="6" r="3" fill={color} />
-      <path
-        fillRule="evenodd"
-        clipRule="evenodd"
-        d="M5.05603 14.8921C4.75049 16.009 5.68652 17 6.84446 17H13.1556C14.3135 17 15.2495 16.009 14.944 14.8921C14.1598 12.0253 12.2417 10 10 10C7.75829 10 5.84026 12.0253 5.05603 14.8921Z"
-        fill={color}
+      <circle
+        cx="12.0001"
+        cy="9.77776"
+        r="2.22222"
+        stroke="#F5F5F5"
+        strokeWidth="1.5"
       />
+      <path
+        d="M7.55566 16.4444C7.88488 15.7036 9.23468 14.2222 12.0001 14.2222C14.7655 14.2222 16.1153 15.7036 16.4446 16.4444"
+        stroke="#F5F5F5"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <circle cx="12" cy="12" r="9.25" stroke="#F5F5F5" strokeWidth="1.5" />
     </svg>
   );
 };
