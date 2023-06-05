@@ -4,6 +4,7 @@ import router from 'next/router';
 
 import * as Icons from '@components/icons';
 import { IconButton } from '@components/form/style';
+import { Typography } from '@components/typography';
 
 type HeaderProps = {
   title?: string;
@@ -23,6 +24,7 @@ const StyledContainer = styled.div`
 
 const StyledHeader = styled.header<{ bgcolor: string }>`
   display: flex;
+  justify-content: space-between;
   align-items: center;
   width: 100%;
   padding: 30px;
@@ -30,12 +32,11 @@ const StyledHeader = styled.header<{ bgcolor: string }>`
 `;
 
 const Main = styled.main`
-  padding: 5rem 0;
-  flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
+  flex-grow: 1;
+  width: 100%;
 `;
 
 const Footer = styled.footer`
@@ -51,17 +52,32 @@ const Container = ({
   children,
   headerProps,
   style,
+  bodyProps,
 }: {
   children: React.ReactNode;
   headerProps?: HeaderProps;
   style?: React.CSSProperties;
+  bodyProps?: {
+    style?: React.CSSProperties;
+  };
 }) => {
   return (
     <StyledContainer style={style}>
       {headerProps && <Header {...headerProps} />}
-      {children}
+
+      <Body {...bodyProps}>{children}</Body>
     </StyledContainer>
   );
+};
+
+const Body = ({
+  children,
+  style,
+}: {
+  children: React.ReactNode;
+  style?: React.CSSProperties;
+}) => {
+  return <Main style={style ?? {}}>{children}</Main>;
 };
 
 const Header = ({ title, back, bgcolor }: HeaderProps) => {
@@ -72,6 +88,15 @@ const Header = ({ title, back, bgcolor }: HeaderProps) => {
           <Icons.Back />
         </IconButton>
       )}
+
+      {title && (
+        <Typography variant={'h3'} color={'common.white'}>
+          {title}
+        </Typography>
+      )}
+      <IconButton onClick={() => alert('준비중 입니다.')}>
+        <Icons.User />
+      </IconButton>
     </StyledHeader>
   );
 };
