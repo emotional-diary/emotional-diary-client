@@ -1,10 +1,5 @@
 import styled, { css } from 'styled-components';
 
-interface ButtonProps {
-  size?: 'small' | 'medium' | 'large';
-  color?: 'primary' | 'secondary' | 'white';
-}
-
 const getSizeStyles = (size: ButtonProps['size'] = 'medium') => {
   switch (size) {
     case 'small':
@@ -31,18 +26,23 @@ const getColorStyles = (color: ButtonProps['color'] = 'primary') => {
   switch (color) {
     case 'primary':
       return css`
-        background: #2b625b;
-        color: #fff;
+        background: ${({ theme }) => theme.palette.primary.main};
+        color: ${({ theme }) => theme.palette.common.white};
       `;
     case 'secondary':
       return css`
-        background: #f5e9cd;
-        color: #000;
+        background: ${({ theme }) => theme.palette.secondary.light};
+        color: ${({ theme }) => theme.palette.common.white};
       `;
     case 'white':
       return css`
         background: #fff;
-        color: #000;
+        color: ${({ theme }) => theme.palette.common.black};
+      `;
+    case 'gray':
+      return css`
+        background: ${({ theme }) => theme.palette.gray.light};
+        color: ${({ theme }) => theme.palette.gray.main};
       `;
     default:
       return null;
@@ -53,17 +53,19 @@ export const FormContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  flex-grow: 1;
   width: 100%;
   height: 100%;
   min-width: 320px;
-  max-width: 400px;
-  background-color: #f5e9cd;
-  padding: 30px;
+  max-width: 600px;
+  background-color: ${({ theme }) => theme.palette.common.white};
+  padding: 40px 30px;
 `;
 
 export const Form = styled.form`
   display: flex;
   flex-direction: column;
+  flex-grow: 1;
   width: 100%;
   height: 100%;
 `;
@@ -71,11 +73,11 @@ export const Form = styled.form`
 export const Input = styled.input`
   width: 100%;
   height: 55px;
-  padding: 10px;
+  padding: 20px;
   margin: 0 0 10px;
   border: none;
-  border-radius: 12px;
-  background-color: #ffffff;
+  border-radius: 50px;
+  background-color: ${({ theme }) => theme.palette.gray.light};
   font-size: 14px;
 
   &:hover {
@@ -86,33 +88,32 @@ export const Input = styled.input`
     box-shadow: 0px 0px 5px 0px rgba(57, 70, 255, 0.699);
   }
   &::placeholder {
-    color: #a6a6a6;
+    color: ${({ theme }) => theme.palette.gray.main};
   }
 `;
 
 export const Label = styled.label`
-  font-size: 16px;
-  margin: 10px 0px;
-  cursor: pointer;
+  margin: 8px 0px;
 `;
 
 export const Button = styled.button<ButtonProps>`
   height: 55px;
   border: 0;
-  border-radius: 12px;
-  color: #fff;
-  line-height: 1.2;
-  ${({ size }) => getSizeStyles(size)};
-  ${({ color }) => getColorStyles(color)};
+  border-radius: 50px;
   cursor: pointer;
   transition: all 0.2s ease-in-out;
   white-space: nowrap;
-  box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.25);
+
+  ${({ size }) => getSizeStyles(size)};
+  ${({ color }) => getColorStyles(color)};
+
   &:disabled {
     opacity: 0.5;
     cursor: default;
     background-color: #ccc;
-    color: #666;
+    & > :nth-of-type(1) {
+      color: ${({ theme }) => `${theme.palette.common.black}`};
+    }
   }
 `;
 
@@ -124,11 +125,6 @@ export const IconButton = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
-`;
-
-export const FormErrorMessage = styled.div`
-  color: red;
-  margin-bottom: 10px;
 `;
 
 export const HrText = styled.div`
@@ -158,11 +154,14 @@ export const GenderButton = styled.label<{ selected: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
-  max-width: calc(50% - 5px);
+  max-width: calc(50% - 7.5px);
   height: 55px;
-  background-color: ${props => (props.selected ? '#2b625b' : '#FFF')};
-  color: ${props => (props.selected ? '#FFF' : '#A6A6A6')};
-  border-radius: 12px;
+  transition: all 0.2s ease-in-out;
+  background-color: ${props =>
+    props.selected
+      ? props.theme.palette.secondary.light
+      : props.theme.palette.gray.light};
+  border-radius: 50px;
   cursor: pointer;
 `;
 

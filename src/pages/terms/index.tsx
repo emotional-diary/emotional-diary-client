@@ -2,8 +2,10 @@ import React from 'react';
 import router from 'next/router';
 
 import { Container } from '@components/layout';
-import { Button, FormContainer } from '@components/form/style';
+import { Button, FormContainer, IconButton } from '@components/form/style';
 import { Typography } from '@components/typography';
+import * as Icons from '@components/icons';
+import { Modal } from '@components/modal';
 
 const loremIpsum = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
   malesuada lorem maximus mauris scelerisque, at rutrum nulla
@@ -16,23 +18,78 @@ const loremIpsum = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Don
   massa ultrices varius. Maecenas vitae eros lorem. Cras in varius
   enim. Vestibulum eget est ac felis aliquet bibendum. Cras eget
   turpis sem.`;
+const loremIpsum2 = `개인정보 처리방침입니다. lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec`;
 
 export default function Terms() {
-  const [isTermsChecked, setIsTermsChecked] = React.useState(false);
+  const [checked, setChecked] = React.useState({
+    terms: false,
+    privacy: false,
+  });
+  const [modal, setModal] = React.useState({
+    open: false,
+    title: '',
+    content: '',
+  });
 
   return (
-    <Container>
-      <FormContainer style={{ minHeight: '100vh' }}>
-        <img src={'/images/icons/coffee_bean.png'} />
-        <Typography.h3 style={{ marginTop: 10 }}>이용 약관 동의</Typography.h3>
+    <Container
+      headerProps={{
+        back: true,
+      }}
+    >
+      <Modal
+        open={modal.open}
+        title={modal.title}
+        content={modal.content}
+        onClose={() => setModal({ ...modal, open: false })}
+      />
+      <FormContainer style={{ alignItems: 'flex-start', paddingTop: 0 }}>
+        {/* <img src={'/images/icons/coffee_bean.png'} /> */}
+        <Typography variant={'subtitle1'}>회원가입</Typography>
+        <Typography variant={'h1'} style={{ marginTop: 10, marginBottom: 20 }}>
+          필수 이용약관에
+          <br />
+          동의해주세요
+        </Typography>
 
         <Button
           size={'small'}
-          color={isTermsChecked ? 'primary' : 'white'}
-          onClick={() => setIsTermsChecked(!isTermsChecked)}
-          style={{ width: '100%' }}
+          color={checked.privacy && checked.terms ? 'primary' : 'gray'}
+          onClick={() =>
+            setChecked(() => {
+              if (checked.privacy && checked.terms) {
+                return {
+                  terms: false,
+                  privacy: false,
+                };
+              }
+              return {
+                terms: true,
+                privacy: true,
+              };
+            })
+          }
+          style={{
+            width: '100%',
+            display: 'flex',
+            alignItems: 'center',
+            padding: '20px 24px',
+          }}
         >
-          전체 동의합니다
+          {checked.privacy && checked.terms ? (
+            <Icons.Check />
+          ) : (
+            <Icons.UnCheck />
+          )}
+          <Typography
+            variant={'label2'}
+            color={
+              checked.privacy && checked.terms ? 'common.white' : 'gray.main'
+            }
+            style={{ marginLeft: 10 }}
+          >
+            필수 약관 전체 동의
+          </Typography>
         </Button>
 
         <div
@@ -43,38 +100,78 @@ export default function Terms() {
             width: '100%',
           }}
         >
-          <Typography.body1 style={{ marginTop: 40 }}>
-            서비스 이용약관(필수)
-          </Typography.body1>
           <div
             style={{
-              maxHeight: '200px',
-              backgroundColor: '#FFF',
-              marginTop: '10px',
-              padding: '20px',
-              borderRadius: '12px',
-              boxShadow: '1px 1px 4px rgba(0, 0, 0, 0.25)',
-              overflowY: 'auto',
+              display: 'flex',
+              alignItems: 'center',
+              width: '100%',
+              marginTop: 20,
+              padding: '0px 24px',
             }}
           >
-            {loremIpsum}
+            <IconButton
+              onClick={() => setChecked({ ...checked, terms: !checked.terms })}
+            >
+              {checked.terms ? <Icons.Check /> : <Icons.UnCheck />}
+
+              <Typography
+                variant={'label2'}
+                color={checked.terms ? 'primary.main' : 'gray.main'}
+                style={{ marginLeft: 10 }}
+              >
+                서비스 이용약관(필수)
+              </Typography>
+            </IconButton>
+            <IconButton
+              style={{ marginLeft: 'auto' }}
+              onClick={() =>
+                setModal({
+                  open: true,
+                  title: '서비스 이용약관',
+                  content: loremIpsum,
+                })
+              }
+            >
+              <div>{'>'}</div>
+            </IconButton>
           </div>
 
-          <Typography.body1 style={{ marginTop: 25 }}>
-            개인정보 처리방침(필수)
-          </Typography.body1>
           <div
             style={{
-              maxHeight: '200px',
-              backgroundColor: '#FFF',
-              marginTop: '10px',
-              padding: '20px',
-              borderRadius: '12px',
-              boxShadow: '1px 1px 4px rgba(0, 0, 0, 0.25)',
-              overflowY: 'auto',
+              display: 'flex',
+              alignItems: 'center',
+              width: '100%',
+              marginTop: 20,
+              padding: '0px 24px',
             }}
           >
-            {loremIpsum}
+            <IconButton
+              onClick={() =>
+                setChecked({ ...checked, privacy: !checked.privacy })
+              }
+            >
+              {checked.privacy ? <Icons.Check /> : <Icons.UnCheck />}
+
+              <Typography
+                variant={'label2'}
+                color={checked.privacy ? 'primary.main' : 'gray.main'}
+                style={{ marginLeft: 10 }}
+              >
+                개인정보 처리방침(필수)
+              </Typography>
+            </IconButton>
+            <IconButton
+              style={{ marginLeft: 'auto' }}
+              onClick={() =>
+                setModal({
+                  open: true,
+                  title: '개인정보 처리방침',
+                  content: loremIpsum2,
+                })
+              }
+            >
+              <div>{'>'}</div>
+            </IconButton>
           </div>
 
           <div
@@ -86,11 +183,14 @@ export default function Terms() {
             }}
           >
             <Button
-              disabled={!isTermsChecked}
+              color={'secondary'}
+              disabled={!checked.privacy || !checked.terms}
               onClick={() => router.push('/signup')}
               style={{ width: '100%' }}
             >
-              다음
+              <Typography variant={'label1'} color={'common.white'}>
+                다음
+              </Typography>
             </Button>
           </div>
         </div>

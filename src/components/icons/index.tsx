@@ -167,3 +167,85 @@ export const User = ({ width = 20, height = 20 }) => {
     </svg>
   );
 };
+
+export const Back = ({ width = 24, height = 24 }) => {
+  return (
+    <svg
+      width={width}
+      height={height}
+      viewBox={`0 0 24 24`}
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M4 12H20M4 12L12 4M4 12L12 20"
+        stroke="#464133"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+};
+
+export const Check = ({ width = 24, height = 24 }) => {
+  return (
+    <svg
+      width={width}
+      height={height}
+      viewBox={`0 0 24 24`}
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <rect
+        x="3"
+        y="3"
+        width="18"
+        height="18"
+        rx="3"
+        fill="#2B625B"
+        fillOpacity="0.2"
+        stroke="#2B625B"
+        strokeWidth="2"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M8 11.5L11.3684 15L16 8"
+        stroke="#2B625B"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+};
+
+export const UnCheck = ({ width = 24, height = 24 }) => {
+  return (
+    <svg
+      width={width}
+      height={height}
+      viewBox={`0 0 24 24`}
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <rect
+        x="3"
+        y="3"
+        width="18"
+        height="18"
+        rx="3"
+        stroke="#A6A6A6"
+        strokeWidth="2"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M8 11.5L11.3684 15L16 8"
+        stroke="#A6A6A6"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+};

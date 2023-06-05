@@ -1,3 +1,4 @@
+import { Typography } from '@components/typography';
 import React from 'react';
 
 export const Timer = ({
@@ -37,9 +38,13 @@ export const Timer = ({
   }
 
   return (
-    <div style={{ marginTop: '10px' }}>
+    <Typography
+      variant={'h5'}
+      color={'gray.dark'}
+      style={{ marginTop: '10px', paddingLeft: '10px' }}
+    >
       만료 시간 : {minutes ? `${minutes}분` : ''}{' '}
       {secondsLeft ? `${secondsLeft}초` : ''}
-    </div>
+    </Typography>
   );
 };

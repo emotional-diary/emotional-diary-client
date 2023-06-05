@@ -7,7 +7,7 @@ export const palette = {
   },
   secondary: {
     main: '#ECB390',
-    light: '#fbbc04',
+    light: '#FFB98E',
     dark: '#fbbc04',
   },
   error: {

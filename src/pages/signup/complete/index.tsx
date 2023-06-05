@@ -5,16 +5,44 @@ import * as Icons from '@components/icons';
 import { Container } from '@components/layout';
 import { Button } from '@components/form/style';
 import { Typography } from '@components/typography';
+import { theme } from 'src/theme';
 
 export default function SignUpComplete() {
   return (
-    <Container style={{ position: 'relative' }}>
+    <Container
+      style={{
+        backgroundColor: theme.palette.common.white,
+      }}
+    >
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          width: '100%',
+          padding: 30,
+          marginTop: 110,
+        }}
+      >
+        <Typography variant={'h1'} color={'gray.dark'}>
+          가입을 진심으로
+          <br />
+          축하해요!
+        </Typography>
+        <Typography
+          variant={'subtitle1'}
+          color={'gray.dark'}
+          style={{ marginTop: 10 }}
+        >
+          앞으로 감성일기에서 추억을 쌓아가세요
+        </Typography>
+      </div>
       <div
         style={{
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          margin: 'auto 0',
+          position: 'absolute',
+          top: '50%',
         }}
       >
         <div
@@ -30,9 +58,6 @@ export default function SignUpComplete() {
           <Icons.HeartWhite width={35} height={33} />
         </div>
         <Icons.Coffee width={76} height={53} />
-        <Typography.h2 style={{ color: '#FFF' }}>
-          가입을 축하해요!
-        </Typography.h2>
       </div>
 
       <div
@@ -40,6 +65,7 @@ export default function SignUpComplete() {
           position: 'absolute',
           bottom: 0,
           width: '100%',
+          maxWidth: 600,
           padding: '40px 30px',
         }}
       >
@@ -48,7 +74,9 @@ export default function SignUpComplete() {
           style={{ width: '100%' }}
           onClick={() => router.push('/')}
         >
-          기록하러 가기
+          <Typography variant={'label1'} color={'common.white'}>
+            기록하러 가기
+          </Typography>
         </Button>
       </div>
     </Container>

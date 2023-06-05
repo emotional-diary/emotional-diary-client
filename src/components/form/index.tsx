@@ -1,22 +1,13 @@
 import React from 'react';
 import router from 'next/router';
+import axios from 'axios';
 
 import { Typography } from '@components/typography';
-import {
-  FormContainer,
-  Form,
-  Label,
-  Input,
-  Button,
-  IconButton,
-  FormErrorMessage,
-  HrText,
-  GenderButton,
-  GenderRadioButton,
-} from './style';
-import { Timer as EmailAuthTimer } from './timer';
-import axios from 'axios';
 import { useUserStore } from '@store/index';
+
+import { FormContainer, Form, Label, Input, Button, IconButton } from './style';
+import { Timer as EmailAuthTimer } from './timer';
+import * as Inputs from './input';
 
 const LoginForm = () => {
   const [user, setUser] = React.useState<{ email: string; password: string }>({
@@ -145,7 +136,7 @@ const LoginForm = () => {
           flexDirection: 'column',
           justifyContent: 'center',
           alignItems: 'center',
-          height: '200px',
+          height: '400px',
           margin: '20px 0px',
         }}
       >
@@ -155,20 +146,28 @@ const LoginForm = () => {
           width={42}
           height={29}
         />
-        <Typography.h2
+        <Typography
+          variant={'h1'}
           style={{
-            fontWeight: 300,
-            color: '#FFF',
+            marginTop: '10px',
+          }}
+          color={'common.white'}
+        >
+          감성일기
+        </Typography>
+        <Typography
+          variant={'subtitle1'}
+          style={{
             marginTop: '10px',
             marginBottom: '0px',
           }}
+          color={'common.white'}
         >
-          감성일기
-        </Typography.h2>
+          서비스 이용을 위해 로그인해주세요
+        </Typography>
       </div>
       <FormContainer style={{ borderRadius: '30px 30px 0px 0px' }}>
         <Form>
-          <Label htmlFor="email">나의 이메일</Label>
           <Input
             id="email"
             type="email"
@@ -176,14 +175,22 @@ const LoginForm = () => {
             placeholder="이메일을 입력해 주세요"
             onChange={handleUserChange}
             maxLength={254}
+            style={{ marginBottom: '20px' }}
           />
           {validation.email.message && (
-            <FormErrorMessage style={{ color: 'red', marginBottom: '8px' }}>
+            <Typography
+              variant={'body4'}
+              color={'error.main'}
+              style={{
+                marginBottom: '10px',
+                marginTop: '-10px',
+                paddingLeft: '10px',
+              }}
+            >
               {validation.email.message}
-            </FormErrorMessage>
+            </Typography>
           )}
 
-          <Label htmlFor="password">비밀번호</Label>
           <Input
             id="password"
             type="password"
@@ -193,17 +200,24 @@ const LoginForm = () => {
             maxLength={128}
           />
           {validation.password.message && (
-            <FormErrorMessage style={{ color: 'red', marginBottom: '8px' }}>
+            <Typography
+              variant={'body4'}
+              color={'error.main'}
+              style={{ marginBottom: '10px', paddingLeft: '10px' }}
+            >
               {validation.password.message}
-            </FormErrorMessage>
+            </Typography>
           )}
 
           <Button
             type="submit"
-            style={{ marginTop: '20px' }}
+            color={'secondary'}
+            style={{ marginTop: '10px' }}
             onClick={handleLogin}
           >
-            로그인
+            <Typography variant={'label1'} color={'common.white'}>
+              로그인
+            </Typography>
           </Button>
 
           <div
@@ -214,27 +228,29 @@ const LoginForm = () => {
               marginTop: '20px',
             }}
           >
-            <Typography.body2
+            <Typography
+              variant={'caption1'}
+              color={'gray.main'}
               style={{
-                color: 'gray',
                 cursor: 'pointer',
                 borderBottom: '1px solid #A6A6A6',
               }}
               onClick={() => console.log('비밀번호 찾기')}
             >
               비밀번호를 잊으셨나요?
-            </Typography.body2>
+            </Typography>
 
-            <Typography.body2
+            <Typography
+              variant={'caption1'}
+              color={'gray.main'}
               style={{
-                color: 'gray',
                 cursor: 'pointer',
                 borderBottom: '1px solid #A6A6A6',
               }}
               onClick={() => router.push('/terms')}
             >
               회원가입
-            </Typography.body2>
+            </Typography>
           </div>
 
           <div
@@ -246,7 +262,13 @@ const LoginForm = () => {
               alignItems: 'center',
             }}
           >
-            <HrText>또는</HrText>
+            <Typography
+              variant={'caption1'}
+              color={'gray.main'}
+              style={{ margin: '12px 0' }}
+            >
+              간편 로그인
+            </Typography>
             <IconButton onClick={handleSocialLogin('kakao')}>
               <img
                 src={'/images/kakao_login.png'}
@@ -262,7 +284,7 @@ const LoginForm = () => {
   );
 };
 
-const SignUpForm = ({ social }: { social?: false | Social }) => {
+const SignUpForm = ({ social }: { social?: Social }) => {
   const { user, setUser } = useUserStore();
   const [joinData, setJoinData] = React.useState<JoinUser>({
     nickname: '',
@@ -277,7 +299,6 @@ const SignUpForm = ({ social }: { social?: false | Social }) => {
     code: string;
     reset: boolean;
   }>({ level: 0, code: '', reset: false });
-  const [terms, setTerms] = React.useState<boolean>(false);
 
   const [validation, setValidation] = React.useState<UserValidation>({
     nickname: { status: false, message: '' },
@@ -622,66 +643,73 @@ const SignUpForm = ({ social }: { social?: false | Social }) => {
     });
   };
 
-  const handleTerms = () => {
-    setTerms(!terms);
-  };
-
   if (social === 'kakao') {
     return (
-      <FormContainer style={{ minHeight: '100vh' }}>
-        <img src={'/images/icons/coffee_bean.png'} />
-        <Typography.h3 style={{ marginTop: 10 }}>간편 회원 가입</Typography.h3>
+      <FormContainer style={{ alignItems: 'flex-start', paddingTop: 0 }}>
+        {/* <img src={'/images/icons/coffee_bean.png'} /> */}
+        <Typography variant={'subtitle1'}>회원가입</Typography>
+        <Typography variant={'h1'} style={{ marginTop: 10, marginBottom: 20 }}>
+          회원 정보를
+          <br />
+          입력해주세요
+        </Typography>
 
-        <Form style={{ flexGrow: 1 }}>
-          <Label htmlFor="nickname">나의 이름</Label>
-          <Input
-            type="text"
-            id="nickname"
-            name="nickname"
-            placeholder="성을 제외하고 이름만 적어주세요!"
-            value={joinData.nickname}
-            onChange={e => {
-              if (!/^[가-힣ㄱ-ㅎㅏ-ㅣa-zA-Z]*$/.test(e.target.value)) {
-                return;
-              }
-              handleUserChange(e);
-            }}
+        <Form>
+          <Inputs.Nickname
+            nickname={joinData?.nickname}
+            onChange={handleUserChange}
             onBlur={handleUserBlur}
-            maxLength={16}
           />
           {validation.nickname.message && (
-            <FormErrorMessage style={{ color: 'red', marginBottom: '8px' }}>
+            <Typography
+              variant={'body4'}
+              color={'error.main'}
+              style={{ marginBottom: '10px', paddingLeft: '10px' }}
+            >
               {validation.nickname.message}
-            </FormErrorMessage>
+            </Typography>
           )}
 
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'flex-end',
-              flexGrow: 1,
-            }}
+          <Inputs.Gender
+            gender={joinData?.gender}
+            onChange={handleUserChange}
+          />
+          <Inputs.Birthday
+            birthday={joinData?.birthday}
+            onChange={handleUserChange}
+          />
+
+          <Button
+            color={'secondary'}
+            style={{ width: '100%', marginTop: 'auto' }}
+            onClick={handleSignUp}
+            disabled={joinData.nickname === ''}
           >
-            <Button
-              style={{ width: '100%', marginTop: 10 }}
-              onClick={handleSignUp}
-              disabled={joinData.nickname === ''}
-            >
+            <Typography variant={'label1'} color={'common.white'}>
               가입하기
-            </Button>
-          </div>
+            </Typography>
+          </Button>
         </Form>
       </FormContainer>
     );
   }
 
   return (
-    <FormContainer style={{ minHeight: '100vh' }}>
-      <img src={'/images/icons/coffee_bean.png'} />
-      <Typography.h3 style={{ marginTop: 10 }}>간편 회원 가입</Typography.h3>
+    <FormContainer style={{ alignItems: 'flex-start', paddingTop: 0 }}>
+      {/* <img src={'/images/icons/coffee_bean.png'} /> */}
+      <Typography variant={'subtitle1'}>회원가입</Typography>
+      <Typography variant={'h1'} style={{ marginTop: 10, marginBottom: 20 }}>
+        회원 정보를
+        <br />
+        입력해주세요
+      </Typography>
 
       <Form>
-        <Label htmlFor="nickname">나의 이름</Label>
+        <Label htmlFor="nickname">
+          <Typography variant={'subtitle3'} color={'gray.dark'}>
+            나의 이름
+          </Typography>
+        </Label>
         <Input
           type="text"
           id="nickname"
@@ -698,12 +726,20 @@ const SignUpForm = ({ social }: { social?: false | Social }) => {
           maxLength={16}
         />
         {validation.nickname.message && (
-          <FormErrorMessage style={{ color: 'red', marginBottom: '8px' }}>
+          <Typography
+            variant={'body4'}
+            color={'error.main'}
+            style={{ marginBottom: '10px', paddingLeft: '10px' }}
+          >
             {validation.nickname.message}
-          </FormErrorMessage>
+          </Typography>
         )}
 
-        <Label htmlFor="email">나의 이메일</Label>
+        <Label htmlFor="email">
+          <Typography variant={'subtitle3'} color={'gray.dark'}>
+            나의 이메일
+          </Typography>
+        </Label>
         <div
           style={{
             display: 'flex',
@@ -733,7 +769,8 @@ const SignUpForm = ({ social }: { social?: false | Social }) => {
               maxLength={254}
             />
             <Button
-              type="button"
+              type={'button'}
+              color={'secondary'}
               style={{
                 height: 35,
                 position: 'absolute',
@@ -744,18 +781,20 @@ const SignUpForm = ({ social }: { social?: false | Social }) => {
               }}
               onClick={() => handleEmailAuth()}
             >
-              <Typography.body2>
+              <Typography variant={'label3'} color={'common.white'}>
                 {(emailAuth.level === 0 || emailAuth.level === 2) &&
                   '이메일 인증'}
                 {emailAuth.level === 1 && '이메일 재전송'}
-              </Typography.body2>
+              </Typography>
             </Button>
           </div>
 
           {emailAuth.level === 1 && (
             <>
-              <Label htmlFor="emailAuthCode" style={{ marginTop: 20 }}>
-                인증코드
+              <Label htmlFor="emailAuthCode">
+                <Typography variant={'subtitle3'} color={'gray.dark'}>
+                  인증코드
+                </Typography>
               </Label>
               <div style={{ position: 'relative' }}>
                 <Input
@@ -771,7 +810,8 @@ const SignUpForm = ({ social }: { social?: false | Social }) => {
                   maxLength={8}
                 />
                 <Button
-                  type="button"
+                  type={'button'}
+                  color={'secondary'}
                   style={{
                     height: 35,
                     position: 'absolute',
@@ -783,7 +823,9 @@ const SignUpForm = ({ social }: { social?: false | Social }) => {
                   onClick={() => handleEmailAuthCheck()}
                   disabled={emailAuth.code.length < 6}
                 >
-                  <Typography.body2>인증코드 확인</Typography.body2>
+                  <Typography variant={'label3'} color={'common.white'}>
+                    인증코드 확인
+                  </Typography>
                 </Button>
               </div>
 
@@ -796,12 +838,20 @@ const SignUpForm = ({ social }: { social?: false | Social }) => {
           )}
         </div>
         {validation.email.message && (
-          <FormErrorMessage style={{ color: 'red', marginBottom: '8px' }}>
+          <Typography
+            variant={'body4'}
+            color={'error.main'}
+            style={{ marginBottom: '10px', paddingLeft: '10px' }}
+          >
             {validation.email.message}
-          </FormErrorMessage>
+          </Typography>
         )}
 
-        <Label htmlFor="password">비밀번호</Label>
+        <Label htmlFor="password">
+          <Typography variant={'subtitle3'} color={'gray.dark'}>
+            비밀번호
+          </Typography>
+        </Label>
         <Input
           type="password"
           id="password"
@@ -813,76 +863,54 @@ const SignUpForm = ({ social }: { social?: false | Social }) => {
           maxLength={128}
         />
         {validation.password.message && (
-          <FormErrorMessage style={{ color: 'red', marginBottom: '8px' }}>
+          <Typography
+            variant={'body4'}
+            color={'error.main'}
+            style={{ marginBottom: '10px', paddingLeft: '10px' }}
+          >
             {validation.password.message}
-          </FormErrorMessage>
+          </Typography>
         )}
 
-        <Label htmlFor="passwordCheck">비밀번호 입력 확인</Label>
+        <Label htmlFor="passwordCheck">
+          <Typography variant={'subtitle3'} color={'gray.dark'}>
+            비밀번호 확인
+          </Typography>
+        </Label>
         <Input
           type="password"
           id="passwordCheck"
           name="passwordCheck"
-          placeholder="위와 동일한 비밀번호를 입력해주세요!"
+          placeholder="입력한 비밀번호와 동일하게 입력해주세요!"
           value={passwordCheck}
           onChange={handlePasswordCheckChange}
           onBlur={handleUserBlur}
           maxLength={128}
         />
         {validation.passwordCheck.message && (
-          <FormErrorMessage style={{ color: 'red', marginBottom: '8px' }}>
+          <Typography
+            variant={'body4'}
+            color={'error.main'}
+            style={{ marginBottom: '10px', paddingLeft: '10px' }}
+          >
             {validation.passwordCheck.message}
-          </FormErrorMessage>
+          </Typography>
         )}
 
-        <Label htmlFor="gender">나의 성별(선택)</Label>
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            marginBottom: 10,
-          }}
-        >
-          <GenderButton selected={joinData.gender === 'male'}>
-            <GenderRadioButton
-              type="radio"
-              name="gender"
-              value="male"
-              checked={joinData.gender === 'male'}
-              onChange={handleUserChange}
-            />
-            남자
-          </GenderButton>
-          <GenderButton selected={joinData.gender === 'female'}>
-            <GenderRadioButton
-              type="radio"
-              name="gender"
-              value="female"
-              checked={joinData.gender === 'female'}
-              onChange={handleUserChange}
-            />
-            여자
-          </GenderButton>
-        </div>
-
-        <Label htmlFor="birthday">내가 태어난날(선택)</Label>
-        <Input
-          type="birthday"
-          id="birthday"
-          name="birthday"
-          placeholder="6자리로 입력해주세요! 예)961024"
-          value={joinData.birthday}
+        <Inputs.Gender gender={joinData?.gender} onChange={handleUserChange} />
+        <Inputs.Birthday
+          birthday={joinData?.birthday}
           onChange={handleUserChange}
-          maxLength={6}
         />
 
         <Button
-          style={{
-            marginTop: '30px',
-          }}
+          color={'secondary'}
+          style={{ marginTop: '20px' }}
           onClick={handleSignUp}
         >
-          가입하기
+          <Typography variant={'label1'} color={'common.white'}>
+            가입하기
+          </Typography>
         </Button>
       </Form>
     </FormContainer>
