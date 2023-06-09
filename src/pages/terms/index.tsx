@@ -7,7 +7,7 @@ import { Typography } from '@components/typography';
 import * as Icons from '@components/icons';
 import { Modal } from '@components/modal';
 import { theme } from 'src/theme';
-import { hexToRgb } from '@modules/index';
+import { hexToRgba } from '@modules/index';
 
 const loremIpsum = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
   malesuada lorem maximus mauris scelerisque, at rutrum nulla
@@ -74,7 +74,7 @@ export default function Terms() {
             padding: '20px 24px',
             backgroundColor:
               checked.privacy && checked.terms
-                ? hexToRgb(theme.palette.tertiary.main, 0.1)
+                ? hexToRgba(theme.palette.tertiary.main, 0.1)
                 : theme.palette.gray.light,
           }}
         >
