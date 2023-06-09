@@ -20,14 +20,15 @@ const StyledText = styled.div<TypographyProps>`
   margin: 0;
 `;
 
+const Div = styled(StyledText)``;
+const Span = styled(StyledText).attrs({ as: 'span' })``;
+const P = styled(StyledText).attrs({ as: 'p' })``;
 const H1 = styled(StyledText).attrs({ as: 'h1' })``;
 const H2 = styled(StyledText).attrs({ as: 'h2' })``;
 const H3 = styled(StyledText).attrs({ as: 'h3' })``;
 const H4 = styled(StyledText).attrs({ as: 'h4' })``;
 const H5 = styled(StyledText).attrs({ as: 'h5' })``;
 const H6 = styled(StyledText).attrs({ as: 'h6' })``;
-const Others = (component: React.ElementType) =>
-  styled(StyledText).attrs({ as: component })``;
 
 const Typography = ({
   component = 'div',
@@ -37,7 +38,7 @@ const Typography = ({
   onClick,
   children,
 }: {
-  component?: React.ElementType;
+  component?: 'div' | 'span' | 'p';
   variant?: TypographyProps['variant'];
   color?: string;
   style?: React.CSSProperties;
@@ -51,11 +52,14 @@ const Typography = ({
     h4: H4,
     h5: H5,
     h6: H6,
+    div: Div,
+    span: Span,
+    p: P,
   };
 
   const Component =
     components[variant as 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6'] ||
-    Others(component);
+    components[component];
 
   return (
     <Component variant={variant} color={color} style={style} onClick={onClick}>
