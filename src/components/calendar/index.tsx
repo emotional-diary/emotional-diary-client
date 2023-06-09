@@ -4,6 +4,8 @@ import DatePicker, { registerLocale } from 'react-datepicker';
 import { ko } from 'date-fns/locale';
 
 import { Typography } from '@components/typography';
+import { hexToRgba } from '@modules/index';
+import { useCalendarStore } from '@store/index';
 
 registerLocale('ko', ko);
 
@@ -46,8 +48,9 @@ const StyledCalendarContainer = styled.div`
     }
     // 선택된 날짜
     .react-datepicker__day--selected {
-      background-color: ${props => props.theme.palette.primary.main};
-      /* border-radius: 50%; */
+      background-color: ${({ theme }) =>
+        hexToRgba(theme.palette.secondary.light, 0.15)};
+      border-radius: 5px;
     }
   }
 `;
@@ -69,17 +72,29 @@ const MonthArrowButton = styled.button`
   width: 26px;
   height: 26px;
   text-indent: -999em;
+
+  .react-datepicker__navigation-icon::before {
+    border-color: #b2b2b2;
+    border-width: 2px 2px 0 0;
+  }
 `;
 
 export const Calendar = () => {
-  const [startDate, setStartDate] = React.useState<Date | null>(new Date());
+  const {
+    calendar: { selectedDate },
+    setCalendar,
+  } = useCalendarStore();
+
+  React.useEffect(() => {
+    setCalendar({ selectedDate: new Date() });
+  }, []);
 
   return (
     <div style={{ width: '100%' }}>
       <DatePicker
         inline
-        selected={startDate}
-        onChange={date => setStartDate(date)}
+        selected={selectedDate}
+        onChange={date => setCalendar({ selectedDate: date })}
         calendarContainer={({ children }) => {
           return <StyledCalendarContainer>{children}</StyledCalendarContainer>;
         }}
@@ -135,14 +150,15 @@ export const Calendar = () => {
                 alignItems: 'center',
                 width: '100%',
                 height: '100%',
-                padding: '10px 0px',
+                padding: '6px 0px 18px',
               }}
             >
               <Typography
                 variant={'subtitle3'}
-                // style={{
-                //   color: date?.getMonth() === 8 ? 'red' : 'inherit',
-                // }}
+                style={{
+                  fontWeight:
+                    selectedDate?.getDate() === day ? 'bold' : 'normal',
+                }}
               >
                 {day}
               </Typography>

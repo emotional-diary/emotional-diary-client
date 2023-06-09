@@ -14,6 +14,14 @@ export const useUserStore = create<{
   setUser: (user: User) => set({ user }),
 }));
 
+export const useCalendarStore = create<{
+  calendar: Calendar;
+  setCalendar: (calendar: Calendar) => void;
+}>(set => ({
+  calendar: { selectedDate: new Date() } as Calendar,
+  setCalendar: (calendar: Calendar) => set({ calendar }),
+}));
+
 // const useStore = create<State>(set => ({
 //   count: 0,
 //   inc: () => set(state => ({ count: state.count + 1 })),

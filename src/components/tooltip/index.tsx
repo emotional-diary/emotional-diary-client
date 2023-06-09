@@ -17,7 +17,7 @@ const StyledTooltip = styled.div`
   position: absolute;
   width: auto; /* 가변적인 가로 사이즈를 적용하기 위해 'auto'로 설정합니다. */
   padding: 8px 10px;
-  background-color: ${({ theme }) => theme.palette.secondary.main};
+  background-color: ${({ theme }) => theme.palette.secondary.light};
   color: #fff;
   border-radius: 4px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
@@ -30,7 +30,7 @@ const Arrow = styled.div`
   position: absolute;
   width: 8px;
   height: 8px;
-  background-color: ${({ theme }) => theme.palette.secondary.main};
+  background-color: ${({ theme }) => theme.palette.secondary.light};
 `;
 
 export default function Tooltip({ children, text, anchor = 'left' }: Props) {

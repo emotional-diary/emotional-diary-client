@@ -1,18 +1,18 @@
 import React from 'react';
 import { GetServerSideProps } from 'next';
 import styled from 'styled-components';
-import DatePicker, { registerLocale } from 'react-datepicker';
-import ko from 'date-fns/locale/ko';
 
-import { Container, Main, Footer, Header } from '@components/layout';
+import { Container } from '@components/layout';
 import { Typography } from '@components/typography';
 import * as Icons from '@components/icons';
-import { IconButton } from '@components/form/style';
-import { useUserStore } from '../store';
+import { Button, IconButton } from '@components/form/style';
+import { Calendar } from '@components/calendar';
+import Tooltip from '@components/tooltip';
+import { Card } from '@components/styled';
 
+import { theme } from 'src/theme';
+import { useCalendarStore, useUserStore } from '../store';
 import 'react-datepicker/dist/react-datepicker.css';
-
-registerLocale('ko', ko);
 
 interface Props {
   profile: {
@@ -20,33 +20,40 @@ interface Props {
   };
 }
 
+// top background
+const StyledTopBackground = styled.div`
+  position: absolute;
+  width: 100%;
+  height: 100px;
+  background-color: ${props => props.theme.palette.primary.main};
+`;
+
 const MessageOfToday = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 12px 16px;
-  margin-right: 10px;
-  background-color: #000;
-  color: #fff;
-  border-radius: 0px 10px 10px 0px;
+  width: 100%;
+  padding: 14px 16px;
+  background-color: #fff;
+  border-radius: 15px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  z-index: 1;
 `;
 
-const MonthArrowButton = styled.button`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  padding: 0;
-  margin-top: -3px;
-  border: none;
-  width: 32px;
-  height: 32px;
-  text-indent: -999em;
+const BottomFixedLayout = styled.div`
+  position: absolute;
+  bottom: 60px;
+  right: 30px;
 `;
+
+const days = ['일', '월', '화', '수', '목', '금', '토'];
 
 export default function Home({ ...props }: Props) {
   const { user, setUser } = useUserStore();
-  const [startDate, setStartDate] = React.useState<Date | null>(new Date());
+  const {
+    calendar: { selectedDate },
+    setCalendar,
+  } = useCalendarStore();
 
   if (!user?.nickname) {
     setUser({
@@ -58,109 +65,89 @@ export default function Home({ ...props }: Props) {
   console.log('user', user);
 
   return (
-    <Container>
-      <Header>
-        <MessageOfToday>
-          <Typography>
-            {user.nickname ?? props.profile.nickname}님 오늘은 어떤 하루였나요?
+    <Container
+      headerProps={{
+        title: '감성일기',
+        bgcolor: theme.palette.primary.main,
+      }}
+      bodyProps={{
+        style: {
+          backgroundColor: theme.palette.common.white,
+          padding: '0 30px 30px 30px',
+        },
+      }}
+    >
+      <StyledTopBackground />
+
+      <MessageOfToday>
+        <Typography variant={'subtitle2'} color={'gray.dark'}>
+          <Typography
+            component={'span'}
+            variant={'subtitle2'}
+            color={'secondary.light'}
+            style={{ marginRight: '4px' }}
+          >
+            {user.nickname ?? props.profile.nickname}님
           </Typography>
-        </MessageOfToday>
+          오늘은 어떤 하루였나요?
+        </Typography>
+      </MessageOfToday>
 
-        <IconButton
-          style={{
-            marginLeft: 'auto',
-            marginRight: '20px',
-          }}
-        >
-          <Icons.User width={30} height={30} />
-        </IconButton>
-      </Header>
+      <Calendar />
 
-      <div style={{ width: '100%' }}>
-        <DatePicker
-          inline
-          selected={startDate}
-          onChange={date => setStartDate(date)}
-          calendarContainer={({ children }) => {
-            return (
-              <div
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'center',
-                  position: 'relative',
-                  backgroundColor: '#FFF',
-                  margin: '20px 40px',
-                }}
+      {selectedDate && (
+        <Card style={{ marginTop: '15px' }}>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <Typography
+                variant={'h4'}
+                color={'gray.dark'}
+                style={{ marginRight: '10px' }}
               >
-                {children}
-              </div>
-            );
-          }}
-          renderCustomHeader={({ monthDate, decreaseMonth, increaseMonth }) => (
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}
-            >
-              <MonthArrowButton
-                aria-label="Previous Month"
-                onClick={decreaseMonth}
-              >
-                <span
-                  className={
-                    'react-datepicker__navigation-icon react-datepicker__navigation-icon--previous'
-                  }
-                >
-                  {'<'}
-                </span>
-              </MonthArrowButton>
-
-              <Typography>
-                {monthDate.toLocaleString('en-US', {
-                  month: 'long',
-                  year: 'numeric',
-                })}
+                {`${selectedDate.getMonth() + 1}월 ${selectedDate.getDate()}일`}
               </Typography>
-
-              <MonthArrowButton aria-label="Next Month" onClick={increaseMonth}>
-                <span
-                  className={
-                    'react-datepicker__navigation-icon react-datepicker__navigation-icon--next'
-                  }
-                >
-                  {'>'}
-                </span>
-              </MonthArrowButton>
+              {/* <Icons.Written width={15} height={15} /> */}
             </div>
-          )}
-          renderDayContents={(day, date) => {
-            return (
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  width: '100%',
-                  height: '100%',
-                  padding: '8px 10px',
-                }}
-              >
-                <Typography
-                  style={{
-                    color: date?.getMonth() === 8 ? 'red' : 'inherit',
-                  }}
-                >
-                  {day}
-                </Typography>
-              </div>
-            );
-          }}
-          locale={ko}
-        />
-      </div>
+
+            <Button
+              color={'secondary'}
+              size={'small'}
+              style={{ height: 'auto', borderRadius: '15px' }}
+              onClick={() => alert('준비중입니다.')}
+            >
+              <Typography variant={'label3'} color={'background.paper'}>
+                작성하기
+              </Typography>
+            </Button>
+          </div>
+
+          <Typography variant={'body4'} color={'gray.dark'}>
+            {days[selectedDate.getDay()]}요일
+          </Typography>
+
+          <Typography
+            variant={'body4'}
+            color={'gray.dark'}
+            style={{ lineHeight: '22px', marginTop: '10px' }}
+          >
+            작성된 일기가 없어요
+          </Typography>
+        </Card>
+      )}
+
+      <BottomFixedLayout>
+        <Tooltip anchor={'left'} text={'오늘도 나의 하루를 기록해보세요'}>
+          <IconButton onClick={() => alert('준비중입니다.')}>
+            <Icons.CircleMenu />
+          </IconButton>
+        </Tooltip>
+      </BottomFixedLayout>
     </Container>
   );
 }

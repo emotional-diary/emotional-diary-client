@@ -20,3 +20,12 @@ type UserValidation = Record<
 >;
 
 type Social = 'kakao' | 'naver' | 'google';
+
+type Calendar = {
+  selectedDate: Date | null;
+  // id: number;
+  // title: string;
+  // date: string;
+  // startTime: string;
+  // endTime: string;
+};
