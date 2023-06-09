@@ -18,20 +18,19 @@ export default function SignUpComplete() {
         style={{
           display: 'flex',
           flexDirection: 'column',
+          alignItems: 'center',
           width: '100%',
           padding: 30,
           marginTop: 110,
         }}
       >
-        <Typography variant={'h1'} color={'gray.dark'}>
-          가입을 진심으로
-          <br />
-          축하해요!
+        <Typography variant={'h3'} color={'gray.dark'}>
+          가입을 진심으로 축하해요!
         </Typography>
         <Typography
           variant={'subtitle1'}
           color={'gray.dark'}
-          style={{ marginTop: 10 }}
+          style={{ marginTop: 16 }}
         >
           앞으로 감성일기에서 추억을 쌓아가세요
         </Typography>
@@ -42,7 +41,7 @@ export default function SignUpComplete() {
           flexDirection: 'column',
           alignItems: 'center',
           position: 'absolute',
-          top: '50%',
+          top: '35%',
         }}
       >
         <div

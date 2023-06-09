@@ -6,6 +6,8 @@ import { Button, FormContainer, IconButton } from '@components/form/style';
 import { Typography } from '@components/typography';
 import * as Icons from '@components/icons';
 import { Modal } from '@components/modal';
+import { theme } from 'src/theme';
+import { hexToRgb } from '@modules/index';
 
 const loremIpsum = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
   malesuada lorem maximus mauris scelerisque, at rutrum nulla
@@ -43,18 +45,14 @@ export default function Terms() {
         content={modal.content}
         onClose={() => setModal({ ...modal, open: false })}
       />
-      <FormContainer style={{ alignItems: 'flex-start', paddingTop: 0 }}>
-        {/* <img src={'/images/icons/coffee_bean.png'} /> */}
-        <Typography variant={'subtitle1'}>회원가입</Typography>
-        <Typography variant={'h1'} style={{ marginTop: 10, marginBottom: 20 }}>
-          필수 이용약관에
-          <br />
-          동의해주세요
+      <FormContainer style={{ paddingTop: 0 }}>
+        <Typography variant={'h3'} style={{ marginBottom: 30 }}>
+          필수 이용약관에 동의해주세요
         </Typography>
 
         <Button
           size={'small'}
-          color={checked.privacy && checked.terms ? 'primary' : 'gray'}
+          // color={checked.privacy && checked.terms ? 'primary' : 'gray'}
           onClick={() =>
             setChecked(() => {
               if (checked.privacy && checked.terms) {
@@ -74,6 +72,10 @@ export default function Terms() {
             display: 'flex',
             alignItems: 'center',
             padding: '20px 24px',
+            backgroundColor:
+              checked.privacy && checked.terms
+                ? hexToRgb(theme.palette.tertiary.main, 0.1)
+                : theme.palette.gray.light,
           }}
         >
           {checked.privacy && checked.terms ? (
@@ -84,7 +86,7 @@ export default function Terms() {
           <Typography
             variant={'label2'}
             color={
-              checked.privacy && checked.terms ? 'common.white' : 'gray.main'
+              checked.privacy && checked.terms ? 'tertiary.main' : 'gray.main'
             }
             style={{ marginLeft: 10 }}
           >
@@ -115,8 +117,8 @@ export default function Terms() {
               {checked.terms ? <Icons.Check /> : <Icons.UnCheck />}
 
               <Typography
-                variant={'label2'}
-                color={checked.terms ? 'primary.main' : 'gray.main'}
+                variant={'body4'}
+                color={checked.terms ? 'tertiary.main' : 'gray.main'}
                 style={{ marginLeft: 10 }}
               >
                 서비스 이용약관(필수)
@@ -153,8 +155,8 @@ export default function Terms() {
               {checked.privacy ? <Icons.Check /> : <Icons.UnCheck />}
 
               <Typography
-                variant={'label2'}
-                color={checked.privacy ? 'primary.main' : 'gray.main'}
+                variant={'body4'}
+                color={checked.privacy ? 'tertiary.main' : 'gray.main'}
                 style={{ marginLeft: 10 }}
               >
                 개인정보 처리방침(필수)
