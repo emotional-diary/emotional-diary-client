@@ -1,6 +1,7 @@
 interface Palette {
   primary: ColorVariant;
   secondary: ColorVariant;
+  tertiary: ColorVariant;
   error: ColorVariant;
   warning: ColorVariant;
   info: ColorVariant;
@@ -49,5 +50,5 @@ interface TypographyProps {
 
 interface ButtonProps {
   size?: 'small' | 'medium' | 'large';
-  color?: 'primary' | 'secondary' | 'white' | 'gray';
+  color?: 'primary' | 'secondary' | 'tertiary' | 'white' | 'gray';
 }

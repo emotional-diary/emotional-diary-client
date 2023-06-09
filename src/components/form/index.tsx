@@ -141,10 +141,10 @@ const LoginForm = () => {
         }}
       >
         <img
-          src={'/images/icons/coffee_bean.png'}
-          alt={'coffee_bean'}
-          width={42}
-          height={29}
+          src={'/images/icons/coffee_main.png'}
+          alt={'coffee_main'}
+          width={41}
+          height={41}
         />
         <Typography
           variant={'h1'}
@@ -271,7 +271,7 @@ const LoginForm = () => {
             </Typography>
             <IconButton onClick={handleSocialLogin('kakao')}>
               <img
-                src={'/images/kakao_login.png'}
+                src={'/images/icons/kakao_login.png'}
                 alt={'kakao_login'}
                 width={'100%'}
                 height={'auto'}
@@ -645,13 +645,9 @@ const SignUpForm = ({ social }: { social?: Social }) => {
 
   if (social === 'kakao') {
     return (
-      <FormContainer style={{ alignItems: 'flex-start', paddingTop: 0 }}>
-        {/* <img src={'/images/icons/coffee_bean.png'} /> */}
-        <Typography variant={'subtitle1'}>회원가입</Typography>
-        <Typography variant={'h1'} style={{ marginTop: 10, marginBottom: 20 }}>
-          회원 정보를
-          <br />
-          입력해주세요
+      <FormContainer style={{ paddingTop: 0 }}>
+        <Typography variant={'h3'} style={{ marginBottom: 30 }}>
+          회원 정보를 입력해주세요
         </Typography>
 
         <Form>
@@ -695,13 +691,9 @@ const SignUpForm = ({ social }: { social?: Social }) => {
   }
 
   return (
-    <FormContainer style={{ alignItems: 'flex-start', paddingTop: 0 }}>
-      {/* <img src={'/images/icons/coffee_bean.png'} /> */}
-      <Typography variant={'subtitle1'}>회원가입</Typography>
-      <Typography variant={'h1'} style={{ marginTop: 10, marginBottom: 20 }}>
-        회원 정보를
-        <br />
-        입력해주세요
+    <FormContainer style={{ paddingTop: 0 }}>
+      <Typography variant={'h3'} style={{ marginBottom: 30 }}>
+        회원 정보를 입력해주세요
       </Typography>
 
       <Form>
@@ -770,7 +762,7 @@ const SignUpForm = ({ social }: { social?: Social }) => {
             />
             <Button
               type={'button'}
-              color={'secondary'}
+              color={'tertiary'}
               style={{
                 height: 35,
                 position: 'absolute',
@@ -811,7 +803,7 @@ const SignUpForm = ({ social }: { social?: Social }) => {
                 />
                 <Button
                   type={'button'}
-                  color={'secondary'}
+                  color={'tertiary'}
                   style={{
                     height: 35,
                     position: 'absolute',

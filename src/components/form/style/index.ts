@@ -34,6 +34,11 @@ const getColorStyles = (color: ButtonProps['color'] = 'primary') => {
         background: ${({ theme }) => theme.palette.secondary.light};
         color: ${({ theme }) => theme.palette.common.white};
       `;
+    case 'tertiary':
+      return css`
+        background: ${({ theme }) => theme.palette.tertiary.main};
+        color: ${({ theme }) => theme.palette.common.white};
+      `;
     case 'white':
       return css`
         background: #fff;

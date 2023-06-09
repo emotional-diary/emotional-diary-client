@@ -204,21 +204,18 @@ export const Check = ({ width = 24, height = 24 }) => {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
-      <rect
-        x="3"
-        y="3"
-        width="18"
-        height="18"
-        rx="3"
-        fill="#2B625B"
+      <circle
+        cx="12"
+        cy="12"
+        r="10"
         fillOpacity="0.2"
-        stroke="#2B625B"
+        stroke="#73CAAB"
         strokeWidth="2"
         strokeLinejoin="round"
       />
       <path
         d="M8 11.5L11.3684 15L16 8"
-        stroke="#2B625B"
+        stroke="#73CAAB"
         strokeWidth="2"
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -236,12 +233,10 @@ export const UnCheck = ({ width = 24, height = 24 }) => {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
-      <rect
-        x="3"
-        y="3"
-        width="18"
-        height="18"
-        rx="3"
+      <circle
+        cx="12"
+        cy="12"
+        r="10"
         stroke="#A6A6A6"
         strokeWidth="2"
         strokeLinejoin="round"
@@ -253,6 +248,76 @@ export const UnCheck = ({ width = 24, height = 24 }) => {
         strokeLinecap="round"
         strokeLinejoin="round"
       />
+    </svg>
+  );
+};
+
+export const CircleMenu = ({ width = 62, height = 62 }) => {
+  return (
+    <svg
+      width={width}
+      height={height}
+      viewBox={`0 0 62 62`}
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <g filter="url(#filter0_d_450_61)">
+        <path
+          d="M60 31C60 47.0163 47.0163 60 31 60C14.9837 60 2 47.0163 2 31C2 14.9837 14.9837 2 31 2C47.0163 2 60 14.9837 60 31Z"
+          fill="white"
+          stroke="#FFB98E"
+          strokeWidth="2"
+        />
+        <path
+          fillRule="evenodd"
+          clipRule="evenodd"
+          d="M31 20.5C31.8284 20.5 32.5 21.1716 32.5 22L32.5 40C32.5 40.8284 31.8284 41.5 31 41.5C30.1716 41.5 29.5 40.8284 29.5 40L29.5 22C29.5 21.1716 30.1716 20.5 31 20.5Z"
+          fill="#FFB98E"
+        />
+        <path
+          fillRule="evenodd"
+          clipRule="evenodd"
+          d="M41.5 31C41.5 31.8284 40.8284 32.5 40 32.5L22 32.5C21.1716 32.5 20.5 31.8284 20.5 31C20.5 30.1716 21.1716 29.5 22 29.5L40 29.5C40.8284 29.5 41.5 30.1716 41.5 31Z"
+          fill="#FFB98E"
+        />
+      </g>
+      <defs>
+        <filter
+          id="filter0_d_450_61"
+          x="0"
+          y="0"
+          width="66"
+          height="66"
+          filterUnits="userSpaceOnUse"
+          colorInterpolationFilters="sRGB"
+        >
+          <feFlood floodOpacity="0" result="BackgroundImageFix" />
+          <feColorMatrix
+            in="SourceAlpha"
+            type="matrix"
+            values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+            result="hardAlpha"
+          />
+          <feOffset dx="2" dy="2" />
+          <feGaussianBlur stdDeviation="1.5" />
+          <feComposite in2="hardAlpha" operator="out" />
+          <feColorMatrix
+            type="matrix"
+            values="0 0 0 0 0.27451 0 0 0 0 0.254902 0 0 0 0 0.2 0 0 0 0.1 0"
+          />
+          <feBlend
+            mode="normal"
+            in2="BackgroundImageFix"
+            result="effect1_dropShadow_450_61"
+          />
+          <feBlend
+            mode="normal"
+            in="SourceGraphic"
+            in2="effect1_dropShadow_450_61"
+            result="shape"
+          />
+        </filter>
+      </defs>
     </svg>
   );
 };

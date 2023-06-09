@@ -10,6 +10,9 @@ export const palette = {
     light: '#FFB98E',
     dark: '#fbbc04',
   },
+  tertiary: {
+    main: '#73CAAB',
+  },
   error: {
     main: '#ea4335',
   },
@@ -23,7 +26,7 @@ export const palette = {
     main: '#34a853',
   },
   gray: {
-    main: '#A6A6A6',
+    main: '#BCBCBC',
     light: '#EDEDED',
     dark: '#575757',
   },

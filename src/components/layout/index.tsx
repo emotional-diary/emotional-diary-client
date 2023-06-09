@@ -37,6 +37,7 @@ const Main = styled.main`
   align-items: center;
   flex-grow: 1;
   width: 100%;
+  position: relative;
 `;
 
 const Footer = styled.footer`
