@@ -346,3 +346,38 @@ export const Written = ({ width = 20, height = 20 }) => {
     </svg>
   );
 };
+
+export const Arrow = ({
+  width = 11,
+  height = 20,
+  direction = 'bottom',
+}: {
+  width?: number;
+  height?: number;
+  direction?: 'top' | 'right' | 'bottom' | 'left';
+}) => {
+  const directions = {
+    left: 0,
+    top: 90,
+    right: 180,
+    bottom: 270,
+  };
+
+  return (
+    <svg
+      width={width}
+      height={height}
+      viewBox={`0 0 11 20`}
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      style={{ transform: `rotate(${directions[direction]}deg)` }}
+    >
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M10.7071 0.292893C10.3166 -0.0976311 9.68342 -0.0976311 9.29289 0.292893L0.292893 9.29289C-0.0976315 9.68342 -0.0976315 10.3166 0.292893 10.7071L9.29289 19.7071C9.68342 20.0976 10.3166 20.0976 10.7071 19.7071C11.0976 19.3166 11.0976 18.6834 10.7071 18.2929L2.41421 10L10.7071 1.70711C11.0976 1.31658 11.0976 0.683417 10.7071 0.292893Z"
+        fill="#575757"
+      />
+    </svg>
+  );
+};
