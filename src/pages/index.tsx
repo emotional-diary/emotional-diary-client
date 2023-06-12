@@ -1,5 +1,6 @@
 import React from 'react';
 import { GetServerSideProps } from 'next';
+import router from 'next/router';
 import styled from 'styled-components';
 
 import { Container } from '@components/layout';
@@ -54,11 +55,12 @@ export default function Home({ ...props }: Props) {
     calendar: { selectedDate },
     setCalendar,
   } = useCalendarStore();
+  const [isTooltipOpen, setIsTooltipOpen] = React.useState(true);
 
   if (!user?.nickname) {
     setUser({
       ...user,
-      nickname: props.profile.nickname,
+      nickname: props.profile?.nickname,
     });
   }
 
@@ -87,7 +89,7 @@ export default function Home({ ...props }: Props) {
             color={'secondary.light'}
             style={{ marginRight: '4px' }}
           >
-            {user.nickname ?? props.profile.nickname}님
+            {user.nickname ?? props.profile?.nickname}님
           </Typography>
           오늘은 어떤 하루였나요?
         </Typography>
@@ -142,8 +144,17 @@ export default function Home({ ...props }: Props) {
       )}
 
       <BottomFixedLayout>
-        <Tooltip anchor={'left'} text={'오늘도 나의 하루를 기록해보세요'}>
-          <IconButton onClick={() => alert('준비중입니다.')}>
+        <Tooltip
+          anchor={'left'}
+          open={isTooltipOpen}
+          text={'오늘도 나의 하루를 기록해보세요'}
+        >
+          <IconButton
+            onClick={() => {
+              setIsTooltipOpen(false);
+              router.push('/diary/new');
+            }}
+          >
             <Icons.CircleMenu />
           </IconButton>
         </Tooltip>
@@ -156,7 +167,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   const accessToken = req.cookies.accessToken;
   const nickname = decodeURIComponent(accessToken || '');
 
-  if (!accessToken) {
+  if (!accessToken || !nickname) {
     res.writeHead(302, { Location: '/login' });
     res.end();
   }

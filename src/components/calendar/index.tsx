@@ -89,6 +89,8 @@ export const Calendar = () => {
     setCalendar({ selectedDate: new Date() });
   }, []);
 
+  console.log(selectedDate);
+
   return (
     <div style={{ width: '100%' }}>
       <DatePicker
@@ -100,7 +102,7 @@ export const Calendar = () => {
         }}
         formatWeekDay={nameOfDay => {
           return (
-            <Typography variant={'h6'} color={'gray.dark'}>
+            <Typography variant={'subtitle2'} color={'gray.dark'}>
               {nameOfDay.substring(0, 1)}
             </Typography>
           );
@@ -154,7 +156,7 @@ export const Calendar = () => {
               }}
             >
               <Typography
-                variant={'subtitle3'}
+                variant={'subtitle2'}
                 style={{
                   fontWeight:
                     selectedDate?.getDate() === day ? 'bold' : 'normal',

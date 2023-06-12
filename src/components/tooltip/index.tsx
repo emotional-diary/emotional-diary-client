@@ -4,6 +4,7 @@ import styled from 'styled-components';
 
 type Props = {
   children: React.ReactNode;
+  open: boolean;
   text: string;
   anchor?: 'left' | 'right' | 'top' | 'bottom';
 };
@@ -22,7 +23,7 @@ const StyledTooltip = styled.div`
   border-radius: 4px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
   white-space: nowrap;
-  cursor: pointer;
+  /* cursor: pointer; */
   z-index: 9999;
 `;
 
@@ -33,12 +34,17 @@ const Arrow = styled.div`
   background-color: ${({ theme }) => theme.palette.secondary.light};
 `;
 
-export default function Tooltip({ children, text, anchor = 'left' }: Props) {
-  const [show, setShow] = React.useState(true);
+export default function Tooltip({
+  children,
+  open,
+  text,
+  anchor = 'left',
+}: Props) {
+  // const [open, setOpen] = React.useState(true);
 
-  const handleClick = () => {
-    setShow(false);
-  };
+  // const handleClick = () => {
+  //   setOpen(false);
+  // };
 
   const anchorStyle = {
     left: {
@@ -93,9 +99,9 @@ export default function Tooltip({ children, text, anchor = 'left' }: Props) {
   return (
     <ComponentWithTooltip>
       {children}
-      {show && (
+      {open && (
         <StyledTooltip
-          onClick={handleClick}
+          // onClick={handleClick}
           style={{
             ...anchorStyle[anchor],
           }}
