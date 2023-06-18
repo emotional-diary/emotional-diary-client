@@ -14,6 +14,7 @@ import { Card } from '@components/styled';
 import { theme } from 'src/theme';
 import { useCalendarStore, useUserStore } from '../store';
 import 'react-datepicker/dist/react-datepicker.css';
+import { DiaryCard } from '@components/card';
 
 interface Props {
   profile: {
@@ -47,22 +48,18 @@ const BottomFixedLayout = styled.div`
   right: 30px;
 `;
 
-const days = ['일', '월', '화', '수', '목', '금', '토'];
-
 export default function Home({ ...props }: Props) {
   const { user, setUser } = useUserStore();
-  const {
-    calendar: { selectedDate },
-    setCalendar,
-  } = useCalendarStore();
   const [isTooltipOpen, setIsTooltipOpen] = React.useState(true);
 
-  if (!user?.nickname) {
-    setUser({
-      ...user,
-      nickname: props.profile?.nickname,
-    });
-  }
+  React.useEffect(() => {
+    if (!user?.nickname) {
+      setUser({
+        ...user,
+        nickname: props.profile?.nickname,
+      });
+    }
+  }, [user]);
 
   console.log('user', user);
 
@@ -97,51 +94,7 @@ export default function Home({ ...props }: Props) {
 
       <Calendar />
 
-      {selectedDate && (
-        <Card style={{ marginTop: '15px' }}>
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-            }}
-          >
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-              <Typography
-                variant={'h4'}
-                color={'gray.dark'}
-                style={{ marginRight: '10px' }}
-              >
-                {`${selectedDate.getMonth() + 1}월 ${selectedDate.getDate()}일`}
-              </Typography>
-              {/* <Icons.Written width={15} height={15} /> */}
-            </div>
-
-            <Button
-              color={'secondary'}
-              size={'small'}
-              style={{ height: 'auto', borderRadius: '15px' }}
-              onClick={() => alert('준비중입니다.')}
-            >
-              <Typography variant={'label3'} color={'background.paper'}>
-                작성하기
-              </Typography>
-            </Button>
-          </div>
-
-          <Typography variant={'body4'} color={'gray.dark'}>
-            {days[selectedDate.getDay()]}요일
-          </Typography>
-
-          <Typography
-            variant={'body4'}
-            color={'gray.dark'}
-            style={{ lineHeight: '22px', marginTop: '10px' }}
-          >
-            작성된 일기가 없어요
-          </Typography>
-        </Card>
-      )}
+      <DiaryCard />
 
       <BottomFixedLayout>
         <Tooltip
