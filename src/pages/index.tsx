@@ -59,7 +59,7 @@ export default function Home({ ...props }: Props) {
         nickname: props.profile?.nickname,
       });
     }
-  }, [user]);
+  }, []);
 
   console.log('user', user);
 
@@ -105,7 +105,7 @@ export default function Home({ ...props }: Props) {
           <IconButton
             onClick={() => {
               setIsTooltipOpen(false);
-              router.push('/diary/new');
+              router.push('/diary/new?step=0');
             }}
           >
             <Icons.CircleMenu />

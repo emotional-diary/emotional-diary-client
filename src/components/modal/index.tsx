@@ -1,5 +1,6 @@
 import { Button } from '@components/form/style';
 import { Typography } from '@components/typography';
+import { theme } from 'src/theme';
 
 export const Modal = ({
   open,
@@ -57,6 +58,41 @@ export const Modal = ({
           확인
         </Button>
       </div>
+    </div>
+  );
+};
+
+export const LoadingModal = ({ open }: { open: boolean }) => {
+  return (
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        position: 'fixed',
+        top: 0,
+        left: open ? 0 : '100%',
+        width: '100%',
+        height: '100%',
+        textAlign: 'center',
+        zIndex: 100,
+        backgroundColor: theme.palette.common.white,
+        visibility: open ? 'visible' : 'hidden',
+        transition: 'all 0.5s ease',
+      }}
+    >
+      <img
+        src={'/images/icons/loading.png'}
+        alt={'loading'}
+        style={{ width: 90, height: 90 }}
+      />
+      <Typography variant={'h3'} color={'gray.dark'} style={{ marginTop: 30 }}>
+        작성한 일기를 <span style={{ color: '#35C591' }}>분석중</span>
+        이예요
+        <br />
+        잠시만 기다려주세요
+      </Typography>
     </div>
   );
 };
