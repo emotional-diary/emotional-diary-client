@@ -348,13 +348,15 @@ export const Written = ({ width = 20, height = 20 }) => {
 };
 
 export const Arrow = ({
-  width = 11,
+  width = 20,
   height = 20,
   direction = 'bottom',
+  color = '#575757',
 }: {
   width?: number;
   height?: number;
   direction?: 'top' | 'right' | 'bottom' | 'left';
+  color?: string;
 }) => {
   const directions = {
     left: 0,
@@ -367,7 +369,7 @@ export const Arrow = ({
     <svg
       width={width}
       height={height}
-      viewBox={`0 0 11 20`}
+      viewBox={`0 0 20 20`}
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       style={{ transform: `rotate(${directions[direction]}deg)` }}
@@ -375,8 +377,8 @@ export const Arrow = ({
       <path
         fillRule="evenodd"
         clipRule="evenodd"
-        d="M10.7071 0.292893C10.3166 -0.0976311 9.68342 -0.0976311 9.29289 0.292893L0.292893 9.29289C-0.0976315 9.68342 -0.0976315 10.3166 0.292893 10.7071L9.29289 19.7071C9.68342 20.0976 10.3166 20.0976 10.7071 19.7071C11.0976 19.3166 11.0976 18.6834 10.7071 18.2929L2.41421 10L10.7071 1.70711C11.0976 1.31658 11.0976 0.683417 10.7071 0.292893Z"
-        fill="#575757"
+        d="M14.7071 0.292893C14.3166 -0.0976311 13.6834 -0.0976311 13.2929 0.292893L4.29289 9.29289C3.90237 9.68342 3.90237 10.3166 4.29289 10.7071L13.2929 19.7071C13.6834 20.0976 14.3166 20.0976 14.7071 19.7071C15.0976 19.3166 15.0976 18.6834 14.7071 18.2929L6.41421 10L14.7071 1.70711C15.0976 1.31658 15.0976 0.683417 14.7071 0.292893Z"
+        fill={color}
       />
     </svg>
   );

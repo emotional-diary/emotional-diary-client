@@ -1,3 +1,4 @@
+import { hexToRgba } from '@modules/index';
 import styled, { css } from 'styled-components';
 
 const getSizeStyles = (size: ButtonProps['size'] = 'medium') => {
@@ -164,7 +165,7 @@ export const GenderButton = styled.label<{ selected: boolean }>`
   transition: all 0.2s ease-in-out;
   background-color: ${props =>
     props.selected
-      ? props.theme.palette.secondary.light
+      ? hexToRgba(props.theme.palette.tertiary.main, 0.1)
       : props.theme.palette.gray.light};
   border-radius: 50px;
   cursor: pointer;

@@ -89,7 +89,7 @@ export default function NewDiary() {
         color={'gray.dark'}
         style={{ marginTop: '10px', textAlign: 'center' }}
       >
-        {steps[step].title}
+        {steps[step]?.title}
       </Typography>
 
       {/* emotion list */}
@@ -144,7 +144,7 @@ export default function NewDiary() {
           onClick={handleNextStep}
         >
           <Typography variant={'subtitle1'} color={'common.white'}>
-            {steps[step].buttonName}
+            {steps[step]?.buttonName}
           </Typography>
         </Button>
       </div>

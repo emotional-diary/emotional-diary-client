@@ -666,10 +666,7 @@ const SignUpForm = ({ social }: { social?: Social }) => {
             </Typography>
           )}
 
-          <Inputs.Gender
-            gender={joinData?.gender}
-            onChange={handleUserChange}
-          />
+          <Inputs.Gender gender={joinData?.gender} setJoinData={setJoinData} />
           <Inputs.Birthday
             birthday={joinData?.birthday}
             onChange={handleUserChange}
@@ -889,7 +886,7 @@ const SignUpForm = ({ social }: { social?: Social }) => {
           </Typography>
         )}
 
-        <Inputs.Gender gender={joinData?.gender} onChange={handleUserChange} />
+        <Inputs.Gender gender={joinData?.gender} setJoinData={setJoinData} />
         <Inputs.Birthday
           birthday={joinData?.birthday}
           onChange={handleUserChange}

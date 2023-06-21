@@ -134,7 +134,12 @@ export default function Terms() {
                 })
               }
             >
-              <div>{'>'}</div>
+              <Icons.Arrow
+                width={15}
+                height={15}
+                direction={'right'}
+                color={'#D3D3D3'}
+              />
             </IconButton>
           </div>
 
@@ -172,7 +177,12 @@ export default function Terms() {
                 })
               }
             >
-              <div>{'>'}</div>
+              <Icons.Arrow
+                width={15}
+                height={15}
+                direction={'right'}
+                color={'#D3D3D3'}
+              />
             </IconButton>
           </div>
 

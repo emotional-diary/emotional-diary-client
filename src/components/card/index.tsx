@@ -39,7 +39,7 @@ export const DiaryCard = () => {
           color={'secondary'}
           size={'small'}
           style={{ height: 'auto', borderRadius: '15px' }}
-          onClick={() => router.push('/diary/new')}
+          onClick={() => router.push('/diary/new?step=0')}
         >
           <Typography variant={'label3'} color={'background.paper'}>
             작성하기

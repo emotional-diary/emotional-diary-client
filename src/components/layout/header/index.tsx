@@ -43,7 +43,7 @@ const DatepickerTitle = () => {
         {selectedDate.getDate()}일
       </Typography>
       <span style={{ marginLeft: '6px' }}>
-        <Icons.Arrow direction={'bottom'} width={5} height={9} />
+        <Icons.Arrow width={10} height={10} />
       </span>
     </div>
   );

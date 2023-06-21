@@ -54,32 +54,33 @@ const TextEditor = () => {
         value={text}
         onChange={(value: string) => setText(value)}
         modules={{
-          toolbar: [
-            [{ header: [1, 2, false] }],
-            ['bold', 'italic', 'underline', 'strike', 'blockquote'],
-            [
-              { align: [] },
-              { list: 'ordered' },
-              { list: 'bullet' },
-              { indent: '-1' },
-              { indent: '+1' },
-            ],
-            ['link', 'image'],
-          ],
+          toolbar: [['bold'], [{ align: [] }]],
+          // toolbar: [
+          //   [{ header: [1, 2, false] }],
+          //   ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+          //   [
+          //     { align: [] },
+          //     { list: 'ordered' },
+          //     { list: 'bullet' },
+          //     { indent: '-1' },
+          //     { indent: '+1' },
+          //   ],
+          //   ['link', 'image'],
+          // ],
         }}
         formats={[
-          'header',
           'bold',
-          'italic',
-          'underline',
-          'strike',
-          'blockquote',
-          'list',
-          'bullet',
-          'indent',
           'align',
-          'link',
-          'image',
+          // 'header',
+          // 'italic',
+          // 'underline',
+          // 'strike',
+          // 'blockquote',
+          // 'list',
+          // 'bullet',
+          // 'indent',
+          // 'link',
+          // 'image',
         ]}
         placeholder={'일기를 작성해주세요!'}
       />

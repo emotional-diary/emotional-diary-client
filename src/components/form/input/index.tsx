@@ -37,57 +37,64 @@ export const Nickname = ({
 
 export const Gender = ({
   gender,
-  onChange,
+  setJoinData,
 }: {
   gender: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-}) => (
-  <>
-    <Label htmlFor="gender">
-      <Typography variant={'subtitle3'} color={'gray.dark'}>
-        나의 성별(선택)
-      </Typography>
-    </Label>
-    <div
-      style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        marginBottom: 10,
-      }}
-    >
-      <GenderButton selected={gender === 'male'}>
-        <GenderRadioButton
-          type="radio"
-          name="gender"
-          value="male"
-          checked={gender === 'male'}
-          onChange={onChange}
-        />
-        <Typography
-          variant={'label2'}
-          color={gender === 'male' ? 'common.white' : 'gray.main'}
-        >
-          남자
+  setJoinData: React.Dispatch<React.SetStateAction<JoinUser>>;
+}) => {
+  const handleClick = (selectGender: string) => {
+    setJoinData(prev => ({
+      ...prev,
+      gender: selectGender === gender ? '' : selectGender,
+    }));
+  };
+
+  return (
+    <>
+      <Label htmlFor="gender">
+        <Typography variant={'subtitle3'} color={'gray.dark'}>
+          나의 성별(선택)
         </Typography>
-      </GenderButton>
-      <GenderButton selected={gender === 'female'}>
-        <GenderRadioButton
-          type="radio"
-          name="gender"
-          value="female"
-          checked={gender === 'female'}
-          onChange={onChange}
-        />
-        <Typography
-          variant={'label2'}
-          color={gender === 'female' ? 'common.white' : 'gray.main'}
-        >
-          여자
-        </Typography>
-      </GenderButton>
-    </div>
-  </>
-);
+      </Label>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          marginBottom: 10,
+        }}
+      >
+        <GenderButton selected={gender === 'male'}>
+          <GenderRadioButton
+            type="button"
+            name="gender"
+            value="male"
+            onClick={() => handleClick('male')}
+          />
+          <Typography
+            variant={'label2'}
+            color={gender === 'male' ? 'tertiary.main' : 'gray.main'}
+          >
+            남자
+          </Typography>
+        </GenderButton>
+        <GenderButton selected={gender === 'female'}>
+          <GenderRadioButton
+            type="button"
+            name="gender"
+            value="female"
+            onClick={() => handleClick('female')}
+          />
+          <Typography
+            variant={'label2'}
+            color={gender === 'female' ? 'tertiary.main' : 'gray.main'}
+          >
+            여자
+          </Typography>
+        </GenderButton>
+      </div>
+    </>
+  );
+};
 
 export const Birthday = ({
   birthday,

@@ -72,14 +72,13 @@ export const LoadingModal = ({ open }: { open: boolean }) => {
         alignItems: 'center',
         position: 'fixed',
         top: 0,
-        left: open ? 0 : '100%',
+        left: 0,
         width: '100%',
         height: '100%',
         textAlign: 'center',
         zIndex: 100,
         backgroundColor: theme.palette.common.white,
         visibility: open ? 'visible' : 'hidden',
-        transition: 'all 0.5s ease',
       }}
     >
       <img
