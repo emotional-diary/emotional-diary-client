@@ -5,7 +5,7 @@ import styled from 'styled-components';
 type Props = {
   children: React.ReactNode;
   open: boolean;
-  text: string;
+  text: React.ReactNode;
   anchor?: 'left' | 'right' | 'top' | 'bottom';
 };
 

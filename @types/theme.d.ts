@@ -50,5 +50,12 @@ interface TypographyProps {
 
 interface ButtonProps {
   size?: 'small' | 'medium' | 'large';
-  color?: 'primary' | 'secondary' | 'tertiary' | 'white' | 'gray';
+  color?:
+    | 'primary'
+    | 'secondary'
+    | 'tertiary'
+    | 'tertiary.light'
+    | 'error.light'
+    | 'white'
+    | 'gray';
 }

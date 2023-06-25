@@ -23,6 +23,7 @@ const StyledText = styled.div<TypographyProps>`
 const Div = styled(StyledText)``;
 const Span = styled(StyledText).attrs({ as: 'span' })``;
 const P = styled(StyledText).attrs({ as: 'p' })``;
+const Pre = styled(StyledText).attrs({ as: 'pre' })``;
 const H1 = styled(StyledText).attrs({ as: 'h1' })``;
 const H2 = styled(StyledText).attrs({ as: 'h2' })``;
 const H3 = styled(StyledText).attrs({ as: 'h3' })``;
@@ -37,13 +38,15 @@ const Typography = ({
   style,
   onClick,
   children,
+  className,
 }: {
-  component?: 'div' | 'span' | 'p';
+  component?: 'div' | 'span' | 'p' | 'pre';
   variant?: TypographyProps['variant'];
   color?: string;
   style?: React.CSSProperties;
   onClick?: () => void;
   children: React.ReactNode;
+  className?: string;
 }) => {
   const components = {
     h1: H1,
@@ -55,6 +58,7 @@ const Typography = ({
     div: Div,
     span: Span,
     p: P,
+    pre: Pre,
   };
 
   const Component =
@@ -62,7 +66,13 @@ const Typography = ({
     components[component];
 
   return (
-    <Component variant={variant} color={color} style={style} onClick={onClick}>
+    <Component
+      className={className}
+      variant={variant}
+      color={color}
+      style={style}
+      onClick={onClick}
+    >
       {children}
     </Component>
   );

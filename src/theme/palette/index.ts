@@ -14,7 +14,7 @@ export const palette = {
     main: '#73CAAB',
   },
   error: {
-    main: '#ea4335',
+    main: '#FF5348',
   },
   warning: {
     main: '#fbbc04',

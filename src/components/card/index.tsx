@@ -1,5 +1,6 @@
 import router from 'next/router';
 
+import * as Icons from '@components/icons';
 import { Button } from '@components/form/style';
 import { Card } from '@components/styled';
 import { Typography } from '@components/typography';
@@ -34,17 +35,6 @@ export const DiaryCard = () => {
           </Typography>
           {/* <Icons.Written width={15} height={15} /> */}
         </div>
-
-        <Button
-          color={'secondary'}
-          size={'small'}
-          style={{ height: 'auto', borderRadius: '15px' }}
-          onClick={() => router.push('/diary/new?step=0')}
-        >
-          <Typography variant={'label3'} color={'background.paper'}>
-            작성하기
-          </Typography>
-        </Button>
       </div>
 
       <Typography variant={'body4'} color={'gray.dark'}>
