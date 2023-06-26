@@ -3,15 +3,17 @@ import styled from 'styled-components';
 import router from 'next/router';
 
 import * as Icons from '@components/icons';
-import { IconButton } from '@components/form/style';
+import { Button, IconButton } from '@components/form/style';
 import { Typography } from '@components/typography';
+import Popper from '@components/popper';
 import { useCalendarStore } from '@store/index';
+import { theme } from 'src/theme';
 
 export type HeaderProps = {
   title?: string;
   back?: boolean;
   bgcolor?: string;
-  type?: 'datepicker';
+  type?: 'datepicker' | 'diary';
 };
 
 const StyledHeader = styled.header`
@@ -43,13 +45,15 @@ const DatepickerTitle = () => {
         {selectedDate.getDate()}일
       </Typography>
       <span style={{ marginLeft: '6px' }}>
-        <Icons.Arrow width={10} height={10} />
+        <Icons.Arrow width={10} height={10} color={theme.palette.gray.main} />
       </span>
     </div>
   );
 };
 
 const Header = ({ title, back, bgcolor, type }: HeaderProps) => {
+  const [isPopperOpen, setIsPopperOpen] = React.useState(false);
+
   if (type === 'datepicker') {
     return (
       <StyledHeader
@@ -61,6 +65,60 @@ const Header = ({ title, back, bgcolor, type }: HeaderProps) => {
           <Icons.Back />
         </IconButton>
         <DatepickerTitle />
+      </StyledHeader>
+    );
+  }
+  if (type === 'diary') {
+    const buttonStyle = {
+      height: 'auto',
+      borderRadius: '10px',
+      padding: '8px 20px',
+    };
+
+    return (
+      <StyledHeader
+        style={{
+          backgroundColor: bgcolor,
+        }}
+      >
+        <IconButton onClick={() => router.back()}>
+          <Icons.Back />
+        </IconButton>
+        <Popper
+          open={isPopperOpen}
+          content={
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+              <Button
+                color={'tertiary.light'}
+                onClick={() => alert('준비중 입니다.')}
+                style={buttonStyle}
+              >
+                <Typography variant={'label2'} color={'tertiary.main'}>
+                  수정하기
+                </Typography>
+              </Button>
+              <Button
+                color={'error.light'}
+                onClick={() => alert('준비중 입니다.')}
+                style={{
+                  ...buttonStyle,
+                  marginTop: '5px',
+                }}
+              >
+                <Typography variant={'label2'} color={'error.main'}>
+                  삭제하기
+                </Typography>
+              </Button>
+            </div>
+          }
+        >
+          <IconButton
+            onClick={() => setIsPopperOpen(!isPopperOpen)}
+            style={{ marginRight: '-5px' }}
+          >
+            <Icons.Kebab />
+          </IconButton>
+        </Popper>
       </StyledHeader>
     );
   }

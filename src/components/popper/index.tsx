@@ -6,12 +6,12 @@ type Props = {
   content: React.ReactNode;
 };
 
-const ComponentWithTooltip = styled.div`
+const ComponentWithPopper = styled.div`
   position: relative;
   display: inline-block;
 `;
 
-const StyledTooltip = styled.div`
+const StyledPopper = styled.div`
   position: absolute;
   right: calc(100% + 12px);
   /* top: 50%; */
@@ -27,9 +27,9 @@ const StyledTooltip = styled.div`
 
 export default function Popper({ children, open, content }: Props) {
   return (
-    <ComponentWithTooltip>
+    <ComponentWithPopper>
       {children}
-      {open && <StyledTooltip>{content}</StyledTooltip>}
-    </ComponentWithTooltip>
+      {open && <StyledPopper>{content}</StyledPopper>}
+    </ComponentWithPopper>
   );
 }
