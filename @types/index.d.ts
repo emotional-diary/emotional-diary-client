@@ -22,10 +22,23 @@ type UserValidation = Record<
 type Social = 'kakao' | 'naver' | 'google';
 
 type Calendar = {
-  selectedDate: Date | null;
+  selectedDate: Date;
   // id: number;
   // title: string;
   // date: string;
   // startTime: string;
   // endTime: string;
+};
+
+type Diary = {
+  diaryID: string;
+  writerID: string;
+  createdAt: string;
+  updatedAt: string;
+  diaryAt: string;
+  content: string;
+  aiComment: string;
+  emotion: 'joy' | 'sad' | 'angry' | 'nervous' | 'hurt' | 'panic' | null;
+  imageUrl?: string[];
+  metaData?: {};
 };

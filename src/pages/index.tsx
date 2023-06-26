@@ -12,7 +12,7 @@ import Tooltip from '@components/tooltip';
 import { Card } from '@components/styled';
 
 import { theme } from 'src/theme';
-import { useCalendarStore, useUserStore } from '../store';
+import { useCalendarStore, useDiaryStore, useUserStore } from '../store';
 import 'react-datepicker/dist/react-datepicker.css';
 import { DiaryCard } from '@components/card';
 
@@ -50,6 +50,7 @@ const BottomFixedLayout = styled.div`
 
 export default function Home({ ...props }: Props) {
   const { user, setUser } = useUserStore();
+  const { diary, diaryList } = useDiaryStore();
   const [isTooltipOpen, setIsTooltipOpen] = React.useState(true);
 
   React.useEffect(() => {
@@ -61,7 +62,13 @@ export default function Home({ ...props }: Props) {
     }
   }, []);
 
-  console.log('user', user);
+  const handleTooltipClose = () => {
+    setIsTooltipOpen(false);
+    //TODO: localstorage에 저장
+  };
+
+  // console.log('user', user);
+  console.log('diaryList', diaryList);
 
   return (
     <Container
@@ -80,15 +87,21 @@ export default function Home({ ...props }: Props) {
 
       <MessageOfToday>
         <Typography variant={'subtitle2'} color={'gray.dark'}>
-          <Typography
-            component={'span'}
-            variant={'subtitle2'}
-            color={'secondary.light'}
-            style={{ marginRight: '4px' }}
-          >
-            {user.nickname ?? props.profile?.nickname}님
-          </Typography>
-          오늘은 어떤 하루였나요?
+          {diary.aiComment ? (
+            <div dangerouslySetInnerHTML={{ __html: diary.aiComment }} />
+          ) : (
+            <>
+              <Typography
+                component={'span'}
+                variant={'subtitle2'}
+                color={'secondary.light'}
+                style={{ marginRight: '4px' }}
+              >
+                {user.nickname ?? props.profile?.nickname}님
+              </Typography>
+              오늘은 어떤 하루였나요?
+            </>
+          )}
         </Typography>
       </MessageOfToday>
 
@@ -100,15 +113,21 @@ export default function Home({ ...props }: Props) {
         <Tooltip
           anchor={'left'}
           open={isTooltipOpen}
+          onClose={handleTooltipClose}
           text={'오늘도 나의 하루를 기록해보세요'}
         >
           <IconButton
             onClick={() => {
-              setIsTooltipOpen(false);
+              handleTooltipClose();
               router.push('/diary/new?step=0');
             }}
           >
-            <Icons.CircleMenu />
+            <img
+              src={'/images/icons/diary_new.png'}
+              alt={'diary_new'}
+              width={60}
+              height={60}
+            />
           </IconButton>
         </Tooltip>
       </BottomFixedLayout>

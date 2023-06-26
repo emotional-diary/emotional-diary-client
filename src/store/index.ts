@@ -22,6 +22,18 @@ export const useCalendarStore = create<{
   setCalendar: (calendar: Calendar) => set({ calendar }),
 }));
 
+export const useDiaryStore = create<{
+  diary: Diary;
+  setDiary: (diary: Diary) => void;
+  diaryList: Diary[];
+  setDiaryList: (diaryList: Diary[]) => void;
+}>(set => ({
+  diary: {} as Diary,
+  setDiary: (diary: Diary) => set({ diary }),
+  diaryList: [] as Diary[],
+  setDiaryList: (diaryList: Diary[]) => set({ diaryList }),
+}));
+
 // const useStore = create<State>(set => ({
 //   count: 0,
 //   inc: () => set(state => ({ count: state.count + 1 })),

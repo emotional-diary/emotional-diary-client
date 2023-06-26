@@ -1,11 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
 import DatePicker, { registerLocale } from 'react-datepicker';
-import { ko } from 'date-fns/locale';
+import { da, ko } from 'date-fns/locale';
 
 import { Typography } from '@components/typography';
-import { hexToRgba } from '@modules/index';
-import { useCalendarStore } from '@store/index';
+import { changeDateFormat, hexToRgba } from '@modules/index';
+import { useCalendarStore, useDiaryStore } from '@store/index';
 
 registerLocale('ko', ko);
 
@@ -41,6 +41,11 @@ const StyledCalendarContainer = styled.div`
   .react-datepicker__week {
     display: flex;
     justify-content: space-between;
+
+    .react-datepicker__day {
+      width: 31px;
+      height: 38px;
+    }
 
     // 선택된 month와 다른 날짜들
     .react-datepicker__day--outside-month {
@@ -84,10 +89,28 @@ export const Calendar = () => {
     calendar: { selectedDate },
     setCalendar,
   } = useCalendarStore();
+  const { diaryList } = useDiaryStore();
 
   React.useEffect(() => {
     setCalendar({ selectedDate: new Date() });
   }, []);
+
+  const writtenDate = React.useCallback(
+    (date: Date | undefined) => {
+      // 선택된 날짜에 작성된 일기가 있는지 확인
+      // 날짜가 하나씩 밀리기 때문에 하루 전 날짜를 구해서 비교
+      return diaryList.find(diary => {
+        const previousDiaryAt = new Date(diary.diaryAt).setDate(
+          new Date(diary.diaryAt).getDate() - 1
+        );
+        return (
+          changeDateFormat(new Date(previousDiaryAt)).slice(0, 10) ===
+          date?.toISOString().slice(0, 10)
+        );
+      });
+    },
+    [diaryList]
+  );
 
   console.log(selectedDate);
 
@@ -96,7 +119,7 @@ export const Calendar = () => {
       <DatePicker
         inline
         selected={selectedDate}
-        onChange={date => setCalendar({ selectedDate: date })}
+        onChange={date => setCalendar({ selectedDate: date as Date })}
         calendarContainer={({ children }) => {
           return <StyledCalendarContainer>{children}</StyledCalendarContainer>;
         }}
@@ -148,11 +171,11 @@ export const Calendar = () => {
             <div
               style={{
                 display: 'flex',
-                justifyContent: 'center',
+                flexDirection: 'column',
+                justifyContent: 'space-evenly',
                 alignItems: 'center',
                 width: '100%',
                 height: '100%',
-                padding: '6px 0px 18px',
               }}
             >
               <Typography
@@ -164,6 +187,21 @@ export const Calendar = () => {
               >
                 {day}
               </Typography>
+              {writtenDate(date) ? (
+                <img
+                  src={'images/icons/coffee_calendar.png'}
+                  alt={'coffee_icon'}
+                  width={13}
+                  height={9}
+                />
+              ) : (
+                <div
+                  style={{
+                    width: '13px',
+                    height: '9px',
+                  }}
+                />
+              )}
             </div>
           );
         }}

@@ -5,6 +5,7 @@ import styled from 'styled-components';
 type Props = {
   children: React.ReactNode;
   open: boolean;
+  onClose: () => void;
   text: React.ReactNode;
   anchor?: 'left' | 'right' | 'top' | 'bottom';
 };
@@ -37,15 +38,10 @@ const Arrow = styled.div`
 export default function Tooltip({
   children,
   open,
+  onClose,
   text,
   anchor = 'left',
 }: Props) {
-  // const [open, setOpen] = React.useState(true);
-
-  // const handleClick = () => {
-  //   setOpen(false);
-  // };
-
   const anchorStyle = {
     left: {
       right: 'calc(100% + 16px)',
@@ -101,7 +97,7 @@ export default function Tooltip({
       {children}
       {open && (
         <StyledTooltip
-          // onClick={handleClick}
+          onClick={onClose}
           style={{
             ...anchorStyle[anchor],
           }}
