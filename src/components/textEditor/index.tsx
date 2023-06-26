@@ -4,6 +4,32 @@ import ReactQuill from 'react-quill';
 
 import { theme } from 'src/theme';
 import 'react-quill/dist/quill.snow.css';
+import { useDiaryStore } from '@store/index';
+import { Typography } from '@components/typography';
+import { dateToSting } from '@modules/index';
+
+const CustomToolbar = ({ date }: { date: string }) => (
+  <div id="ql-toolbar">
+    <Typography variant={'h4'} color={'gray.dark'}>
+      {dateToSting(date)}
+    </Typography>
+
+    <div>
+      <select className="ql-align" defaultValue="">
+        <option value=""></option>
+        <option value="center"></option>
+        <option value="right"></option>
+        <option value="justify"></option>
+      </select>
+      {/* <button className="ql-align" value=""></button>
+      <button className="ql-align" value="center"></button>
+      <button className="ql-align" value="right"></button>
+      <button className="ql-align" value="justify"></button> */}
+      <button className="ql-bold"></button>
+      <button className="ql-image"></button>
+    </div>
+  </div>
+);
 
 const TextEditorWrapper = styled.div`
   display: flex;
@@ -15,10 +41,13 @@ const TextEditorWrapper = styled.div`
   margin-top: 40px;
 
   .ql-toolbar {
-    background-color: ${theme.palette.primary.main};
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
     border: none;
     border-radius: 10px;
     margin: 20px 30px 25px;
+    font-family: 'GangwonEduAll', sans-serif;
   }
   .ql-container {
     font-size: 16px;
@@ -44,17 +73,23 @@ const TextEditorWrapper = styled.div`
 `;
 
 const TextEditor = () => {
-  const [text, setText] = React.useState<string>('');
-
-  console.log('text', text);
+  const { diary, setDiary } = useDiaryStore();
 
   return (
     <TextEditorWrapper>
+      <CustomToolbar date={diary.diaryAt} />
       <ReactQuill
-        value={text}
-        onChange={(value: string) => setText(value)}
+        value={diary.content}
+        onChange={(value: string) => {
+          setDiary({
+            ...diary,
+            content: value,
+          });
+        }}
         modules={{
-          toolbar: [['bold'], [{ align: [] }]],
+          toolbar: { container: '#ql-toolbar' },
+          // toolbar: [[{ align: [] }], ['bold'], ['image']],
+
           // toolbar: [
           //   [{ header: [1, 2, false] }],
           //   ['bold', 'italic', 'underline', 'strike', 'blockquote'],
@@ -68,20 +103,21 @@ const TextEditor = () => {
           //   ['link', 'image'],
           // ],
         }}
-        formats={[
-          'bold',
-          'align',
-          // 'header',
-          // 'italic',
-          // 'underline',
-          // 'strike',
-          // 'blockquote',
-          // 'list',
-          // 'bullet',
-          // 'indent',
-          // 'link',
-          // 'image',
-        ]}
+        // formats={[
+        //   'align',
+        //   'bold',
+        //   'image',
+
+        //   // 'header',
+        //   // 'italic',
+        //   // 'underline',
+        //   // 'strike',
+        //   // 'blockquote',
+        //   // 'list',
+        //   // 'bullet',
+        //   // 'indent',
+        //   // 'link',
+        // ]}
         placeholder={'일기를 작성해주세요!'}
       />
     </TextEditorWrapper>

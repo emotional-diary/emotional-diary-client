@@ -8,50 +8,105 @@ import { Typography } from '@components/typography';
 import { theme } from 'src/theme';
 import { Button, IconButton } from '@components/form/style';
 import { LoadingModal } from '@components/modal';
+import { useCalendarStore, useDiaryStore } from '@store/index';
+import { changeDateFormat } from '@modules/index';
 
 const TextEditor = dynamic(() => import('@components/textEditor'), {
   ssr: false,
 });
 
-const StyledEmojiContainer = styled(IconButton)`
+export const StyledEmojiContainer = styled('div')`
   display: flex;
   justify-content: center;
   align-items: center;
   width: 100px;
   height: 100px;
   background-color: #d9d9d9;
-  margin-top: 30px;
 `;
 
+export const emotions = {
+  joy: '😀',
+  sad: '😢',
+  angry: '😡',
+  nervous: '😨',
+  hurt: '😭',
+  panic: '😳',
+};
+
 export default function NewDiary() {
+  const { diary, setDiary, diaryList, setDiaryList } = useDiaryStore();
+  const { calendar } = useCalendarStore();
   const [step, setStep] = React.useState(0); // 0: select emotion, 1: write diary
-  const [selectedEmotion, setSelectedEmotion] = React.useState('');
   const [isLoading, setIsLoading] = React.useState(false);
 
+  const queryStep = (typeof window !== 'undefined' &&
+    Number(router.query.step)) as number;
+
   const handleSelectEmotion = (emoji: string) => {
-    setSelectedEmotion(emoji);
+    setDiary({
+      ...diary,
+      emotion: emoji as Diary['emotion'],
+    });
   };
 
-  const handleSaveDiary = () => {
+  // TODO: 일기 저장 후, diaryID와 aiComment를 받아오는 API 호출
+  const getDiaryData = () => {
+    return new Promise<Partial<Diary>>((resolve, reject) => {
+      setTimeout(() => {
+        resolve({
+          diaryID: Math.floor(Math.random() * 100000).toString(),
+          aiComment: '오늘 하루도 수고했어요!',
+        });
+      }, 2000);
+    });
+  };
+
+  const handleSaveDiary = async () => {
     if (isLoading) return;
+    if (!diary.content?.length) return alert('내용을 추가해 주세요');
     setIsLoading(true);
 
-    setTimeout(() => {
-      // TODO: diary detail page로 이동
-      router.replace('/diary/first');
-    }, 3000);
+    const { diaryID, aiComment } = await getDiaryData();
+
+    // TODO: 일기 수정 시에는 날짜 중에 updatedAt만 변경
+    // 신규 일기 데이터
+    const diaryData = {
+      ...diary,
+      diaryID: diaryID as string,
+      aiComment: aiComment as string,
+      diaryAt: changeDateFormat(calendar.selectedDate as Date),
+      createdAt: changeDateFormat(new Date()),
+      updatedAt: changeDateFormat(new Date()),
+    };
+    setDiary({
+      ...diaryData,
+    });
+    setDiaryList([diaryData, ...diaryList]);
+
+    // TODO: 저장 API 호출 후, diaryID를 받아서 diary/:id로 이동
+    router.replace(`/diary/${diaryID}`);
   };
 
+  console.log('diary', diary);
+
   const handleNextStep = () => {
-    if (selectedEmotion === '') return alert('기분을 선택해주세요');
+    if (!diary.emotion) return alert('기분을 선택해 주세요');
     if (step === 1) return handleSaveDiary();
     setStep(step + 1);
     router.replace(`/diary/new?step=${step + 1}`, undefined, { shallow: true });
   };
 
   React.useEffect(() => {
-    setStep(Number(router.query.step));
-  }, [typeof window !== 'undefined' && router.query.step]);
+    setStep(queryStep);
+  }, [queryStep]);
+
+  React.useEffect(() => {
+    if (!calendar) return;
+    setDiary({
+      ...diary,
+      diaryAt: changeDateFormat(calendar.selectedDate as Date),
+    });
+  }, [calendar]);
 
   const steps = [
     {
@@ -104,18 +159,22 @@ export default function NewDiary() {
             marginTop: '15px',
           }}
         >
-          {['😀', '😢', '😡', '😨', '😭', '😳'].map((emoji, index) => (
+          {Object.keys(emotions).map((emoji, index) => (
             <StyledEmojiContainer
               key={index}
               onClick={() => handleSelectEmotion(emoji)}
               style={{
+                cursor: 'pointer',
                 backgroundColor:
-                  selectedEmotion === emoji
+                  diary.emotion === emoji
                     ? theme.palette.primary.main
                     : '#d9d9d9',
+                marginTop: '30px',
               }}
             >
-              <Typography variant={'h1'}>{emoji}</Typography>
+              <Typography variant={'h1'}>
+                {emotions[emoji as keyof typeof emotions]}
+              </Typography>
             </StyledEmojiContainer>
           ))}
         </div>

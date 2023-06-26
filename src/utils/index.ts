@@ -17,3 +17,9 @@ export const changeDateFormat = (date: Date): string => {
 
   return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 };
+
+export const dateToSting = (date: Date | string): string => {
+  return `${new Date(date).getFullYear()}년${' '}
+          ${new Date(date).getMonth() + 1}월${' '}
+          ${new Date(date).getDate()}일`;
+};
