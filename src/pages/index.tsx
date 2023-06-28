@@ -9,12 +9,12 @@ import * as Icons from '@components/icons';
 import { Button, IconButton } from '@components/form/style';
 import { Calendar } from '@components/calendar';
 import Tooltip from '@components/tooltip';
-import { Card } from '@components/styled';
+import { DiaryCard } from '@components/card';
+import { dateToSting } from '@utils/index';
 
 import { theme } from 'src/theme';
 import { useCalendarStore, useDiaryStore, useUserStore } from '../store';
 import 'react-datepicker/dist/react-datepicker.css';
-import { DiaryCard } from '@components/card';
 
 interface Props {
   profile: {
@@ -51,7 +51,20 @@ const BottomFixedLayout = styled.div`
 export default function Home({ ...props }: Props) {
   const { user, setUser } = useUserStore();
   const { diary, diaryList } = useDiaryStore();
+  const {
+    calendar: { selectedDate },
+  } = useCalendarStore();
   const [isTooltipOpen, setIsTooltipOpen] = React.useState(true);
+
+  const selectedDiary = React.useMemo(() => {
+    if (!selectedDate) return null;
+    if (!diaryList.length) return null;
+    const diary = diaryList.find(
+      diary =>
+        dateToSting(new Date(diary.diaryAt)) === dateToSting(selectedDate)
+    );
+    return diary;
+  }, [selectedDate, diaryList]);
 
   React.useEffect(() => {
     if (!user?.nickname) {
@@ -67,8 +80,22 @@ export default function Home({ ...props }: Props) {
     //TODO: localstorage에 저장
   };
 
+  const handleWriteDiary = () => {
+    if (selectedDate > new Date()) {
+      alert('이후 날짜의 일기는 미리 작성할 수 없어요.');
+      return;
+    }
+    if (selectedDiary) {
+      alert('이미 작성한 일기가 있어요.');
+      return;
+    }
+
+    handleTooltipClose();
+    router.push('/diary/new?step=0');
+  };
+
   // console.log('user', user);
-  console.log('diaryList', diaryList);
+  // console.log('diaryList', diaryList);
 
   return (
     <Container
@@ -116,12 +143,7 @@ export default function Home({ ...props }: Props) {
           onClose={handleTooltipClose}
           text={'오늘도 나의 하루를 기록해보세요'}
         >
-          <IconButton
-            onClick={() => {
-              handleTooltipClose();
-              router.push('/diary/new?step=0');
-            }}
-          >
+          <IconButton onClick={handleWriteDiary}>
             <img
               src={'/images/icons/diary_new.png'}
               alt={'diary_new'}
