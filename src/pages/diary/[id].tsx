@@ -6,9 +6,9 @@ import { isEmpty } from 'lodash';
 import { Container } from '@components/layout';
 import { Typography } from '@components/typography';
 import { useCalendarStore, useDiaryStore } from '@store/index';
+import { dateToSting } from '@utils/index';
 import { theme } from 'src/theme';
 import { StyledEmojiContainer, emotions } from './new';
-import { dateToSting } from '@modules/index';
 
 const DetailWrapper = styled.div`
   display: flex;
@@ -79,7 +79,7 @@ export default function DiaryDetail() {
 
   console.log('diaryAt', new Date(diary?.diaryAt));
 
-  if (!isEmpty(diary)) {
+  if (isEmpty(diary)) {
     return null;
   }
 
