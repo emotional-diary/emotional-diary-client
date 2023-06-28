@@ -2,11 +2,11 @@ import React from 'react';
 import styled from 'styled-components';
 import ReactQuill from 'react-quill';
 
-import { theme } from 'src/theme';
-import 'react-quill/dist/quill.snow.css';
 import { useDiaryStore } from '@store/index';
 import { Typography } from '@components/typography';
-import { dateToSting } from '@modules/index';
+import { dateToSting } from '@utils/index';
+import { theme } from 'src/theme';
+import 'react-quill/dist/quill.snow.css';
 
 const CustomToolbar = ({ date }: { date: string }) => (
   <div id="ql-toolbar">

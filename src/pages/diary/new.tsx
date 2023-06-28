@@ -9,7 +9,7 @@ import { theme } from 'src/theme';
 import { Button, IconButton } from '@components/form/style';
 import { LoadingModal } from '@components/modal';
 import { useCalendarStore, useDiaryStore } from '@store/index';
-import { changeDateFormat } from '@modules/index';
+import { changeDateFormat } from '@utils/index';
 
 const TextEditor = dynamic(() => import('@components/textEditor'), {
   ssr: false,

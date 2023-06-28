@@ -6,7 +6,7 @@ import { Button } from '@components/form/style';
 import { Card } from '@components/styled';
 import { Typography } from '@components/typography';
 import { useCalendarStore, useDiaryStore } from '@store/index';
-import { dateToSting } from '@modules/index';
+import { dateToSting } from '@utils/index';
 
 export const DiaryCard = () => {
   const {

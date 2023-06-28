@@ -1,5 +1,6 @@
-import { hexToRgba } from '@modules/index';
 import styled, { css } from 'styled-components';
+
+import { hexToRgba } from '@utils/index';
 
 const getSizeStyles = (size: ButtonProps['size'] = 'medium') => {
   switch (size) {
