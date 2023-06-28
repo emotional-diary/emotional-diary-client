@@ -1,17 +1,29 @@
+import styled from 'styled-components';
+
 import { Button } from '@components/form/style';
 import { Typography } from '@components/typography';
 import { theme } from 'src/theme';
 
+const Backdrop = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+`;
+
 export const Modal = ({
   open,
   title,
-  content,
   onClose,
+  children,
 }: {
   open: boolean;
-  title: string;
-  content: string;
+  title?: string;
   onClose: () => void;
+  children: React.ReactNode;
 }) => {
   if (!open) return null;
   return (
@@ -23,12 +35,13 @@ export const Modal = ({
         zIndex: 100,
         width: '100%',
         height: '100%',
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
       }}
     >
+      <Backdrop onClick={onClose} />
+
       <div
         style={{
           width: 'calc(100% - 60px)',
@@ -41,15 +54,12 @@ export const Modal = ({
           alignItems: 'center',
         }}
       >
-        <Typography variant={'h1'} style={{ marginBottom: 20 }}>
-          {title}
-        </Typography>
-        <Typography
-          variant={'body2'}
-          style={{ maxHeight: 300, overflowY: 'auto' }}
-        >
-          {content}
-        </Typography>
+        {title && (
+          <Typography variant={'h1'} style={{ marginBottom: 20 }}>
+            {title}
+          </Typography>
+        )}
+        <div style={{ width: '100%' }}>{children}</div>
         <Button
           color={'secondary'}
           style={{ width: '100%', marginTop: 20 }}

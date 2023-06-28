@@ -1,11 +1,13 @@
 import React from 'react';
+import router from 'next/router';
 import styled from 'styled-components';
 import DatePicker, { registerLocale } from 'react-datepicker';
-import { da, ko } from 'date-fns/locale';
+import { ko } from 'date-fns/locale';
 
 import { Typography } from '@components/typography';
-import { changeDateFormat, hexToRgba } from '@modules/index';
+import { changeDateFormat, dateToSting, hexToRgba } from '@utils/index';
 import { useCalendarStore, useDiaryStore } from '@store/index';
+import { Modal } from '@components/modal';
 
 registerLocale('ko', ko);
 
@@ -92,6 +94,9 @@ export const Calendar = () => {
   const { diaryList } = useDiaryStore();
 
   React.useEffect(() => {
+    if (router.pathname.includes('/diary/new')) {
+      return;
+    }
     setCalendar({ selectedDate: new Date() });
   }, []);
 
@@ -112,14 +117,36 @@ export const Calendar = () => {
     [diaryList]
   );
 
-  console.log(selectedDate);
+  const selectedDiary = (date: Date) => {
+    const diary = diaryList.find(
+      diary => dateToSting(new Date(diary.diaryAt)) === dateToSting(date)
+    );
+    return diary;
+  };
+
+  const handleDateClick = (date: Date) => {
+    if (router.pathname.includes('/diary/new')) {
+      if (date > new Date()) {
+        alert('이후 날짜의 일기는 미리 작성할 수 없어요.');
+        return;
+      }
+      if (selectedDiary(date)) {
+        alert('이미 작성한 일기가 있어요.');
+        return;
+      }
+    }
+
+    setCalendar({ selectedDate: date });
+  };
+
+  // console.log(selectedDate);
 
   return (
     <div style={{ width: '100%' }}>
       <DatePicker
         inline
         selected={selectedDate}
-        onChange={date => setCalendar({ selectedDate: date as Date })}
+        onChange={date => handleDateClick(date as Date)}
         calendarContainer={({ children }) => {
           return <StyledCalendarContainer>{children}</StyledCalendarContainer>;
         }}
@@ -189,7 +216,7 @@ export const Calendar = () => {
               </Typography>
               {writtenDate(date) ? (
                 <img
-                  src={'images/icons/coffee_calendar.png'}
+                  src={'/images/icons/coffee_calendar.png'}
                   alt={'coffee_icon'}
                   width={13}
                   height={9}
@@ -208,5 +235,21 @@ export const Calendar = () => {
         locale={ko}
       />
     </div>
+  );
+};
+
+export const CalendarModal = ({
+  open,
+  onClose,
+}: {
+  open: boolean;
+  onClose: () => void;
+}) => {
+  const { calendar } = useCalendarStore();
+
+  return (
+    <Modal open={open} onClose={onClose}>
+      <Calendar />
+    </Modal>
   );
 };

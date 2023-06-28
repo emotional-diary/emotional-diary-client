@@ -8,6 +8,7 @@ import { Typography } from '@components/typography';
 import Popper from '@components/popper';
 import { useCalendarStore } from '@store/index';
 import { theme } from 'src/theme';
+import { CalendarModal } from '@components/calendar';
 
 export type HeaderProps = {
   title?: string;
@@ -25,11 +26,10 @@ const StyledHeader = styled.header`
   background-color: #f5f5f5;
 `;
 
-const DatepickerTitle = () => {
+const DatepickerTitle = ({ onClick }: { onClick: () => void }) => {
   const {
     calendar: { selectedDate },
   } = useCalendarStore();
-
   if (!selectedDate) return null;
 
   return (
@@ -39,6 +39,7 @@ const DatepickerTitle = () => {
         left: '50%',
         transform: 'translateX(-50%)',
       }}
+      onClick={onClick}
     >
       <Typography component={'span'} variant={'subtitle1'} color={'gray.dark'}>
         {selectedDate.getFullYear()}년 {selectedDate.getMonth() + 1}월{' '}
@@ -53,6 +54,7 @@ const DatepickerTitle = () => {
 
 const Header = ({ title, back, bgcolor, type }: HeaderProps) => {
   const [isPopperOpen, setIsPopperOpen] = React.useState(false);
+  const [isModalOpen, setIsModalOpen] = React.useState(false);
 
   if (type === 'datepicker') {
     return (
@@ -61,10 +63,14 @@ const Header = ({ title, back, bgcolor, type }: HeaderProps) => {
           backgroundColor: bgcolor,
         }}
       >
+        <CalendarModal
+          open={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+        />
         <IconButton onClick={() => router.back()}>
           <Icons.Back />
         </IconButton>
-        <DatepickerTitle />
+        <DatepickerTitle onClick={() => setIsModalOpen(true)} />
       </StyledHeader>
     );
   }

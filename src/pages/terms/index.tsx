@@ -6,8 +6,8 @@ import { Button, FormContainer, IconButton } from '@components/form/style';
 import { Typography } from '@components/typography';
 import * as Icons from '@components/icons';
 import { Modal } from '@components/modal';
+import { hexToRgba } from '@utils/index';
 import { theme } from 'src/theme';
-import { hexToRgba } from '@modules/index';
 
 const loremIpsum = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
   malesuada lorem maximus mauris scelerisque, at rutrum nulla
@@ -42,9 +42,15 @@ export default function Terms() {
       <Modal
         open={modal.open}
         title={modal.title}
-        content={modal.content}
         onClose={() => setModal({ ...modal, open: false })}
-      />
+      >
+        <Typography
+          variant={'body2'}
+          style={{ maxHeight: 300, overflowY: 'auto' }}
+        >
+          {modal.content}
+        </Typography>
+      </Modal>
       <FormContainer style={{ paddingTop: 0 }}>
         <Typography variant={'h3'} style={{ marginBottom: 30 }}>
           필수 이용약관에 동의해주세요
