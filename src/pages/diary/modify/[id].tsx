@@ -1,6 +1,7 @@
 import React from 'react';
 import router from 'next/router';
 import dynamic from 'next/dynamic';
+import { isEmpty } from 'lodash';
 
 import { Container } from '@components/layout';
 import { Typography } from '@components/typography';
@@ -15,21 +16,21 @@ const TextEditor = dynamic(() => import('@components/textEditor'), {
   ssr: false,
 });
 
-export default function NewDiary() {
+export default function ModifyDiary() {
   const { diary, setDiary, diaryList, setDiaryList } = useDiaryStore();
   const { calendar } = useCalendarStore();
   const [step, setStep] = React.useState(0); // 0: select emotion, 1: write diary
   const [isLoading, setIsLoading] = React.useState(false);
 
+  const id = typeof window !== 'undefined' && (router.query.id as string);
   const queryStep = (typeof window !== 'undefined' &&
     Number(router.query.step)) as number;
 
-  // TODO: 일기 저장 후, diaryID와 aiComment를 받아오는 API 호출
+  // TODO: 일기 수정 후, aiComment를 받아오는 API 호출
   const getDiaryData = () => {
     return new Promise<Partial<Diary>>((resolve, reject) => {
       setTimeout(() => {
         resolve({
-          diaryID: Math.floor(Math.random() * 100000).toString(),
           aiComment: '오늘 하루도 수고했어요!',
         });
       }, 2000);
@@ -41,15 +42,13 @@ export default function NewDiary() {
     if (!diary.content?.length) return alert('내용을 추가해 주세요');
     setIsLoading(true);
 
-    const { diaryID, aiComment } = await getDiaryData();
+    const { aiComment } = await getDiaryData();
 
-    // 신규 일기 데이터
+    // TODO: 일기 수정 시에는 날짜 중에 updatedAt만 변경
     const diaryData = {
       ...diary,
-      diaryID: diaryID as string,
       aiComment: aiComment as string,
       diaryAt: changeDateFormat(calendar.selectedDate as Date),
-      createdAt: changeDateFormat(new Date()),
       updatedAt: changeDateFormat(new Date()),
     };
     setDiary({
@@ -57,17 +56,18 @@ export default function NewDiary() {
     });
     setDiaryList([diaryData, ...diaryList]);
 
-    // TODO: 저장 API 호출 후, diaryID를 받아서 diary/:id로 이동
-    router.replace(`/diary/${diaryID}`);
+    router.replace(`/diary/${id}`);
   };
 
-  console.log('diary', diary);
+  // console.log('diary', diary);
 
   const handleNextStep = () => {
     if (!diary.emotion) return alert('기분을 선택해 주세요');
     if (step === 1) return handleSaveDiary();
     setStep(step + 1);
-    router.replace(`/diary/new?step=${step + 1}`, undefined, { shallow: true });
+    router.replace(`/diary/modify/${id}?step=${step + 1}`, undefined, {
+      shallow: true,
+    });
   };
 
   React.useEffect(() => {

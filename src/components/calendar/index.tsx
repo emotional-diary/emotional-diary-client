@@ -92,9 +92,16 @@ export const Calendar = () => {
     setCalendar,
   } = useCalendarStore();
   const { diaryList } = useDiaryStore();
+  const pathname =
+    typeof window !== 'undefined' ? window.location.pathname : '';
+
+  const includeExceptionPath = React.useMemo(
+    () => pathname.includes('/diary/new'),
+    [pathname]
+  );
 
   React.useEffect(() => {
-    if (router.pathname.includes('/diary/new')) {
+    if (includeExceptionPath) {
       return;
     }
     setCalendar({ selectedDate: new Date() });
@@ -125,7 +132,7 @@ export const Calendar = () => {
   };
 
   const handleDateClick = (date: Date) => {
-    if (router.pathname.includes('/diary/new')) {
+    if (includeExceptionPath) {
       if (date > new Date()) {
         alert('이후 날짜의 일기는 미리 작성할 수 없어요.');
         return;

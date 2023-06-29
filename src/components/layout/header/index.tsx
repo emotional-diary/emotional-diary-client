@@ -6,7 +6,7 @@ import * as Icons from '@components/icons';
 import { Button, IconButton } from '@components/form/style';
 import { Typography } from '@components/typography';
 import Popper from '@components/popper';
-import { useCalendarStore } from '@store/index';
+import { useCalendarStore, useDiaryStore } from '@store/index';
 import { theme } from 'src/theme';
 import { CalendarModal } from '@components/calendar';
 
@@ -26,7 +26,11 @@ const StyledHeader = styled.header`
   background-color: #f5f5f5;
 `;
 
-const DatepickerTitle = ({ onClick }: { onClick: () => void }) => {
+const DatepickerTitle = ({
+  onClick,
+}: {
+  onClick: (() => void) | undefined;
+}) => {
   const {
     calendar: { selectedDate },
   } = useCalendarStore();
@@ -45,16 +49,36 @@ const DatepickerTitle = ({ onClick }: { onClick: () => void }) => {
         {selectedDate.getFullYear()}년 {selectedDate.getMonth() + 1}월{' '}
         {selectedDate.getDate()}일
       </Typography>
-      <span style={{ marginLeft: '6px' }}>
-        <Icons.Arrow width={10} height={10} color={theme.palette.gray.main} />
-      </span>
+      {onClick && (
+        <span style={{ marginLeft: '6px' }}>
+          <Icons.Arrow width={10} height={10} color={theme.palette.gray.main} />
+        </span>
+      )}
     </div>
   );
 };
 
 const Header = ({ title, back, bgcolor, type }: HeaderProps) => {
+  const { diaryList } = useDiaryStore();
   const [isPopperOpen, setIsPopperOpen] = React.useState(false);
   const [isModalOpen, setIsModalOpen] = React.useState(false);
+
+  const pathname =
+    typeof window !== 'undefined' ? window.location.pathname : '';
+
+  const includeExceptionPath = React.useMemo(
+    () => pathname.includes('/diary/modify'),
+    [pathname]
+  );
+
+  const removeDiary = () => {
+    // TODO: 일기 삭제 API 연결
+    const index = diaryList.findIndex(
+      diary => diary.diaryID === router.query.id
+    );
+    diaryList.splice(index, 1);
+    router.push('/');
+  };
 
   if (type === 'datepicker') {
     return (
@@ -63,14 +87,20 @@ const Header = ({ title, back, bgcolor, type }: HeaderProps) => {
           backgroundColor: bgcolor,
         }}
       >
-        <CalendarModal
-          open={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
-        />
+        {!includeExceptionPath && (
+          <CalendarModal
+            open={isModalOpen}
+            onClose={() => setIsModalOpen(false)}
+          />
+        )}
         <IconButton onClick={() => router.back()}>
           <Icons.Back />
         </IconButton>
-        <DatepickerTitle onClick={() => setIsModalOpen(true)} />
+        <DatepickerTitle
+          onClick={
+            !includeExceptionPath ? () => setIsModalOpen(true) : undefined
+          }
+        />
       </StyledHeader>
     );
   }
@@ -96,7 +126,9 @@ const Header = ({ title, back, bgcolor, type }: HeaderProps) => {
             <div style={{ display: 'flex', flexDirection: 'column' }}>
               <Button
                 color={'tertiary.light'}
-                onClick={() => alert('준비중 입니다.')}
+                onClick={() =>
+                  router.push(`/diary/modify/${router.query.id}?step=0`)
+                }
                 style={buttonStyle}
               >
                 <Typography variant={'label2'} color={'tertiary.main'}>
@@ -105,7 +137,7 @@ const Header = ({ title, back, bgcolor, type }: HeaderProps) => {
               </Button>
               <Button
                 color={'error.light'}
-                onClick={() => alert('준비중 입니다.')}
+                onClick={removeDiary}
                 style={{
                   ...buttonStyle,
                   marginTop: '5px',

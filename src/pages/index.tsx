@@ -114,7 +114,7 @@ export default function Home({ ...props }: Props) {
 
       <MessageOfToday>
         <Typography variant={'subtitle2'} color={'gray.dark'}>
-          {diary.aiComment ? (
+          {diary?.aiComment ? (
             <div dangerouslySetInnerHTML={{ __html: diary.aiComment }} />
           ) : (
             <>

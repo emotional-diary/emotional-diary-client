@@ -8,7 +8,7 @@ import { Typography } from '@components/typography';
 import { useCalendarStore, useDiaryStore } from '@store/index';
 import { dateToSting } from '@utils/index';
 import { theme } from 'src/theme';
-import { StyledEmojiContainer, emotions } from './new';
+import { StyledEmojiContainer, emotions } from '@components/diary/emotionList';
 
 const DetailWrapper = styled.div`
   display: flex;
@@ -63,21 +63,21 @@ export default function DiaryDetail() {
     }
   }, []);
 
-  React.useEffect(() => {
-    const handleRouteChange = () => {
-      // 초기화 시간을 주기 위해 setTimeout 사용
-      setTimeout(() => {
-        setDiary({} as Diary);
-      }, 100);
-    };
+  // React.useEffect(() => {
+  //   const handleRouteChange = () => {
+  //     // 초기화 시간을 주기 위해 setTimeout 사용
+  //     setTimeout(() => {
+  //       setDiary({} as Diary);
+  //     }, 100);
+  //   };
 
-    router.events.on('routeChangeStart', handleRouteChange);
-    return () => {
-      router.events.off('routeChangeStart', handleRouteChange);
-    };
-  }, []);
+  //   router.events.on('routeChangeStart', handleRouteChange);
+  //   return () => {
+  //     router.events.off('routeChangeStart', handleRouteChange);
+  //   };
+  // }, []);
 
-  console.log('diaryAt', new Date(diary?.diaryAt));
+  // console.log('diaryAt', new Date(diary?.diaryAt));
 
   if (isEmpty(diary)) {
     return null;
