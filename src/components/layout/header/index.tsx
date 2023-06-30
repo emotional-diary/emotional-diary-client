@@ -6,7 +6,7 @@ import * as Icons from '@components/icons';
 import { Button, IconButton } from '@components/form/style';
 import { Typography } from '@components/typography';
 import Popper from '@components/popper';
-import { useCalendarStore, useDiaryStore } from '@store/index';
+import { useCalendarStore, useDiaryListStore } from '@store/index';
 import { theme } from 'src/theme';
 import { CalendarModal } from '@components/calendar';
 
@@ -15,6 +15,8 @@ export type HeaderProps = {
   back?: boolean;
   bgcolor?: string;
   type?: 'datepicker' | 'diary';
+  icon?: React.ReactNode;
+  style?: React.CSSProperties;
 };
 
 const StyledHeader = styled.header`
@@ -58,13 +60,12 @@ const DatepickerTitle = ({
   );
 };
 
-const Header = ({ title, back, bgcolor, type }: HeaderProps) => {
-  const { diaryList } = useDiaryStore();
+const Header = ({ title, back, bgcolor, type, icon, style }: HeaderProps) => {
+  const { diaryList } = useDiaryListStore();
   const [isPopperOpen, setIsPopperOpen] = React.useState(false);
   const [isModalOpen, setIsModalOpen] = React.useState(false);
 
-  const pathname =
-    typeof window !== 'undefined' ? window.location.pathname : '';
+  const pathname = typeof window !== 'undefined' ? router.pathname : '';
 
   const includeExceptionPath = React.useMemo(
     () => pathname.includes('/diary/modify'),
@@ -165,11 +166,14 @@ const Header = ({ title, back, bgcolor, type }: HeaderProps) => {
     <StyledHeader
       style={{
         backgroundColor: bgcolor,
+        ...style,
       }}
     >
       {back && (
         <IconButton onClick={() => router.back()}>
-          <Icons.Back />
+          <Icons.Back
+            color={bgcolor === theme.palette.primary.main ? '#fff' : undefined}
+          />
         </IconButton>
       )}
 
@@ -178,9 +182,7 @@ const Header = ({ title, back, bgcolor, type }: HeaderProps) => {
           {title}
         </Typography>
       )}
-      <IconButton onClick={() => alert('준비중 입니다.')}>
-        <Icons.User />
-      </IconButton>
+      {icon}
     </StyledHeader>
   );
 };

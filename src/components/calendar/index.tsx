@@ -6,7 +6,11 @@ import { ko } from 'date-fns/locale';
 
 import { Typography } from '@components/typography';
 import { changeDateFormat, dateToSting, hexToRgba } from '@utils/index';
-import { useCalendarStore, useDiaryStore } from '@store/index';
+import {
+  useCalendarStore,
+  useDiaryListStore,
+  useDiaryStore,
+} from '@store/index';
 import { Modal } from '@components/modal';
 
 registerLocale('ko', ko);
@@ -91,7 +95,8 @@ export const Calendar = () => {
     calendar: { selectedDate },
     setCalendar,
   } = useCalendarStore();
-  const { diaryList } = useDiaryStore();
+  const { setDiary } = useDiaryStore();
+  const { diaryList } = useDiaryListStore();
   const pathname =
     typeof window !== 'undefined' ? window.location.pathname : '';
 
@@ -141,6 +146,11 @@ export const Calendar = () => {
         alert('이미 작성한 일기가 있어요.');
         return;
       }
+    }
+    // 메인 달력에서 선택된 날짜의 일기 상세로 이동할 때 상태 변경
+    // 일기가 없는 날짜를 선택했을 때는 상태 초기화
+    if (router.pathname === '/') {
+      setDiary(selectedDiary(date) as Diary);
     }
 
     setCalendar({ selectedDate: date });

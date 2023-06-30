@@ -13,7 +13,12 @@ import { DiaryCard } from '@components/card';
 import { dateToSting } from '@utils/index';
 
 import { theme } from 'src/theme';
-import { useCalendarStore, useDiaryStore, useUserStore } from '../store';
+import {
+  useCalendarStore,
+  useDiaryListStore,
+  useDiaryStore,
+  useUserStore,
+} from '../store';
 import 'react-datepicker/dist/react-datepicker.css';
 
 interface Props {
@@ -23,8 +28,9 @@ interface Props {
 }
 
 // top background
-const StyledTopBackground = styled.div`
+export const StyledTopBackground = styled.div`
   position: absolute;
+  left: 0;
   width: 100%;
   height: 100px;
   background-color: ${props => props.theme.palette.primary.main};
@@ -50,7 +56,8 @@ const BottomFixedLayout = styled.div`
 
 export default function Home({ ...props }: Props) {
   const { user, setUser } = useUserStore();
-  const { diary, diaryList } = useDiaryStore();
+  const { diary } = useDiaryStore();
+  const { diaryList } = useDiaryListStore();
   const {
     calendar: { selectedDate },
   } = useCalendarStore();
@@ -102,6 +109,11 @@ export default function Home({ ...props }: Props) {
       headerProps={{
         title: '감성일기',
         bgcolor: theme.palette.primary.main,
+        icon: (
+          <IconButton onClick={() => router.push('/mypage')}>
+            <Icons.User />
+          </IconButton>
+        ),
       }}
       bodyProps={{
         style: {

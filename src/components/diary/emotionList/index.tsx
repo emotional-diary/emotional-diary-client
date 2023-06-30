@@ -50,7 +50,7 @@ export const EmotionList = () => {
           style={{
             cursor: 'pointer',
             backgroundColor:
-              diary.emotion === emoji ? theme.palette.primary.main : '#d9d9d9',
+              diary?.emotion === emoji ? theme.palette.primary.main : '#d9d9d9',
             marginTop: '30px',
           }}
         >

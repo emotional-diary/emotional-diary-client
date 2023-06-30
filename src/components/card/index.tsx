@@ -5,15 +5,16 @@ import * as Icons from '@components/icons';
 import { Button } from '@components/form/style';
 import { Card } from '@components/styled';
 import { Typography } from '@components/typography';
-import { useCalendarStore, useDiaryStore } from '@store/index';
+import { useCalendarStore, useDiaryListStore } from '@store/index';
 import { dateToSting } from '@utils/index';
+import { emotions } from '@components/diary/emotionList';
 
 export const DiaryCard = () => {
   const {
     calendar: { selectedDate },
     setCalendar,
   } = useCalendarStore();
-  const { diary, diaryList } = useDiaryStore();
+  const { diaryList } = useDiaryListStore();
 
   const days = ['일', '월', '화', '수', '목', '금', '토'];
 
@@ -95,6 +96,64 @@ export const DiaryCard = () => {
           </Typography>
         </Button>
       )}
+    </Card>
+  );
+};
+
+export const DiaryListCard = ({
+  date,
+  content,
+  emotion,
+}: {
+  date: Date;
+  content: string;
+  emotion: Diary['emotion'];
+}) => {
+  const days = ['일', '월', '화', '수', '목', '금', '토'];
+
+  return (
+    <Card style={{ marginTop: '15px' }}>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <Typography
+            variant={'h4'}
+            color={'gray.dark'}
+            style={{ marginRight: '10px' }}
+          >
+            {`${date.getMonth() + 1}월 ${date.getDate()}일`}
+          </Typography>
+          <Icons.Written width={15} height={15} />
+        </div>
+
+        <div>{emotions[emotion as keyof typeof emotions]}</div>
+      </div>
+
+      <Typography
+        variant={'body4'}
+        color={'gray.dark'}
+        style={{ marginTop: '4px' }}
+      >
+        {days[date.getDay()]}요일
+      </Typography>
+
+      <Typography
+        className={'ql-editor'}
+        variant={'body4'}
+        color={'gray.dark'}
+        style={{ lineHeight: '22px', marginTop: '10px' }}
+      >
+        <div
+          dangerouslySetInnerHTML={{
+            __html: content,
+          }}
+        />
+      </Typography>
     </Card>
   );
 };

@@ -5,7 +5,11 @@ import { isEmpty } from 'lodash';
 
 import { Container } from '@components/layout';
 import { Typography } from '@components/typography';
-import { useCalendarStore, useDiaryStore } from '@store/index';
+import {
+  useCalendarStore,
+  useDiaryListStore,
+  useDiaryStore,
+} from '@store/index';
 import { dateToSting } from '@utils/index';
 import { theme } from 'src/theme';
 import { StyledEmojiContainer, emotions } from '@components/diary/emotionList';
@@ -48,7 +52,8 @@ export default function DiaryDetail() {
   const {
     calendar: { selectedDate },
   } = useCalendarStore();
-  const { diary, setDiary, diaryList } = useDiaryStore();
+  const { diary, setDiary } = useDiaryStore();
+  const { diaryList } = useDiaryListStore();
 
   const selectedDiary = React.useMemo(() => {
     if (!selectedDate) return null;
@@ -77,7 +82,7 @@ export default function DiaryDetail() {
   //   };
   // }, []);
 
-  // console.log('diaryAt', new Date(diary?.diaryAt));
+  console.log('diary', diary);
 
   if (isEmpty(diary)) {
     return null;
