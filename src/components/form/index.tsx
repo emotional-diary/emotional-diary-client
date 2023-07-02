@@ -7,7 +7,9 @@ import { useUserStore } from '@store/index';
 
 import { FormContainer, Form, Label, Input, Button, IconButton } from './style';
 import { Timer as EmailAuthTimer } from './timer';
+import { PasswordFindModal } from '@components/modal';
 import * as Inputs from './input';
+import { ValidationMessage } from './validation';
 
 const LoginForm = () => {
   const [user, setUser] = React.useState<{ email: string; password: string }>({
@@ -21,6 +23,15 @@ const LoginForm = () => {
     password: { status: false, message: '' },
   });
   const [isLogin, setIsLogin] = React.useState<boolean>(false);
+
+  const passwordFindModal = (() => {
+    const [open, setOpen] = React.useState<boolean>(false);
+
+    return {
+      open,
+      setOpen,
+    };
+  })();
 
   const validateEmail = () => {
     const regex = /^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[a-zA-Z0-9]+$/;
@@ -130,6 +141,11 @@ const LoginForm = () => {
         height: '100vh',
       }}
     >
+      <PasswordFindModal
+        open={passwordFindModal.open}
+        onClose={() => passwordFindModal.setOpen(false)}
+      />
+
       <div
         style={{
           display: 'flex',
@@ -235,7 +251,7 @@ const LoginForm = () => {
                 cursor: 'pointer',
                 borderBottom: '1px solid #A6A6A6',
               }}
-              onClick={() => console.log('비밀번호 찾기')}
+              onClick={() => passwordFindModal.setOpen(true)}
             >
               비밀번호를 잊으셨나요?
             </Typography>
@@ -294,13 +310,10 @@ const SignUpForm = ({ social }: { social?: Social }) => {
     gender: '',
   });
   const [passwordCheck, setPasswordCheck] = React.useState<string>('');
-  const [emailAuth, setEmailAuth] = React.useState<{
-    level: number;
-    code: string;
-    reset: boolean;
-  }>({ level: 0, code: '', reset: false });
 
-  const [validation, setValidation] = React.useState<UserValidation>({
+  const [validation, setValidation] = React.useState<
+    Omit<UserValidation, 'social'>
+  >({
     nickname: { status: false, message: '' },
     email: { status: false, message: '' },
     password: { status: false, message: '' },
@@ -361,29 +374,6 @@ const SignUpForm = ({ social }: { social?: Social }) => {
       return false;
     }
 
-    return true;
-  };
-
-  const validateEmail = () => {
-    const regex = /^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[a-zA-Z0-9]+$/;
-    if (!regex.test(joinData.email)) {
-      setValidation({
-        ...validation,
-        email: {
-          status: false,
-          message: '이메일 형식이 올바르지 않아요.',
-        },
-      });
-      return false;
-    }
-
-    setValidation({
-      ...validation,
-      email: {
-        status: true,
-        message: '',
-      },
-    });
     return true;
   };
 
@@ -536,113 +526,6 @@ const SignUpForm = ({ social }: { social?: Social }) => {
     }
   };
 
-  const handleEmailAuth = async () => {
-    if (!validateEmail()) {
-      return;
-    }
-
-    const res = await fetch('/api/emailAuth', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        email: joinData.email,
-      }),
-    });
-
-    // if (res.status === 200) {
-    //   setEmailAuth({
-    //     ...emailAuth,
-    //     level: 1,
-    //     code: '',
-    //   });
-    //   setValidation({
-    //     ...validation,
-    //     email: {
-    //       status: false,
-    //       message: '',
-    //     },
-    //   });
-    // } else {
-    //   alert('다시 시도해 주세요.');
-    // }
-
-    // 이메일 재전송
-    if (emailAuth.level === 1) {
-      setEmailAuth(prevState => ({
-        ...emailAuth,
-        reset: !prevState.reset,
-      }));
-    } else {
-      setEmailAuth({
-        level: 1,
-        code: '',
-        reset: false,
-      });
-    }
-
-    setValidation({
-      ...validation,
-      email: {
-        status: false,
-        message: '',
-      },
-    });
-  };
-
-  const handleEmailAuthCheck = async () => {
-    const res = await fetch('/api/emailAuthCheck', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        email: joinData.email,
-        authCode: emailAuth.code,
-      }),
-    });
-
-    if (res.status === 200) {
-      alert('이메일 인증에 성공했어요.');
-      setEmailAuth({
-        level: 2,
-        code: '',
-        reset: false,
-      });
-      setValidation({
-        ...validation,
-        email: {
-          status: false,
-          message: '',
-        },
-      });
-    } else {
-      setValidation({
-        ...validation,
-        email: {
-          status: false,
-          message: '인증코드가 일치하지 않아요.',
-        },
-      });
-    }
-  };
-
-  const expirateEmailAuth = () => {
-    setEmailAuth({
-      level: 0,
-      code: '',
-      reset: false,
-    });
-    setValidation({
-      ...validation,
-      email: {
-        status: false,
-        message: '인증코드가 만료되었어요.',
-      },
-    });
-  };
-
   if (social === 'kakao') {
     return (
       <FormContainer style={{ paddingTop: 0 }}>
@@ -657,16 +540,15 @@ const SignUpForm = ({ social }: { social?: Social }) => {
             onBlur={handleUserBlur}
           />
           {validation.nickname.message && (
-            <Typography
-              variant={'body4'}
-              color={'error.main'}
-              style={{ marginBottom: '10px', paddingLeft: '10px' }}
-            >
-              {validation.nickname.message}
-            </Typography>
+            <ValidationMessage message={validation.nickname.message} />
           )}
 
-          <Inputs.Gender gender={joinData?.gender} setJoinData={setJoinData} />
+          <Inputs.Gender
+            gender={joinData?.gender}
+            setJoinData={
+              setJoinData as React.Dispatch<React.SetStateAction<User>>
+            }
+          />
           <Inputs.Birthday
             birthday={joinData?.birthday}
             onChange={handleUserChange}
@@ -694,146 +576,26 @@ const SignUpForm = ({ social }: { social?: Social }) => {
       </Typography>
 
       <Form>
-        <Label htmlFor="nickname">
-          <Typography variant={'subtitle3'} color={'gray.dark'}>
-            나의 이름
-          </Typography>
-        </Label>
-        <Input
-          type="text"
-          id="nickname"
-          name="nickname"
-          placeholder="성을 제외하고 이름만 적어주세요!"
-          value={joinData.nickname}
-          onChange={e => {
-            if (!/^[가-힣ㄱ-ㅎㅏ-ㅣa-zA-Z]*$/.test(e.target.value)) {
-              return;
-            }
-            handleUserChange(e);
-          }}
+        <Inputs.Nickname
+          nickname={joinData?.nickname}
+          onChange={handleUserChange}
           onBlur={handleUserBlur}
-          maxLength={16}
         />
         {validation.nickname.message && (
-          <Typography
-            variant={'body4'}
-            color={'error.main'}
-            style={{ marginBottom: '10px', paddingLeft: '10px' }}
-          >
-            {validation.nickname.message}
-          </Typography>
+          <ValidationMessage message={validation.nickname.message} />
         )}
 
-        <Label htmlFor="email">
-          <Typography variant={'subtitle3'} color={'gray.dark'}>
-            나의 이메일
-          </Typography>
-        </Label>
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            marginBottom: '10px',
-          }}
-        >
-          <div style={{ position: 'relative' }}>
-            <Input
-              type="email"
-              id="email"
-              name="email"
-              placeholder="이메일 형식에 맞춰 적어주세요!"
-              style={{ margin: 0, paddingRight: '110px' }}
-              value={joinData.email}
-              onChange={e => {
-                handleUserChange(e);
-                // 이메일 인증버튼을 누르고 이메일을 수정할 경우 인증 상태 초기화
-                if (emailAuth.level === 1) {
-                  setEmailAuth({
-                    level: 0,
-                    code: '',
-                    reset: false,
-                  });
-                }
-              }}
-              maxLength={254}
-            />
-            <Button
-              type={'button'}
-              color={'tertiary'}
-              style={{
-                height: 35,
-                position: 'absolute',
-                right: 10,
-                top: 10,
-                padding: '10px 10px',
-                marginLeft: '10px',
-              }}
-              onClick={() => handleEmailAuth()}
+        <Inputs.Email
+          email={joinData.email}
+          onChange={handleUserChange}
+          setValidation={
+            setValidation as React.Dispatch<
+              React.SetStateAction<UserValidation>
             >
-              <Typography variant={'label3'} color={'common.white'}>
-                {(emailAuth.level === 0 || emailAuth.level === 2) &&
-                  '이메일 인증'}
-                {emailAuth.level === 1 && '이메일 재전송'}
-              </Typography>
-            </Button>
-          </div>
-
-          {emailAuth.level === 1 && (
-            <>
-              <Label htmlFor="emailAuthCode">
-                <Typography variant={'subtitle3'} color={'gray.dark'}>
-                  인증코드
-                </Typography>
-              </Label>
-              <div style={{ position: 'relative' }}>
-                <Input
-                  type="text"
-                  id="emailAuthCode"
-                  name="emailAuthCode"
-                  placeholder="인증코드를 입력해주세요!"
-                  style={{ margin: 0 }}
-                  value={emailAuth.code}
-                  onChange={e =>
-                    setEmailAuth({ ...emailAuth, code: e.target.value })
-                  }
-                  maxLength={8}
-                />
-                <Button
-                  type={'button'}
-                  color={'tertiary'}
-                  style={{
-                    height: 35,
-                    position: 'absolute',
-                    right: 10,
-                    top: 10,
-                    padding: '10px 10px',
-                    marginLeft: '10px',
-                  }}
-                  onClick={() => handleEmailAuthCheck()}
-                  disabled={emailAuth.code.length < 6}
-                >
-                  <Typography variant={'label3'} color={'common.white'}>
-                    인증코드 확인
-                  </Typography>
-                </Button>
-              </div>
-
-              <EmailAuthTimer
-                callback={expirateEmailAuth}
-                count={300}
-                reset={emailAuth.reset}
-              />
-            </>
-          )}
-        </div>
-        {validation.email.message && (
-          <Typography
-            variant={'body4'}
-            color={'error.main'}
-            style={{ marginBottom: '10px', paddingLeft: '10px' }}
-          >
-            {validation.email.message}
-          </Typography>
+          }
+        />
+        {validation.email && (
+          <ValidationMessage message={validation.email.message} />
         )}
 
         <Label htmlFor="password">
@@ -852,13 +614,7 @@ const SignUpForm = ({ social }: { social?: Social }) => {
           maxLength={128}
         />
         {validation.password.message && (
-          <Typography
-            variant={'body4'}
-            color={'error.main'}
-            style={{ marginBottom: '10px', paddingLeft: '10px' }}
-          >
-            {validation.password.message}
-          </Typography>
+          <ValidationMessage message={validation.password.message} />
         )}
 
         <Label htmlFor="passwordCheck">
@@ -877,16 +633,15 @@ const SignUpForm = ({ social }: { social?: Social }) => {
           maxLength={128}
         />
         {validation.passwordCheck.message && (
-          <Typography
-            variant={'body4'}
-            color={'error.main'}
-            style={{ marginBottom: '10px', paddingLeft: '10px' }}
-          >
-            {validation.passwordCheck.message}
-          </Typography>
+          <ValidationMessage message={validation.passwordCheck.message} />
         )}
 
-        <Inputs.Gender gender={joinData?.gender} setJoinData={setJoinData} />
+        <Inputs.Gender
+          gender={joinData?.gender}
+          setJoinData={
+            setJoinData as React.Dispatch<React.SetStateAction<User>>
+          }
+        />
         <Inputs.Birthday
           birthday={joinData?.birthday}
           onChange={handleUserChange}
