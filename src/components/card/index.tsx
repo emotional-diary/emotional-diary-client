@@ -15,6 +15,7 @@ export const DiaryCard = () => {
     setCalendar,
   } = useCalendarStore();
   const { diaryList } = useDiaryListStore();
+  const [diaries, setDiaries] = React.useState<Diary[]>([]);
 
   const days = ['일', '월', '화', '수', '목', '금', '토'];
 
@@ -22,13 +23,17 @@ export const DiaryCard = () => {
 
   const selectedDiary = React.useMemo(() => {
     if (!selectedDate) return null;
-    if (!diaryList.length) return null;
-    const diary = diaryList.find(
+    if (!diaries.length) return null;
+    const diary = diaries.find(
       diary =>
         dateToSting(new Date(diary.diaryAt)) === dateToSting(selectedDate)
     );
     return diary;
-  }, [selectedDate, diaryList]);
+  }, [selectedDate, diaries]);
+
+  React.useEffect(() => {
+    setDiaries(diaryList);
+  }, []);
 
   return (
     <Card style={{ marginTop: '15px' }}>

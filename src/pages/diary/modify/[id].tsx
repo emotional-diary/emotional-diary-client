@@ -8,7 +8,11 @@ import { Typography } from '@components/typography';
 import { theme } from 'src/theme';
 import { Button } from '@components/form/style';
 import { LoadingModal } from '@components/modal';
-import { useCalendarStore, useDiaryStore } from '@store/index';
+import {
+  useCalendarStore,
+  useDiaryListStore,
+  useDiaryStore,
+} from '@store/index';
 import { changeDateFormat } from '@utils/index';
 import { EmotionList } from '@components/diary/emotionList';
 
@@ -17,7 +21,8 @@ const TextEditor = dynamic(() => import('@components/textEditor'), {
 });
 
 export default function ModifyDiary() {
-  const { diary, setDiary, diaryList, setDiaryList } = useDiaryStore();
+  const { diary, setDiary } = useDiaryStore();
+  const { diaryList, setDiaryList } = useDiaryListStore();
   const { calendar } = useCalendarStore();
   const [step, setStep] = React.useState(0); // 0: select emotion, 1: write diary
   const [isLoading, setIsLoading] = React.useState(false);
