@@ -73,11 +73,22 @@ const Header = ({ title, back, bgcolor, type, icon, style }: HeaderProps) => {
   );
 
   const removeDiary = () => {
+    if (!window.confirm('정말 삭제하시겠습니까?')) return;
     // TODO: 일기 삭제 API 연결
     const index = diaryList.findIndex(
       diary => diary.diaryID === router.query.id
     );
     diaryList.splice(index, 1);
+
+    window.localStorage.setItem(
+      'diary-list',
+      JSON.stringify({
+        state: {
+          diaryList,
+          version: 0,
+        },
+      })
+    );
     router.push('/');
   };
 
