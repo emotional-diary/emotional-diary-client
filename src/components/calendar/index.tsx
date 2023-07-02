@@ -97,6 +97,8 @@ export const Calendar = () => {
   } = useCalendarStore();
   const { setDiary } = useDiaryStore();
   const { diaryList } = useDiaryListStore();
+  const [diaries, setDiaries] = React.useState<Diary[]>([]);
+
   const pathname =
     typeof window !== 'undefined' ? window.location.pathname : '';
 
@@ -106,17 +108,14 @@ export const Calendar = () => {
   );
 
   React.useEffect(() => {
-    if (includeExceptionPath) {
-      return;
-    }
-    setCalendar({ selectedDate: new Date() });
+    setDiaries(diaryList);
   }, []);
 
   const writtenDate = React.useCallback(
     (date: Date | undefined) => {
       // 선택된 날짜에 작성된 일기가 있는지 확인
       // 날짜가 하나씩 밀리기 때문에 하루 전 날짜를 구해서 비교
-      return diaryList.find(diary => {
+      return diaries.find(diary => {
         const previousDiaryAt = new Date(diary.diaryAt).setDate(
           new Date(diary.diaryAt).getDate() - 1
         );
@@ -126,11 +125,11 @@ export const Calendar = () => {
         );
       });
     },
-    [diaryList]
+    [diaries]
   );
 
   const selectedDiary = (date: Date) => {
-    const diary = diaryList.find(
+    const diary = diaries.find(
       diary => dateToSting(new Date(diary.diaryAt)) === dateToSting(date)
     );
     return diary;
