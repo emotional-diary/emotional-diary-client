@@ -1,8 +1,35 @@
+import React from 'react';
 import styled from 'styled-components';
 
-import { Button } from '@components/form/style';
+import { Button, Form, Input, Label } from '@components/form/style';
 import { Typography } from '@components/typography';
+import { ValidationMessage } from '@components/form/validation';
+import * as Inputs from '@components/form/input';
 import { theme } from 'src/theme';
+
+const ModalContainer = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const ModalWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: calc(100% - 60px);
+  max-width: 540px;
+  background-color: white;
+  padding: 30px 20px;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+`;
 
 const Backdrop = styled.div`
   position: fixed;
@@ -17,46 +44,38 @@ const Backdrop = styled.div`
 export const Modal = ({
   open,
   title,
+  subTitle,
   onClose,
   children,
 }: {
   open: boolean;
   title?: string;
+  subTitle?: string;
   onClose: () => void;
   children: React.ReactNode;
 }) => {
   if (!open) return null;
   return (
-    <div
-      style={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        zIndex: 100,
-        width: '100%',
-        height: '100%',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-      }}
-    >
+    <ModalContainer>
       <Backdrop onClick={onClose} />
 
-      <div
-        style={{
-          width: 'calc(100% - 60px)',
-          maxWidth: '540px',
-          backgroundColor: 'white',
-          padding: 30,
-          borderRadius: 10,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-        }}
-      >
+      <ModalWrapper>
         {title && (
-          <Typography variant={'h1'} style={{ marginBottom: 20 }}>
+          <Typography
+            variant={'h1'}
+            color={'gray.dark'}
+            style={{ marginBottom: 12 }}
+          >
             {title}
+          </Typography>
+        )}
+        {subTitle && (
+          <Typography
+            variant={'h4'}
+            color={'gray.dark'}
+            style={{ marginBottom: 20 }}
+          >
+            {subTitle}
           </Typography>
         )}
         <div style={{ width: '100%' }}>{children}</div>
@@ -67,8 +86,8 @@ export const Modal = ({
         >
           확인
         </Button>
-      </div>
-    </div>
+      </ModalWrapper>
+    </ModalContainer>
   );
 };
 
@@ -103,5 +122,621 @@ export const LoadingModal = ({ open }: { open: boolean }) => {
         잠시만 기다려주세요
       </Typography>
     </div>
+  );
+};
+
+export const PasswordChangeModal = ({
+  open,
+  onClose,
+}: {
+  open: boolean;
+  onClose: () => void;
+}) => {
+  const [step, setStep] = React.useState<number>(0);
+  const [password, setPassword] = React.useState<string>('');
+  const [passwordCheck, setPasswordCheck] = React.useState<string>('');
+  const [validation, setValidation] = React.useState<
+    Pick<UserValidation, 'password' | 'passwordCheck'>
+  >({
+    password: { status: false, message: '' },
+    passwordCheck: { status: false, message: '' },
+  });
+
+  const subTitles = [
+    '현재 비밀번호를 입력해주세요',
+    '새로운 비밀번호를 설정해주세요',
+  ];
+  const buttons = ['다음', '변경할래요'];
+
+  const reset = () => {
+    setStep(0);
+    setPassword('');
+    setPasswordCheck('');
+    setValidation({
+      password: { status: false, message: '' },
+      passwordCheck: { status: false, message: '' },
+    });
+  };
+
+  const validatePassword = () => {
+    const regex = /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,16}$/;
+    if (!regex.test(password)) {
+      setValidation({
+        ...validation,
+        password: {
+          status: false,
+          message:
+            '비밀번호는 영문, 숫자, 특수문자를 포함한 8자 이상 16자 이하로 입력해 주세요.',
+        },
+      });
+      return false;
+    }
+    return true;
+  };
+
+  const validatePasswordCheck = () => {
+    if (password !== passwordCheck) {
+      setValidation({
+        ...validation,
+        passwordCheck: {
+          status: false,
+          message: '비밀번호가 일치하지 않아요.',
+        },
+      });
+      return false;
+    }
+
+    setValidation({
+      ...validation,
+      passwordCheck: {
+        status: true,
+        message: '',
+      },
+    });
+    return true;
+  };
+
+  const handleUserBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    switch (e.target.name) {
+      case 'password':
+        if (!validatePassword()) {
+          return false;
+        }
+        break;
+      case 'passwordCheck':
+        if (!validatePasswordCheck()) {
+          return false;
+        }
+        break;
+      default:
+        break;
+    }
+
+    setValidation({
+      ...validation,
+      [e.target.name]: {
+        status: true,
+        message: '',
+      },
+    });
+    return true;
+  };
+
+  // 비밀번호 확인 에러 메세지 처리
+  React.useEffect(() => {
+    if (passwordCheck.length > 7) {
+      validatePasswordCheck();
+    }
+  }, [password, passwordCheck]);
+
+  // TODO: 현재 비밀번호 확인 API 연결
+  const comparePassword = async () => {
+    // success
+    setPassword('');
+    return true;
+  };
+
+  // TODO: 비밀번호 변경 API 연결
+  const changePassword = async () => {
+    // success
+    alert('비밀번호가 변경되었어요.');
+    onClose();
+  };
+
+  const handleNext = async () => {
+    if (step === 0) {
+      if (!validatePassword()) return;
+
+      const success = await comparePassword();
+      if (!success) return;
+    }
+    if (step === 1) {
+      if (!validatePasswordCheck()) return;
+      changePassword();
+      return;
+    }
+    setStep(prev => prev + 1);
+  };
+
+  React.useEffect(() => {
+    reset();
+  }, [open]);
+
+  if (!open) return null;
+
+  return (
+    <ModalContainer>
+      <Backdrop onClick={onClose} />
+
+      <ModalWrapper>
+        <Typography
+          variant={'h1'}
+          color={'gray.dark'}
+          style={{ marginBottom: 12 }}
+        >
+          비밀번호 변경하기
+        </Typography>
+        <Typography
+          variant={'h4'}
+          color={'gray.dark'}
+          style={{ marginBottom: 20 }}
+        >
+          {subTitles[step]}
+        </Typography>
+
+        <div style={{ width: '100%' }}>
+          <Form>
+            <Label htmlFor="password">
+              <Typography variant={'subtitle3'} color={'gray.dark'}>
+                {step === 0 ? '현재 비밀번호' : '새 비밀번호'}
+              </Typography>
+            </Label>
+            <Input
+              type="password"
+              id="password"
+              name="password"
+              placeholder="비밀번호를 입력해주세요."
+              value={password}
+              onChange={e => setPassword(e.target.value)}
+              onBlur={handleUserBlur}
+              maxLength={128}
+            />
+            {validation.password && (
+              <ValidationMessage message={validation.password.message} />
+            )}
+
+            {step === 1 && (
+              <>
+                <Label htmlFor="passwordCheck">
+                  <Typography variant={'subtitle3'} color={'gray.dark'}>
+                    비밀번호 확인
+                  </Typography>
+                </Label>
+                <Input
+                  type="password"
+                  id="passwordCheck"
+                  name="passwordCheck"
+                  placeholder="입력한 비밀번호와 동일하게 입력해주세요!"
+                  value={passwordCheck}
+                  onChange={e => setPasswordCheck(e.target.value)}
+                  onBlur={handleUserBlur}
+                  maxLength={128}
+                />
+                {validation.passwordCheck.message && (
+                  <ValidationMessage
+                    message={validation.passwordCheck.message}
+                  />
+                )}
+              </>
+            )}
+          </Form>
+        </div>
+        <Button
+          disabled={!password}
+          color={'secondary'}
+          style={{ width: '100%', marginTop: 20 }}
+          onClick={handleNext}
+        >
+          <Typography variant={'label1'} color={'common.white'}>
+            {buttons[step]}
+          </Typography>
+        </Button>
+      </ModalWrapper>
+    </ModalContainer>
+  );
+};
+
+export const PasswordFindModal = ({
+  open,
+  onClose,
+}: {
+  open: boolean;
+  onClose: () => void;
+}) => {
+  const [step, setStep] = React.useState<number>(0);
+  const [email, setEmail] = React.useState<string>('');
+  const [password, setPassword] = React.useState<string>('');
+  const [passwordCheck, setPasswordCheck] = React.useState<string>('');
+  const [validation, setValidation] = React.useState<
+    Pick<UserValidation, 'email' | 'password' | 'passwordCheck'>
+  >({
+    email: { status: false, message: '' },
+    password: { status: false, message: '' },
+    passwordCheck: { status: false, message: '' },
+  });
+
+  const subTitles = [
+    '나의 이메일을 인증해주세요',
+    '새로운 비밀번호를 설정해주세요',
+  ];
+  const buttons = ['다음', '변경할래요'];
+
+  const reset = () => {
+    setStep(0);
+    setEmail('');
+    setPassword('');
+    setPasswordCheck('');
+    setValidation({
+      email: { status: false, message: '' },
+      password: { status: false, message: '' },
+      passwordCheck: { status: false, message: '' },
+    });
+  };
+
+  const validatePassword = () => {
+    const regex = /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,16}$/;
+    if (!regex.test(password)) {
+      setValidation({
+        ...validation,
+        password: {
+          status: false,
+          message:
+            '비밀번호는 영문, 숫자, 특수문자를 포함한 8자 이상 16자 이하로 입력해 주세요.',
+        },
+      });
+      return false;
+    }
+    return true;
+  };
+
+  const validatePasswordCheck = () => {
+    if (password !== passwordCheck) {
+      setValidation({
+        ...validation,
+        passwordCheck: {
+          status: false,
+          message: '비밀번호가 일치하지 않아요.',
+        },
+      });
+      return false;
+    }
+
+    setValidation({
+      ...validation,
+      passwordCheck: {
+        status: true,
+        message: '',
+      },
+    });
+    return true;
+  };
+
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEmail(e.target.value);
+  };
+
+  const handleUserBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    switch (e.target.name) {
+      case 'password':
+        if (!validatePassword()) {
+          return false;
+        }
+        break;
+      case 'passwordCheck':
+        if (!validatePasswordCheck()) {
+          return false;
+        }
+        break;
+      default:
+        break;
+    }
+
+    setValidation({
+      ...validation,
+      [e.target.name]: {
+        status: true,
+        message: '',
+      },
+    });
+    return true;
+  };
+
+  // 비밀번호 확인 에러 메세지 처리
+  React.useEffect(() => {
+    if (passwordCheck.length > 7) {
+      validatePasswordCheck();
+    }
+  }, [password, passwordCheck]);
+
+  // TODO: 현재 비밀번호 확인 API 연결
+  const comparePassword = async () => {
+    // success
+    setPassword('');
+    return true;
+  };
+
+  // TODO: 비밀번호 변경 API 연결
+  const changePassword = async () => {
+    // success
+    alert('비밀번호가 변경되었어요.');
+    onClose();
+  };
+
+  const handleNext = async () => {
+    if (step === 1) {
+      if (!validatePasswordCheck()) return;
+      changePassword();
+      return;
+    }
+    setStep(prev => prev + 1);
+  };
+
+  React.useEffect(() => {
+    reset();
+  }, [open]);
+
+  if (!open) return null;
+
+  console.log('validation', validation);
+
+  return (
+    <ModalContainer>
+      <Backdrop onClick={onClose} />
+
+      <ModalWrapper>
+        <Typography
+          variant={'h1'}
+          color={'gray.dark'}
+          style={{ marginBottom: 12 }}
+        >
+          비밀번호 찾기
+        </Typography>
+        <Typography
+          variant={'h4'}
+          color={'gray.dark'}
+          style={{ marginBottom: 20 }}
+        >
+          {subTitles[step]}
+        </Typography>
+
+        <div style={{ width: '100%' }}>
+          <Form>
+            {step === 0 && (
+              <>
+                <Inputs.Email
+                  email={email}
+                  onChange={handleEmailChange}
+                  setValidation={
+                    setValidation as React.Dispatch<
+                      React.SetStateAction<UserValidation>
+                    >
+                  }
+                />
+                {validation.email && (
+                  <ValidationMessage message={validation.email.message} />
+                )}
+              </>
+            )}
+            {step === 1 && (
+              <>
+                <Label htmlFor="password">
+                  <Typography variant={'subtitle3'} color={'gray.dark'}>
+                    새 비밀번호
+                  </Typography>
+                </Label>
+                <Input
+                  type="password"
+                  id="password"
+                  name="password"
+                  placeholder="비밀번호를 입력해주세요."
+                  value={password}
+                  onChange={e => setPassword(e.target.value)}
+                  onBlur={handleUserBlur}
+                  maxLength={128}
+                />
+                {validation.password.message && (
+                  <ValidationMessage message={validation.password.message} />
+                )}
+
+                <Label htmlFor="passwordCheck">
+                  <Typography variant={'subtitle3'} color={'gray.dark'}>
+                    비밀번호 확인
+                  </Typography>
+                </Label>
+                <Input
+                  type="password"
+                  id="passwordCheck"
+                  name="passwordCheck"
+                  placeholder="입력한 비밀번호와 동일하게 입력해주세요!"
+                  value={passwordCheck}
+                  onChange={e => setPasswordCheck(e.target.value)}
+                  onBlur={handleUserBlur}
+                  maxLength={128}
+                />
+                {validation.passwordCheck.message && (
+                  <ValidationMessage
+                    message={validation.passwordCheck.message}
+                  />
+                )}
+              </>
+            )}
+          </Form>
+        </div>
+        <Button
+          disabled={(() => {
+            if (step === 0) {
+              return validation.email.status;
+            }
+            if (step === 1) {
+              return !validation.password.status || !validation.passwordCheck;
+            }
+            return false;
+          })()}
+          color={'secondary'}
+          style={{ width: '100%', marginTop: 20 }}
+          onClick={handleNext}
+        >
+          <Typography variant={'label1'} color={'common.white'}>
+            {buttons[step]}
+          </Typography>
+        </Button>
+      </ModalWrapper>
+    </ModalContainer>
+  );
+};
+
+export const WithdrawalModal = ({
+  open,
+  onClose,
+}: {
+  open: boolean;
+  onClose: () => void;
+}) => {
+  const [step, setStep] = React.useState<number>(0);
+  const [password, setPassword] = React.useState<string>('');
+  const [validation, setValidation] = React.useState<
+    Pick<UserValidation, 'password'>
+  >({
+    password: { status: false, message: '' },
+  });
+
+  const reset = () => {
+    setStep(0);
+    setPassword('');
+    setValidation({
+      password: { status: false, message: '' },
+    });
+  };
+
+  // TODO: 현재 비밀번호 확인 API 연결
+  const comparePassword = async () => {
+    // success
+    setPassword('');
+    return true;
+  };
+
+  const withdraw = async () => {
+    if (confirm('정말 탈퇴하시겠어요?')) {
+      // TODO: 회원탈퇴 API 연결
+      alert('탈퇴되었어요.');
+      onClose();
+    } else {
+      onClose();
+    }
+  };
+
+  const validatePassword = () => {
+    const regex = /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,16}$/;
+    if (!regex.test(password)) {
+      setValidation({
+        ...validation,
+        password: {
+          status: false,
+          message:
+            '비밀번호는 영문, 숫자, 특수문자를 포함한 8자 이상 16자 이하로 입력해 주세요.',
+        },
+      });
+      return false;
+    }
+    return true;
+  };
+
+  const handleUserBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    switch (e.target.name) {
+      case 'password':
+        if (!validatePassword()) {
+          return false;
+        }
+        break;
+      default:
+        break;
+    }
+
+    setValidation({
+      ...validation,
+      [e.target.name]: {
+        status: true,
+        message: '',
+      },
+    });
+    return true;
+  };
+
+  React.useEffect(() => {
+    reset();
+  }, [open]);
+
+  if (!open) return null;
+
+  return (
+    <ModalContainer>
+      <Backdrop onClick={onClose} />
+
+      <ModalWrapper>
+        <Typography
+          variant={'h1'}
+          color={'gray.dark'}
+          style={{ marginBottom: 12 }}
+        >
+          회원 탈퇴
+        </Typography>
+        <Typography
+          variant={'h4'}
+          color={'gray.dark'}
+          style={{ marginBottom: 20 }}
+        >
+          현재 비밀번호를 입력해주세요
+        </Typography>
+
+        <div style={{ width: '100%' }}>
+          <Form>
+            <Label htmlFor="password">
+              <Typography variant={'subtitle3'} color={'gray.dark'}>
+                현재 비밀번호
+              </Typography>
+            </Label>
+            <Input
+              type="password"
+              id="password"
+              name="password"
+              placeholder="비밀번호를 입력해주세요."
+              value={password}
+              onChange={e => setPassword(e.target.value)}
+              onBlur={handleUserBlur}
+              maxLength={128}
+            />
+            {validation.password && (
+              <ValidationMessage message={validation.password.message} />
+            )}
+          </Form>
+        </div>
+        <Button
+          disabled={!password}
+          color={'secondary'}
+          style={{ width: '100%', marginTop: 20 }}
+          onClick={async () => {
+            if (!validatePassword()) return;
+            const success = await comparePassword();
+            if (success) {
+              await withdraw();
+            }
+          }}
+        >
+          <Typography variant={'label1'} color={'common.white'}>
+            탈퇴할래요
+          </Typography>
+        </Button>
+      </ModalWrapper>
+    </ModalContainer>
   );
 };

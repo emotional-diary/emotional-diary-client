@@ -3,6 +3,7 @@ interface User {
   email: string;
   birthday: string;
   gender: string;
+  social?: Social;
 }
 
 type JoinUser = User & {

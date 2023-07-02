@@ -82,7 +82,9 @@ export default function MyPage() {
           {nickname}님의 마이페이지
         </Typography>
 
-        <StyledRadiusBox style={{ position: 'sticky', marginTop: '24px' }}>
+        <StyledRadiusBox
+          style={{ maxWidth: 131, position: 'sticky', marginTop: '24px' }}
+        >
           <Typography variant={'subtitle1'} color={'secondary.light'}>
             내가 작성한 일기
           </Typography>
