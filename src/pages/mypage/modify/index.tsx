@@ -1,5 +1,5 @@
 import React from 'react';
-import router from 'next/router';
+import { useRouter } from 'next/navigation';
 import styled from 'styled-components';
 import axios from 'axios';
 
@@ -22,6 +22,7 @@ const SocialRadiusBox = styled.div`
 `;
 
 export default function Modify() {
+  const router = useRouter();
   const { user, setUser } = useUserStore();
   const [userData, setUserData] = React.useState<User>({
     nickname: '',

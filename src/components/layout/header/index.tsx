@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import router from 'next/router';
+import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 
 import * as Icons from '@components/icons';
 import { Button, IconButton } from '@components/form/style';
@@ -61,23 +61,24 @@ const DatepickerTitle = ({
 };
 
 const Header = ({ title, back, bgcolor, type, icon, style }: HeaderProps) => {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const { diaryList } = useDiaryListStore();
   const [isPopperOpen, setIsPopperOpen] = React.useState(false);
   const [isModalOpen, setIsModalOpen] = React.useState(false);
 
-  const pathname = typeof window !== 'undefined' ? router.pathname : '';
+  const id = searchParams?.get('id');
 
   const includeExceptionPath = React.useMemo(
-    () => pathname.includes('/diary/modify'),
+    () => pathname?.includes('/diary/modify'),
     [pathname]
   );
 
   const removeDiary = () => {
     if (!window.confirm('정말 삭제하시겠습니까?')) return;
     // TODO: 일기 삭제 API 연결
-    const index = diaryList.findIndex(
-      diary => diary.diaryID === router.query.id
-    );
+    const index = diaryList.findIndex(diary => diary.diaryID === id);
     diaryList.splice(index, 1);
 
     window.localStorage.setItem(
@@ -138,9 +139,7 @@ const Header = ({ title, back, bgcolor, type, icon, style }: HeaderProps) => {
             <div style={{ display: 'flex', flexDirection: 'column' }}>
               <Button
                 color={'tertiary.light'}
-                onClick={() =>
-                  router.push(`/diary/modify/${router.query.id}?step=0`)
-                }
+                onClick={() => router.push(`/diary/modify/${id}?step=0`)}
                 style={buttonStyle}
               >
                 <Typography variant={'label2'} color={'tertiary.main'}>

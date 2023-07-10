@@ -1,5 +1,5 @@
 import React from 'react';
-import router from 'next/router';
+import { useRouter } from 'next/navigation';
 import styled from 'styled-components';
 
 import { Container } from '@components/layout';
@@ -20,6 +20,7 @@ export const StyledInfoBox = styled.div`
 `;
 
 export default function Setting() {
+  const router = useRouter();
   const { user } = useUserStore();
   const [info, setInfo] = React.useState<User>();
 

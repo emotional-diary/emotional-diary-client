@@ -1,5 +1,5 @@
 import React from 'react';
-import router from 'next/router';
+import { useRouter } from 'next/navigation';
 
 import { Container } from '@components/layout';
 import { Button, FormContainer, IconButton } from '@components/form/style';
@@ -23,6 +23,7 @@ const loremIpsum = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Don
 const loremIpsum2 = `개인정보 처리방침입니다. lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec`;
 
 export default function Terms() {
+  const router = useRouter();
   const [checked, setChecked] = React.useState({
     terms: false,
     privacy: false,

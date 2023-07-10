@@ -1,5 +1,5 @@
 import React from 'react';
-import router from 'next/router';
+import { useRouter } from 'next/navigation';
 import styled from 'styled-components';
 
 import * as Icons from '@components/icons';
@@ -9,7 +9,7 @@ import { Typography } from '@components/typography';
 import { useDiaryListStore, useUserStore } from '@store/index';
 import { DiaryListCard } from '@components/card';
 import { theme } from 'src/theme';
-import { StyledTopBackground } from '..';
+import { StyledTopBackground } from '../../../app/page';
 
 const StyledRadiusBox = styled.div`
   padding: 6px 18px;
@@ -28,6 +28,7 @@ const DiaryListWrapper = styled.div`
 `;
 
 export default function MyPage() {
+  const router = useRouter();
   const { user } = useUserStore();
   const { diaryList } = useDiaryListStore();
 

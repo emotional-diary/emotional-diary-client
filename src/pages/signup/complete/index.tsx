@@ -1,5 +1,5 @@
 import React from 'react';
-import router from 'next/router';
+import { useRouter } from 'next/navigation';
 
 import * as Icons from '@components/icons';
 import { Container } from '@components/layout';
@@ -8,6 +8,7 @@ import { Typography } from '@components/typography';
 import { theme } from 'src/theme';
 
 export default function SignUpComplete() {
+  const router = useRouter();
   return (
     <Container
       style={{

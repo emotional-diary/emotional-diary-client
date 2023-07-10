@@ -1,5 +1,5 @@
 import React from 'react';
-import router from 'next/router';
+import { usePathname } from 'next/navigation';
 import styled from 'styled-components';
 import DatePicker, { registerLocale } from 'react-datepicker';
 import { ko } from 'date-fns/locale';
@@ -91,6 +91,7 @@ const MonthArrowButton = styled.button`
 `;
 
 export const Calendar = () => {
+  const pathname = usePathname() as string;
   const {
     calendar: { selectedDate },
     setCalendar,
@@ -99,8 +100,8 @@ export const Calendar = () => {
   const { diaryList } = useDiaryListStore();
   const [diaries, setDiaries] = React.useState<Diary[]>([]);
 
-  const pathname =
-    typeof window !== 'undefined' ? window.location.pathname : '';
+  // const pathname =
+  //   typeof window !== 'undefined' ? window.location.pathname : '';
 
   const includeExceptionPath = React.useMemo(
     () => pathname.includes('/diary/new'),
@@ -148,7 +149,7 @@ export const Calendar = () => {
     }
     // 메인 달력에서 선택된 날짜의 일기 상세로 이동할 때 상태 변경
     // 일기가 없는 날짜를 선택했을 때는 상태 초기화
-    if (router.pathname === '/') {
+    if (pathname === '/') {
       setDiary(selectedDiary(date) as Diary);
     }
 

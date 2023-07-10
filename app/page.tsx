@@ -1,6 +1,8 @@
+'use client';
+
 import React from 'react';
 import { GetServerSideProps } from 'next';
-import router from 'next/router';
+import { useRouter } from 'next/navigation';
 import styled from 'styled-components';
 
 import { Container } from '@components/layout';
@@ -18,7 +20,7 @@ import {
   useDiaryListStore,
   useDiaryStore,
   useUserStore,
-} from '../store';
+} from '../src/store';
 import 'react-datepicker/dist/react-datepicker.css';
 
 interface Props {
@@ -55,6 +57,7 @@ const BottomFixedLayout = styled.div`
 `;
 
 export default function Home({ ...props }: Props) {
+  const router = useRouter();
   const { user, setUser } = useUserStore();
   const { diary } = useDiaryStore();
   const { diaryList } = useDiaryListStore();

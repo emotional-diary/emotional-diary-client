@@ -1,5 +1,5 @@
 import React from 'react';
-import { useRouter } from 'next/router';
+import { useRouter, useSearchParams } from 'next/navigation';
 import styled from 'styled-components';
 import { isEmpty } from 'lodash';
 
@@ -47,13 +47,14 @@ const ContentWrapper = styled.div`
 
 export default function DiaryDetail() {
   const router = useRouter();
-  const { id } = router.query;
-
+  const searchParams = useSearchParams();
   const {
     calendar: { selectedDate },
   } = useCalendarStore();
   const { diary, setDiary } = useDiaryStore();
   const { diaryList } = useDiaryListStore();
+
+  const id = searchParams?.get('id');
 
   const selectedDiary = React.useMemo(() => {
     if (!selectedDate) return null;

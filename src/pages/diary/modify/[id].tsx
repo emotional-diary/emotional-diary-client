@@ -1,5 +1,5 @@
 import React from 'react';
-import router from 'next/router';
+import { useRouter, useSearchParams } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import { isEmpty } from 'lodash';
 
@@ -21,15 +21,18 @@ const TextEditor = dynamic(() => import('@components/textEditor'), {
 });
 
 export default function ModifyDiary() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const { diary, setDiary } = useDiaryStore();
   const { diaryList, setDiaryList } = useDiaryListStore();
   const { calendar } = useCalendarStore();
   const [step, setStep] = React.useState(0); // 0: select emotion, 1: write diary
   const [isLoading, setIsLoading] = React.useState(false);
 
-  const id = typeof window !== 'undefined' && (router.query.id as string);
-  const queryStep = (typeof window !== 'undefined' &&
-    Number(router.query.step)) as number;
+  const id = searchParams?.get('id');
+  const queryStep = searchParams?.get('step')
+    ? Number(searchParams?.get('step'))
+    : 0;
 
   // TODO: 일기 수정 후, aiComment를 받아오는 API 호출
   const getDiaryData = () => {
@@ -70,9 +73,7 @@ export default function ModifyDiary() {
     if (!diary.emotion) return alert('기분을 선택해 주세요');
     if (step === 1) return handleSaveDiary();
     setStep(step + 1);
-    router.replace(`/diary/modify/${id}?step=${step + 1}`, undefined, {
-      shallow: true,
-    });
+    router.replace(`/diary/modify/${id}?step=${step + 1}`);
   };
 
   React.useEffect(() => {

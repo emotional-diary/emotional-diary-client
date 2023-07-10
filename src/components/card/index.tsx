@@ -1,5 +1,5 @@
 import React from 'react';
-import router from 'next/router';
+import { useRouter } from 'next/navigation';
 
 import * as Icons from '@components/icons';
 import { Button } from '@components/form/style';
@@ -10,6 +10,7 @@ import { dateToSting } from '@utils/index';
 import { emotions } from '@components/diary/emotionList';
 
 export const DiaryCard = () => {
+  const router = useRouter();
   const {
     calendar: { selectedDate },
     setCalendar,
