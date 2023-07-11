@@ -1,8 +1,5 @@
-'use client';
-
-import { ThemeProvider } from 'styled-components';
-
-import { theme } from 'src/theme';
+import StyledComponentsRegistry from 'lib/registry';
+import ThemeProvider from './client/theme';
 import './styles/globals.css';
 
 export default function RootLayout({
@@ -81,22 +78,12 @@ export default function RootLayout({
           media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3)"
           rel="apple-touch-startup-image"
         />
-
-        {/* 폰트 */}
-        {/* <link rel="preconnect" href="https://fonts.googleapis.com" />
-          <link
-            rel="preconnect"
-            href="https://fonts.gstatic.com"
-            crossOrigin="anonymous"
-          />
-          <link
-            href="https://fonts.googleapis.com/css2?family=Sunflower:wght@300;500;700&display=swap"
-            rel="stylesheet"
-          /> */}
       </head>
-      <ThemeProvider theme={theme}>
-        <body>{children}</body>
-      </ThemeProvider>
+      <body>
+        <StyledComponentsRegistry>
+          <ThemeProvider>{children}</ThemeProvider>
+        </StyledComponentsRegistry>
+      </body>
     </html>
   );
 }
