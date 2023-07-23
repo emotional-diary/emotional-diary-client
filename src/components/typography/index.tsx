@@ -19,10 +19,13 @@ const styler = (variant: TypographyProps['$variant']) => {
 const StyledText = styled.div<TypographyProps>`
   ${props => styler(props.$variant)};
   color: ${props => {
-    const splitedColor = props.color?.split('.') as string[];
+    const splitedColor = (props.color?.split('.') as string[]) || [
+      'common',
+      'black',
+    ];
     return (props.theme.palette as PaletteWithIndexSignature)[
-      `${splitedColor[0] || 'common'}`
-    ][`${splitedColor[1] || 'black'}`];
+      `${splitedColor[0]}`
+    ][`${splitedColor[1]}`];
   }};
   margin: 0;
 `;
