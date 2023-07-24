@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import { useRouter } from 'next/navigation';
 import styled from 'styled-components';
@@ -8,7 +10,7 @@ import { Typography } from '@components/typography';
 import { Button, Form, FormContainer, Label } from '@components/form/style';
 import { useUserStore } from '@store/index';
 import * as Inputs from '@components/form/input';
-import { StyledInfoBox } from 'src/pages/setting';
+import { StyledInfoBox } from 'app/setting/page';
 import { PasswordChangeModal } from '@components/modal';
 import { ValidationMessage } from '@components/form/validation';
 
@@ -234,7 +236,7 @@ export default function Modify() {
           <Button
             color={'tertiary'}
             style={{ marginBottom: '10px' }}
-            onClick={e => {
+            onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
               e.preventDefault();
               changePasswordModal.setOpen(true);
             }}

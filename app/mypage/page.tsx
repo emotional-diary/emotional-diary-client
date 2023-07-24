@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import { useRouter } from 'next/navigation';
 import styled from 'styled-components';
@@ -9,7 +11,7 @@ import { Typography } from '@components/typography';
 import { useDiaryListStore, useUserStore } from '@store/index';
 import { DiaryListCard } from '@components/card';
 import { theme } from 'src/theme';
-import { StyledTopBackground } from '../../../app/page';
+import { StyledTopBackground } from '../client';
 
 const StyledRadiusBox = styled.div`
   padding: 6px 18px;

@@ -1,3 +1,5 @@
+'use client';
+
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 
@@ -37,10 +39,13 @@ export const useDiaryListStore = create(
   persist<{
     diaryList: Diary[];
     setDiaryList: (diaryList: Diary[]) => void;
+    updateDiaryList: (updater: (prev: Diary[]) => Diary[]) => void;
   }>(
     set => ({
       diaryList: [] as Diary[],
       setDiaryList: (diaryList: Diary[]) => set({ diaryList }),
+      updateDiaryList: updater =>
+        set(state => ({ diaryList: updater(state.diaryList) })),
     }),
     {
       name: 'diary-list',

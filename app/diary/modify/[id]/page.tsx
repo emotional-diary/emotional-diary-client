@@ -1,7 +1,8 @@
+'use client';
+
 import React from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter, useParams, useSearchParams } from 'next/navigation';
 import dynamic from 'next/dynamic';
-import { isEmpty } from 'lodash';
 
 import { Container } from '@components/layout';
 import { Typography } from '@components/typography';
@@ -22,14 +23,14 @@ const TextEditor = dynamic(() => import('@components/textEditor'), {
 
 export default function ModifyDiary() {
   const router = useRouter();
+  const { id } = useParams() as { id: string };
   const searchParams = useSearchParams();
   const { diary, setDiary } = useDiaryStore();
-  const { diaryList, setDiaryList } = useDiaryListStore();
+  const { diaryList, updateDiaryList } = useDiaryListStore();
   const { calendar } = useCalendarStore();
   const [step, setStep] = React.useState(0); // 0: select emotion, 1: write diary
   const [isLoading, setIsLoading] = React.useState(false);
 
-  const id = searchParams?.get('id');
   const queryStep = searchParams?.get('step')
     ? Number(searchParams?.get('step'))
     : 0;
@@ -62,7 +63,12 @@ export default function ModifyDiary() {
     setDiary({
       ...diaryData,
     });
-    setDiaryList([diaryData, ...diaryList]);
+    updateDiaryList(prev => {
+      const index = prev.findIndex(item => item.diaryID === diaryData.diaryID);
+      if (index === -1) return [diaryData, ...prev];
+      prev[index] = diaryData;
+      return [...prev];
+    });
 
     router.replace(`/diary/${id}`);
   };

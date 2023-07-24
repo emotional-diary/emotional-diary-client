@@ -1,5 +1,7 @@
+'use client';
+
 import React from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter, useParams } from 'next/navigation';
 import styled from 'styled-components';
 import { isEmpty } from 'lodash';
 
@@ -47,19 +49,18 @@ const ContentWrapper = styled.div`
 
 export default function DiaryDetail() {
   const router = useRouter();
-  const searchParams = useSearchParams();
+  const { id } = useParams() as { id: string };
   const {
     calendar: { selectedDate },
   } = useCalendarStore();
   const { diary, setDiary } = useDiaryStore();
   const { diaryList } = useDiaryListStore();
 
-  const id = searchParams?.get('id');
-
   const selectedDiary = React.useMemo(() => {
     if (!selectedDate) return null;
     if (!diaryList.length) return null;
-    const diary = diaryList.find(diary => diary.diaryID === id);
+    console.log('diaryList', diaryList);
+    const diary = diaryList?.find(diary => diary.diaryID === id);
     return diary;
   }, [selectedDate, diaryList]) as Diary;
 
@@ -83,7 +84,7 @@ export default function DiaryDetail() {
   //   };
   // }, []);
 
-  console.log('diary', diary);
+  // console.log('diary', diary);
 
   if (isEmpty(diary)) {
     return null;
