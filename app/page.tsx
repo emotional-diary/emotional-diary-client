@@ -15,7 +15,7 @@ export default async function Home() {
   return <HomePage props={props} />;
 }
 
-export function getServerSideProps(): HomeProps {
+export async function getServerSideProps(): Promise<HomeProps> {
   const accessToken = cookies().get('accessToken');
   const nickname = decodeURIComponent(accessToken?.value || '');
 

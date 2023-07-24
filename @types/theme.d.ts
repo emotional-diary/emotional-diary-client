@@ -23,6 +23,10 @@ interface Palette {
     disabled: string;
     hint: string;
   };
+  background: {
+    default: string;
+    paper: string;
+  };
 }
 
 interface PaletteWithIndexSignature extends Palette {
