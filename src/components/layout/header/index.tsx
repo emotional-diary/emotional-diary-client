@@ -1,12 +1,16 @@
 import React from 'react';
 import styled from 'styled-components';
-import { useRouter, usePathname, useSearchParams } from 'next/navigation';
+import { useRouter, usePathname, useParams } from 'next/navigation';
 
 import * as Icons from '@components/icons';
 import { Button, IconButton } from '@components/form/style';
 import { Typography } from '@components/typography';
 import Popper from '@components/popper';
-import { useCalendarStore, useDiaryListStore } from '@store/index';
+import {
+  useCalendarStore,
+  useDiaryListStore,
+  useDiaryStore,
+} from '@store/index';
 import { theme } from 'src/theme';
 import { CalendarModal } from '@components/calendar';
 
@@ -63,12 +67,11 @@ const DatepickerTitle = ({
 const Header = ({ title, back, bgcolor, type, icon, style }: HeaderProps) => {
   const router = useRouter();
   const pathname = usePathname();
-  const searchParams = useSearchParams();
+  const { id } = useParams() as { id: string };
+  const { resetDiary } = useDiaryStore();
   const { diaryList } = useDiaryListStore();
   const [isPopperOpen, setIsPopperOpen] = React.useState(false);
   const [isModalOpen, setIsModalOpen] = React.useState(false);
-
-  const id = searchParams?.get('id');
 
   const includeExceptionPath = React.useMemo(
     () => pathname?.includes('/diary/modify'),
@@ -80,6 +83,8 @@ const Header = ({ title, back, bgcolor, type, icon, style }: HeaderProps) => {
     // TODO: 일기 삭제 API 연결
     const index = diaryList.findIndex(diary => diary.diaryID === id);
     diaryList.splice(index, 1);
+
+    resetDiary();
 
     window.localStorage.setItem(
       'diary-list',

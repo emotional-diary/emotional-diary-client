@@ -30,9 +30,11 @@ export const useCalendarStore = create<{
 export const useDiaryStore = create<{
   diary: Diary;
   setDiary: (diary: Diary) => void;
+  resetDiary: () => void;
 }>(set => ({
   diary: {} as Diary,
   setDiary: (diary: Diary) => set({ diary }),
+  resetDiary: () => set({ diary: {} as Diary }),
 }));
 
 export const useDiaryListStore = create(
