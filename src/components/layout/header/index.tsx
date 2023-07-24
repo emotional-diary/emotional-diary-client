@@ -1,12 +1,16 @@
 import React from 'react';
 import styled from 'styled-components';
-import router from 'next/router';
+import { useRouter, usePathname, useParams } from 'next/navigation';
 
 import * as Icons from '@components/icons';
 import { Button, IconButton } from '@components/form/style';
 import { Typography } from '@components/typography';
 import Popper from '@components/popper';
-import { useCalendarStore, useDiaryListStore } from '@store/index';
+import {
+  useCalendarStore,
+  useDiaryListStore,
+  useDiaryStore,
+} from '@store/index';
 import { theme } from 'src/theme';
 import { CalendarModal } from '@components/calendar';
 
@@ -61,24 +65,26 @@ const DatepickerTitle = ({
 };
 
 const Header = ({ title, back, bgcolor, type, icon, style }: HeaderProps) => {
+  const router = useRouter();
+  const pathname = usePathname();
+  const { id } = useParams() as { id: string };
+  const { resetDiary } = useDiaryStore();
   const { diaryList } = useDiaryListStore();
   const [isPopperOpen, setIsPopperOpen] = React.useState(false);
   const [isModalOpen, setIsModalOpen] = React.useState(false);
 
-  const pathname = typeof window !== 'undefined' ? router.pathname : '';
-
   const includeExceptionPath = React.useMemo(
-    () => pathname.includes('/diary/modify'),
+    () => pathname?.includes('/diary/modify'),
     [pathname]
   );
 
   const removeDiary = () => {
     if (!window.confirm('정말 삭제하시겠습니까?')) return;
     // TODO: 일기 삭제 API 연결
-    const index = diaryList.findIndex(
-      diary => diary.diaryID === router.query.id
-    );
+    const index = diaryList.findIndex(diary => diary.diaryID === id);
     diaryList.splice(index, 1);
+
+    resetDiary();
 
     window.localStorage.setItem(
       'diary-list',
@@ -138,9 +144,7 @@ const Header = ({ title, back, bgcolor, type, icon, style }: HeaderProps) => {
             <div style={{ display: 'flex', flexDirection: 'column' }}>
               <Button
                 color={'tertiary.light'}
-                onClick={() =>
-                  router.push(`/diary/modify/${router.query.id}?step=0`)
-                }
+                onClick={() => router.push(`/diary/modify/${id}?step=0`)}
                 style={buttonStyle}
               >
                 <Typography variant={'label2'} color={'tertiary.main'}>

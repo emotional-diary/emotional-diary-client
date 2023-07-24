@@ -10,7 +10,11 @@ import 'react-quill/dist/quill.snow.css';
 
 const CustomToolbar = ({ date }: { date: string }) => (
   <div id="ql-toolbar">
-    <Typography variant={'h4'} color={'gray.dark'}>
+    <Typography
+      variant={'h4'}
+      color={'gray.dark'}
+      style={{ marginRight: 'auto' }}
+    >
       {dateToSting(date)}
     </Typography>
 
@@ -44,16 +48,16 @@ const TextEditorWrapper = styled.div`
     display: flex;
     justify-content: space-between;
     width: 100%;
-    border: none;
+    border: none !important;
     border-radius: 10px;
-    margin: 20px 30px 25px;
-    font-family: 'GangwonEduAll', sans-serif;
+    padding: 25px 30px 20px !important;
+    font-family: 'GangwonEduAll', sans-serif !important;
   }
   .ql-container {
     font-size: 16px;
     line-height: 18px;
     font-family: 'GangwonEduAll', sans-serif;
-    border: none;
+    border: none !important;
     padding: 0px 30px 120px;
     overflow-y: auto;
     ::-webkit-scrollbar {

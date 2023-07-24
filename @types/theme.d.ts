@@ -1,3 +1,11 @@
+import 'styled-components';
+
+declare module 'styled-components' {
+  export interface DefaultTheme {
+    palette: Palette;
+  }
+}
+
 interface Palette {
   primary: ColorVariant;
   secondary: ColorVariant;
@@ -15,7 +23,27 @@ interface Palette {
     disabled: string;
     hint: string;
   };
+  background: {
+    default: string;
+    paper: string;
+  };
 }
+
+interface PaletteWithIndexSignature extends Palette {
+  [key: string]: {
+    [key: string]: string;
+  };
+}
+
+type PaletteKeys = keyof Palette;
+
+type PaletteValues<T extends PaletteKeys> = Palette[T] extends object
+  ? `${T}.${keyof Palette[T]}`
+  : never;
+
+type PaletteTypes = {
+  [K in PaletteKeys]: PaletteValues<K>;
+};
 
 type ColorVariant = {
   main: string;
@@ -43,10 +71,10 @@ type TypographyVariantKeys =
   | 'label2'
   | 'label3';
 
-interface TypographyProps {
-  variant: TypographyVariantKeys;
-  color?: Partial<Palette>;
-}
+export type TypographyProps = {
+  $variant: TypographyVariantKeys;
+  color?: PaletteTypes[PaletteKeys];
+};
 
 interface ButtonProps {
   size?: 'small' | 'medium' | 'large';

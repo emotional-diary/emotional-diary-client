@@ -1,5 +1,5 @@
 import React from 'react';
-import router from 'next/router';
+import { useRouter } from 'next/navigation';
 import axios from 'axios';
 
 import { Typography } from '@components/typography';
@@ -12,6 +12,7 @@ import * as Inputs from './input';
 import { ValidationMessage } from './validation';
 
 const LoginForm = () => {
+  const router = useRouter();
   const [user, setUser] = React.useState<{ email: string; password: string }>({
     email: '',
     password: '',
@@ -301,6 +302,7 @@ const LoginForm = () => {
 };
 
 const SignUpForm = ({ social }: { social?: Social }) => {
+  const router = useRouter();
   const { user, setUser } = useUserStore();
   const [joinData, setJoinData] = React.useState<JoinUser>({
     nickname: '',

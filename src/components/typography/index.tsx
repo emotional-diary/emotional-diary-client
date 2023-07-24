@@ -1,8 +1,13 @@
 import styled from 'styled-components';
 
-import { typographyVariants } from 'src/theme';
+import { theme, typographyVariants } from 'src/theme';
+import {
+  Palette,
+  PaletteWithIndexSignature,
+  TypographyProps,
+} from '../../../@types/theme';
 
-const styler = (variant: TypographyProps['variant']) => {
+const styler = (variant: TypographyProps['$variant']) => {
   const [fontSize, fontWeight, lineHeight] = typographyVariants[variant];
   return `
     font-size: ${fontSize}px;
@@ -12,11 +17,16 @@ const styler = (variant: TypographyProps['variant']) => {
 };
 
 const StyledText = styled.div<TypographyProps>`
-  ${props => styler(props.variant)};
-  color: ${props =>
-    props.theme.palette[props.color?.split('.')[0] || 'common'][
-      props.color?.split('.')[1] || 'black'
-    ]};
+  ${props => styler(props.$variant)};
+  color: ${props => {
+    const splitedColor = (props.color?.split('.') as string[]) || [
+      'common',
+      'black',
+    ];
+    return (props.theme.palette as PaletteWithIndexSignature)[
+      `${splitedColor[0]}`
+    ][`${splitedColor[1]}`];
+  }};
   margin: 0;
 `;
 
@@ -41,7 +51,7 @@ const Typography = ({
   className,
 }: {
   component?: 'div' | 'span' | 'p' | 'pre';
-  variant?: TypographyProps['variant'];
+  variant?: TypographyProps['$variant'];
   color?: string;
   style?: React.CSSProperties;
   onClick?: () => void;
@@ -68,10 +78,11 @@ const Typography = ({
   return (
     <Component
       className={className}
-      variant={variant}
+      $variant={variant}
       color={color}
       style={style}
       onClick={onClick}
+      theme={theme}
     >
       {children}
     </Component>
