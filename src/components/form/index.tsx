@@ -1,6 +1,7 @@
 import React from 'react';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
+import { useMutation, useQuery } from '@tanstack/react-query';
 
 import { Typography } from '@components/typography';
 import { useUserStore } from '@store/index';
@@ -33,6 +34,29 @@ const LoginForm = () => {
       setOpen,
     };
   })();
+
+  const loginMutation = useMutation({
+    mutationFn: async () => {
+      const res = await axios.post('/api/user/login', {
+        ...user,
+      });
+      return res.data;
+    },
+    onSuccess: data => {
+      if (data) {
+        setIsLogin(true);
+      }
+    },
+    onError: error => {
+      setValidation({
+        ...validation,
+        password: {
+          status: true,
+          message: '이메일이나 비밀번호가 올바르지 않아요.',
+        },
+      });
+    },
+  });
 
   const validateEmail = () => {
     const regex = /^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[a-zA-Z0-9]+$/;
@@ -91,27 +115,7 @@ const LoginForm = () => {
       return;
     }
 
-    const res = await fetch('/api/user/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        user,
-      }),
-    });
-
-    if (res.status === 200) {
-      setIsLogin(true);
-    } else {
-      setValidation({
-        ...validation,
-        password: {
-          status: true,
-          message: '이메일이나 비밀번호가 올바르지 않아요.',
-        },
-      });
-    }
+    loginMutation.mutate();
   };
 
   const handleSocialLogin =
@@ -129,8 +133,6 @@ const LoginForm = () => {
       router.push('/');
     }
   }, [isLogin]);
-
-  console.log(validation);
 
   return (
     <div
@@ -312,7 +314,6 @@ const SignUpForm = ({ social }: { social?: Social }) => {
     gender: '',
   });
   const [passwordCheck, setPasswordCheck] = React.useState<string>('');
-
   const [validation, setValidation] = React.useState<
     Omit<UserValidation, 'social'>
   >({
@@ -323,6 +324,39 @@ const SignUpForm = ({ social }: { social?: Social }) => {
     birthday: { status: false, message: '' },
     gender: { status: false, message: '' },
   });
+
+  const signupMutation = useMutation({
+    mutationFn: async () => {
+      const res = await axios.post('/api/user/signup', {
+        email: joinData.email,
+        password: joinData.password,
+        name: joinData.nickname,
+        birth: joinData.birthday || null,
+        loginType: social ?? 'LOCAL',
+        terms: [
+          {
+            termId: 1,
+            isAgree: true,
+          },
+          {
+            termId: 2,
+            isAgree: true,
+          },
+        ],
+      });
+      return res.data;
+    },
+  });
+
+  // const getProfile = useMutation({
+  //   mutationKey: ['/api/user/email'],
+  //   mutationFn: async () => {
+  //     const res = await axios.post('/api/user/email', {
+  //       email: joinData.email,
+  //     });
+  //     return res.data;
+  //   },
+  // });
 
   const validateNickname = () => {
     let koreanCount = 0;
@@ -465,8 +499,6 @@ const SignUpForm = ({ social }: { social?: Social }) => {
     [joinData]
   );
 
-  console.log(validation);
-
   const handlePasswordCheckChange = (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -485,7 +517,7 @@ const SignUpForm = ({ social }: { social?: Social }) => {
 
     if (
       !nickname.status ||
-      // !email.status ||
+      !email.status ||
       !password.status ||
       !passwordCheck.status
     ) {
@@ -504,28 +536,21 @@ const SignUpForm = ({ social }: { social?: Social }) => {
       return;
     }
 
-    const res = await axios.post('/api/user/signup', {
-      user: { ...joinData },
-    });
-    // const res = await fetch('/api/user/signup', {
-    //   method: 'POST',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //   },
-    //   body: JSON.stringify({
-    //     user: { ...joinData },
-    //   }),
-    // });
+    const signup = await signupMutation.mutateAsync();
 
-    if (res.status === 200) {
-      console.log('회원가입 성공', res);
-      setUser({
-        ...res.data.user,
-      });
-      router.push('/signup/complete');
-    } else {
-      alert('회원가입에 실패했습니다.');
+    if (signup.statusCode >= 400) {
+      alert(signup.responseMessage);
+      return;
     }
+
+    // const profile = await getProfile.mutateAsync();
+    // console.log('회원가입 성공, 프로필 조회', profile.data);
+    // if (profile.data) {
+    //   setUser({
+    //     ...profile.data,
+    //   });
+    // }
+    router.push('/signup/complete');
   };
 
   if (social === 'kakao') {

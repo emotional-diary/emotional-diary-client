@@ -1,32 +1,39 @@
 import { NextResponse } from 'next/server';
+import axios from 'axios';
 
-import { compare, hash } from '@utils/bcrypt';
+import { hash } from '@utils/bcrypt';
 
 export async function POST(request: Request) {
-  const res = await request.json();
-  console.log('res', res);
+  try {
+    const req = await request.json();
+    const hashedPassword = await hash(req.password);
 
-  // 회원가입 시
-  const hashedPassword = await hash(res.user.password);
-  console.log(hashedPassword);
+    const res = await axios.post(`${process.env.SERVER_HOST}/v1/users/signup`, {
+      ...req,
+      password: hashedPassword,
+    });
+    const { data } = res.data;
 
-  // 로그인 시
-  const match = await compare(res.user.password, hashedPassword);
-  console.log(match);
+    console.log('res', res.data);
 
-  delete res.user.password;
-
-  return NextResponse.json(
-    {
-      user: res.user,
-    },
-    {
-      status: 200,
+    return NextResponse.json(res.data, {
       headers: {
         'Set-Cookie': `accessToken=${encodeURIComponent(
-          res.user.nickname
+          data.accessToken
         )};Max-Age=3600;HttpOnly;Secure;Path=/`,
       },
+    });
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      return NextResponse.json(error.response?.data, {
+        status: error.response?.status,
+      });
+    } else {
+      console.error(`${__dirname} error`, error);
+
+      return NextResponse.json(error, {
+        status: 500,
+      });
     }
-  );
+  }
 }
