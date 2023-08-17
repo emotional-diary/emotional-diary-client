@@ -21,11 +21,10 @@ export async function POST(request: NextRequest) {
     }
 
     console.log('req', req);
-    console.log('accessToken', accessToken);
 
     const res = await axios.post(
       `${process.env.SERVER_HOST}/v1/users/verify-pwd`,
-      { req },
+      { ...req },
       {
         headers: {
           authorization: `Bearer ${accessToken}`,

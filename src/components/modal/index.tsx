@@ -1,5 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
+import { useMutation } from '@tanstack/react-query';
+import axios from 'axios';
 
 import { Button, Form, Input, Label } from '@components/form/style';
 import { Typography } from '@components/typography';
@@ -148,6 +150,15 @@ export const PasswordChangeModal = ({
   ];
   const buttons = ['다음', '변경할래요'];
 
+  const verifyPasswordMutation = useMutation({
+    mutationFn: async () => {
+      const res = await axios.post('/api/user/password/verify', {
+        password,
+      });
+      return res.data;
+    },
+  });
+
   const reset = () => {
     setStep(0);
     setPassword('');
@@ -229,11 +240,19 @@ export const PasswordChangeModal = ({
     }
   }, [password, passwordCheck]);
 
-  // TODO: 현재 비밀번호 확인 API 연결
-  const comparePassword = async () => {
-    // success
+  const verifyPassword = async () => {
+    const { data, statusCode, responseMessage } =
+      await verifyPasswordMutation.mutateAsync();
+
     setPassword('');
-    return true;
+
+    if (statusCode >= 400) {
+      alert(responseMessage);
+      return false;
+    }
+    if (data) {
+      return true;
+    }
   };
 
   // TODO: 비밀번호 변경 API 연결
@@ -247,7 +266,7 @@ export const PasswordChangeModal = ({
     if (step === 0) {
       if (!validatePassword()) return;
 
-      const success = await comparePassword();
+      const success = await verifyPassword();
       if (!success) return;
     }
     if (step === 1) {
@@ -297,7 +316,9 @@ export const PasswordChangeModal = ({
               name="password"
               placeholder="비밀번호를 입력해주세요."
               value={password}
-              onChange={e => setPassword(e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setPassword(e.target.value)
+              }
               onBlur={handleUserBlur}
               maxLength={128}
             />
@@ -318,7 +339,9 @@ export const PasswordChangeModal = ({
                   name="passwordCheck"
                   placeholder="입력한 비밀번호와 동일하게 입력해주세요!"
                   value={passwordCheck}
-                  onChange={e => setPasswordCheck(e.target.value)}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    setPasswordCheck(e.target.value)
+                  }
                   onBlur={handleUserBlur}
                   maxLength={128}
                 />
@@ -459,7 +482,7 @@ export const PasswordFindModal = ({
   }, [password, passwordCheck]);
 
   // TODO: 현재 비밀번호 확인 API 연결
-  const comparePassword = async () => {
+  const verifyPassword = async () => {
     // success
     setPassword('');
     return true;
@@ -540,7 +563,9 @@ export const PasswordFindModal = ({
                   name="password"
                   placeholder="비밀번호를 입력해주세요."
                   value={password}
-                  onChange={e => setPassword(e.target.value)}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    setPassword(e.target.value)
+                  }
                   onBlur={handleUserBlur}
                   maxLength={128}
                 />
@@ -559,7 +584,9 @@ export const PasswordFindModal = ({
                   name="passwordCheck"
                   placeholder="입력한 비밀번호와 동일하게 입력해주세요!"
                   value={passwordCheck}
-                  onChange={e => setPasswordCheck(e.target.value)}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    setPasswordCheck(e.target.value)
+                  }
                   onBlur={handleUserBlur}
                   maxLength={128}
                 />
@@ -619,7 +646,7 @@ export const WithdrawalModal = ({
   };
 
   // TODO: 현재 비밀번호 확인 API 연결
-  const comparePassword = async () => {
+  const verifyPassword = async () => {
     // success
     setPassword('');
     return true;
@@ -711,7 +738,9 @@ export const WithdrawalModal = ({
               name="password"
               placeholder="비밀번호를 입력해주세요."
               value={password}
-              onChange={e => setPassword(e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setPassword(e.target.value)
+              }
               onBlur={handleUserBlur}
               maxLength={128}
             />
@@ -726,7 +755,7 @@ export const WithdrawalModal = ({
           style={{ width: '100%', marginTop: 20 }}
           onClick={async () => {
             if (!validatePassword()) return;
-            const success = await comparePassword();
+            const success = await verifyPassword();
             if (success) {
               await withdraw();
             }
