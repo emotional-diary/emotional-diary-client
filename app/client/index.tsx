@@ -3,6 +3,7 @@
 import React from 'react';
 import { useRouter } from 'next/navigation';
 import styled from 'styled-components';
+import { isEmpty } from 'lodash';
 
 import { Container } from '@components/layout';
 import { Typography } from '@components/typography';
@@ -22,6 +23,8 @@ import {
 } from '../../src/store';
 import 'react-datepicker/dist/react-datepicker.css';
 import { HomeProps } from 'app/page';
+import { useQuery } from '@tanstack/react-query';
+import axios from 'axios';
 
 // top background
 export const StyledTopBackground = styled.div`
@@ -54,11 +57,21 @@ export default function HomePage({ props }: { props: HomeProps }) {
   const router = useRouter();
   const { user, setUser } = useUserStore();
   const { diary } = useDiaryStore();
-  const { diaryList } = useDiaryListStore();
+  const { diaryList, setDiaryList } = useDiaryListStore(user?.userID)();
   const {
     calendar: { selectedDate },
   } = useCalendarStore();
   const [isTooltipOpen, setIsTooltipOpen] = React.useState(true);
+
+  const getDiaryList = useQuery({
+    queryKey: ['diaries'],
+    queryFn: async () => {
+      const res = await axios.get('/api/diaries');
+      return res.data;
+    },
+    enabled: false,
+    retry: false,
+  });
 
   const selectedDiary = React.useMemo(() => {
     if (!selectedDate) return null;
@@ -70,16 +83,35 @@ export default function HomePage({ props }: { props: HomeProps }) {
     return diary;
   }, [selectedDate, diaryList]);
 
-  // console.log('props', props);
-
   React.useEffect(() => {
-    if (!user?.nickname) {
-      setUser({
-        ...user,
-        nickname: props.profile?.nickname,
-      });
+    if (!user?.name || user.name !== props.profile?.name) {
+      setUser(props.profile);
     }
   }, []);
+
+  React.useEffect(() => {
+    if (isEmpty(user)) return;
+
+    const diaryList = window.localStorage.getItem(
+      `diary-list-${user.userID}`
+    ) as string;
+    const parsedDiaryList = JSON.parse(diaryList) as {
+      state: {
+        diaryList: Diary[];
+      };
+      version: number;
+    };
+    console.log('parsedDiaryList', parsedDiaryList?.state?.diaryList);
+    if (!parsedDiaryList?.state?.diaryList?.length) {
+      (async () => {
+        const { data: result } = await getDiaryList.refetch();
+        console.log('data', result);
+        if (result) {
+          setDiaryList(result.data.diarysDtoList);
+        }
+      })();
+    }
+  }, [user]);
 
   const handleTooltipClose = () => {
     setIsTooltipOpen(false);
@@ -125,8 +157,8 @@ export default function HomePage({ props }: { props: HomeProps }) {
 
       <MessageOfToday>
         <Typography variant={'subtitle2'} color={'gray.dark'}>
-          {diary?.aiComment ? (
-            <div dangerouslySetInnerHTML={{ __html: diary.aiComment }} />
+          {diary?.comment ? (
+            <div dangerouslySetInnerHTML={{ __html: diary.comment }} />
           ) : (
             <>
               <Typography
@@ -135,7 +167,7 @@ export default function HomePage({ props }: { props: HomeProps }) {
                 color={'secondary.light'}
                 style={{ marginRight: '4px' }}
               >
-                {user.nickname ?? props.profile?.nickname}님
+                {user.name ?? props.profile?.name}님
               </Typography>
               오늘은 어떤 하루였나요?
             </>

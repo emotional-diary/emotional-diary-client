@@ -37,21 +37,22 @@ export const useDiaryStore = create<{
   resetDiary: () => set({ diary: {} as Diary }),
 }));
 
-export const useDiaryListStore = create(
-  persist<{
-    diaryList: Diary[];
-    setDiaryList: (diaryList: Diary[]) => void;
-    updateDiaryList: (updater: (prev: Diary[]) => Diary[]) => void;
-  }>(
-    set => ({
-      diaryList: [] as Diary[],
-      setDiaryList: (diaryList: Diary[]) => set({ diaryList }),
-      updateDiaryList: updater =>
-        set(state => ({ diaryList: updater(state.diaryList) })),
-    }),
-    {
-      name: 'diary-list',
-      storage: createJSONStorage(() => localStorage),
-    }
-  )
-);
+export const useDiaryListStore = (userID: number) =>
+  create(
+    persist<{
+      diaryList: Diary[];
+      setDiaryList: (diaryList: Diary[]) => void;
+      updateDiaryList: (updater: (prev: Diary[]) => Diary[]) => void;
+    }>(
+      set => ({
+        diaryList: [] as Diary[],
+        setDiaryList: (diaryList: Diary[]) => set({ diaryList }),
+        updateDiaryList: updater =>
+          set(state => ({ diaryList: updater(state.diaryList) })),
+      }),
+      {
+        name: `diary-list-${userID}`,
+        storage: userID ? createJSONStorage(() => localStorage) : undefined,
+      }
+    )
+  );
