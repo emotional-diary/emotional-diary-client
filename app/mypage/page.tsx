@@ -32,13 +32,13 @@ const DiaryListWrapper = styled.div`
 export default function MyPage() {
   const router = useRouter();
   const { user } = useUserStore();
-  const { diaryList } = useDiaryListStore();
+  const { diaryList } = useDiaryListStore(user?.userID)();
 
   const [nickname, setNickname] = React.useState('');
   const [diaries, setDiaries] = React.useState<Diary[]>([]);
 
   React.useEffect(() => {
-    setNickname(user?.nickname || '');
+    setNickname(user?.name || '');
     setDiaries(diaryList || []);
   }, []);
 

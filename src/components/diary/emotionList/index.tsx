@@ -14,12 +14,12 @@ export const StyledEmojiContainer = styled('div')`
 `;
 
 export const emotions = {
-  joy: '😀',
+  happy: '😀',
   sad: '😢',
   angry: '😡',
-  nervous: '😨',
-  hurt: '😭',
-  panic: '😳',
+  uneasy: '😨',
+  pain: '😭',
+  comfortable: '😳',
 };
 
 export const EmotionList = () => {
