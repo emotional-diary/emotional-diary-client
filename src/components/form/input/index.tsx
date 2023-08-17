@@ -13,26 +13,26 @@ import {
 import axios from 'axios';
 
 export const Nickname = ({
-  nickname,
+  name,
   onChange,
   onBlur,
 }: {
-  nickname: string;
+  name: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
 }) => (
   <>
-    <Label htmlFor="nickname">
+    <Label htmlFor="name">
       <Typography variant={'subtitle3'} color={'gray.dark'}>
         나의 이름
       </Typography>
     </Label>
     <Input
       type="text"
-      id="nickname"
-      name="nickname"
+      id="name"
+      name="name"
       placeholder="성을 제외하고 이름만 적어주세요!"
-      value={nickname}
+      value={name}
       onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
         if (!/^[가-힣ㄱ-ㅎㅏ-ㅣa-zA-Z]*$/.test(e.target.value)) {
           return;
@@ -317,8 +317,8 @@ export const Gender = ({
   gender,
   setJoinData,
 }: {
-  gender: string;
-  setJoinData: React.Dispatch<React.SetStateAction<User>>;
+  gender: string | null;
+  setJoinData: React.Dispatch<React.SetStateAction<JoinUser>>;
 }) => {
   const handleClick = (selectGender: string) => {
     setJoinData(prev => ({
@@ -341,30 +341,30 @@ export const Gender = ({
           marginBottom: 10,
         }}
       >
-        <GenderButton selected={gender === 'male'}>
+        <GenderButton selected={gender === 'MALE'}>
           <GenderRadioButton
             type="button"
             name="gender"
-            value="male"
-            onClick={() => handleClick('male')}
+            value="MALE"
+            onClick={() => handleClick('MALE')}
           />
           <Typography
             variant={'label2'}
-            color={gender === 'male' ? 'tertiary.main' : 'gray.main'}
+            color={gender === 'MALE' ? 'tertiary.main' : 'gray.main'}
           >
             남자
           </Typography>
         </GenderButton>
-        <GenderButton selected={gender === 'female'}>
+        <GenderButton selected={gender === 'FEMALE'}>
           <GenderRadioButton
             type="button"
             name="gender"
-            value="female"
-            onClick={() => handleClick('female')}
+            value="FEMALE"
+            onClick={() => handleClick('FEMALE')}
           />
           <Typography
             variant={'label2'}
-            color={gender === 'female' ? 'tertiary.main' : 'gray.main'}
+            color={gender === 'FEMALE' ? 'tertiary.main' : 'gray.main'}
           >
             여자
           </Typography>
@@ -378,21 +378,21 @@ export const Birthday = ({
   birthday,
   onChange,
 }: {
-  birthday: string;
+  birthday: string | null;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }) => (
   <>
-    <Label htmlFor="birthday">
+    <Label htmlFor="birth">
       <Typography variant={'subtitle3'} color={'gray.dark'}>
         내가 태어난날(선택)
       </Typography>
     </Label>
     <Input
-      type="birthday"
-      id="birthday"
-      name="birthday"
+      type="birth"
+      id="birth"
+      name="birth"
       placeholder="6자리로 입력해주세요! 예) 961024"
-      value={birthday}
+      value={birthday as string}
       onChange={onChange}
       maxLength={6}
     />

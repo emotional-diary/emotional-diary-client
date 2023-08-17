@@ -47,8 +47,8 @@ type PaletteTypes = {
 
 type ColorVariant = {
   main: string;
-  light?: string;
-  dark?: string;
+  light: string;
+  dark: string;
 };
 
 type TypographyVariantKeys =

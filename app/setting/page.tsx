@@ -36,8 +36,8 @@ export default function Setting() {
   })();
 
   const gender = {
-    male: '남성',
-    female: '여성',
+    MALE: '남성',
+    FEMALE: '여성',
   };
 
   React.useEffect(() => {
@@ -89,7 +89,7 @@ export default function Setting() {
           나의 이름
         </Typography>
         <Typography variant={'subtitle2'} color={'gray.dark'}>
-          {info?.nickname}
+          {info?.name}
         </Typography>
       </StyledInfoBox>
 
@@ -107,7 +107,7 @@ export default function Setting() {
           나의 성별
         </Typography>
         <Typography variant={'subtitle2'} color={'gray.dark'}>
-          {gender[info?.gender as 'male' | 'female']}
+          {gender[info?.gender as 'MALE' | 'FEMALE']}
         </Typography>
       </StyledInfoBox>
 
@@ -116,7 +116,7 @@ export default function Setting() {
           내가 태어난날
         </Typography>
         <Typography variant={'subtitle2'} color={'gray.dark'}>
-          {info?.birthday}
+          {info?.birth}
         </Typography>
       </StyledInfoBox>
 

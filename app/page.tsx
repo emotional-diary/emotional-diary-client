@@ -6,18 +6,16 @@ import HomePage from './client';
 import { absoluteUrl } from '@utils/ssr';
 
 export type HomeProps = {
-  profile: {
-    nickname: string;
-  };
+  profile: User;
 };
 
 export default async function Home() {
-  const props = await getServerSideProps();
+  const props = await initProps();
 
   return <HomePage props={props} />;
 }
 
-export async function getServerSideProps(): Promise<HomeProps> {
+export async function initProps(): Promise<HomeProps> {
   const accessToken = cookies().get('accessToken');
   const { origin } = absoluteUrl();
 
@@ -31,11 +29,9 @@ export async function getServerSideProps(): Promise<HomeProps> {
     },
   });
 
-  console.log('profile', profile);
+  // console.log('profile', profile);
 
   return {
-    profile: {
-      nickname: profile.data.name,
-    },
+    profile: profile.data,
   };
 }

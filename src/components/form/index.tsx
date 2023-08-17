@@ -307,21 +307,19 @@ const SignUpForm = ({ social }: { social?: Social }) => {
   const router = useRouter();
   const { user, setUser } = useUserStore();
   const [joinData, setJoinData] = React.useState<JoinUser>({
-    nickname: '',
+    name: '',
     email: '',
     password: '',
-    birthday: '',
+    birth: '',
     gender: '',
   });
   const [passwordCheck, setPasswordCheck] = React.useState<string>('');
-  const [validation, setValidation] = React.useState<
-    Omit<UserValidation, 'social'>
-  >({
-    nickname: { status: false, message: '' },
+  const [validation, setValidation] = React.useState<UserValidation>({
+    name: { status: false, message: '' },
     email: { status: false, message: '' },
     password: { status: false, message: '' },
     passwordCheck: { status: false, message: '' },
-    birthday: { status: false, message: '' },
+    birth: { status: false, message: '' },
     gender: { status: false, message: '' },
   });
 
@@ -330,8 +328,9 @@ const SignUpForm = ({ social }: { social?: Social }) => {
       const res = await axios.post('/api/user/signup', {
         email: joinData.email,
         password: joinData.password,
-        name: joinData.nickname,
-        birth: joinData.birthday || null,
+        name: joinData.name,
+        birth: joinData.birth || null,
+        gender: joinData.gender || null,
         loginType: social ?? 'LOCAL',
         terms: [
           {
@@ -362,15 +361,15 @@ const SignUpForm = ({ social }: { social?: Social }) => {
     let koreanCount = 0;
     let englishCount = 0;
 
-    for (let i = 0; i < joinData.nickname.length; i++) {
-      if (/[가-힣]/.test(joinData.nickname[i])) {
+    for (let i = 0; i < joinData.name.length; i++) {
+      if (/[가-힣]/.test(joinData.name[i])) {
         koreanCount++;
-      } else if (/[a-zA-Z]/.test(joinData.nickname[i])) {
+      } else if (/[a-zA-Z]/.test(joinData.name[i])) {
         englishCount++;
       } else {
         setValidation({
           ...validation,
-          nickname: {
+          name: {
             status: false,
             message: '자음이나 모음만 따로 사용할 수 없어요.',
           },
@@ -382,7 +381,7 @@ const SignUpForm = ({ social }: { social?: Social }) => {
     if ((koreanCount === 0 && englishCount === 0) || koreanCount > 3) {
       setValidation({
         ...validation,
-        nickname: {
+        name: {
           status: false,
           message: '한글 이름은 1~3자로 입력해 주세요.',
         },
@@ -392,7 +391,7 @@ const SignUpForm = ({ social }: { social?: Social }) => {
     if ((englishCount < 4 || englishCount > 16) && koreanCount === 0) {
       setValidation({
         ...validation,
-        nickname: {
+        name: {
           status: false,
           message: '영문 이름은 4~16자로 입력해 주세요.',
         },
@@ -402,7 +401,7 @@ const SignUpForm = ({ social }: { social?: Social }) => {
     if (koreanCount && englishCount) {
       setValidation({
         ...validation,
-        nickname: {
+        name: {
           status: false,
           message: '한글과 영문을 혼용할 수 없어요.',
         },
@@ -415,7 +414,7 @@ const SignUpForm = ({ social }: { social?: Social }) => {
 
   const validatePassword = () => {
     const regex = /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,16}$/;
-    if (!regex.test(joinData.password)) {
+    if (!regex.test(joinData.password as string)) {
       setValidation({
         ...validation,
         password: {
@@ -506,17 +505,17 @@ const SignUpForm = ({ social }: { social?: Social }) => {
   };
 
   const signupValidation = () => {
-    const { nickname, email, password, passwordCheck } = validation;
+    const { name, email, password, passwordCheck } = validation;
     console.log(validation);
 
     if (social) {
-      if (nickname.status) {
+      if (name.status) {
         return true;
       }
     }
 
     if (
-      !nickname.status ||
+      !name.status ||
       !email.status ||
       !password.status ||
       !passwordCheck.status
@@ -562,22 +561,22 @@ const SignUpForm = ({ social }: { social?: Social }) => {
 
         <Form>
           <Inputs.Nickname
-            nickname={joinData?.nickname}
+            name={joinData?.name}
             onChange={handleUserChange}
             onBlur={handleUserBlur}
           />
-          {validation.nickname.message && (
-            <ValidationMessage message={validation.nickname.message} />
+          {validation.name.message && (
+            <ValidationMessage message={validation.name.message} />
           )}
 
           <Inputs.Gender
             gender={joinData?.gender}
             setJoinData={
-              setJoinData as React.Dispatch<React.SetStateAction<User>>
+              setJoinData as React.Dispatch<React.SetStateAction<JoinUser>>
             }
           />
           <Inputs.Birthday
-            birthday={joinData?.birthday}
+            birthday={joinData?.birth}
             onChange={handleUserChange}
           />
 
@@ -585,7 +584,7 @@ const SignUpForm = ({ social }: { social?: Social }) => {
             color={'secondary'}
             style={{ width: '100%', marginTop: 'auto' }}
             onClick={handleSignUp}
-            disabled={joinData.nickname === ''}
+            disabled={joinData.name === ''}
           >
             <Typography variant={'label1'} color={'common.white'}>
               가입하기
@@ -604,12 +603,12 @@ const SignUpForm = ({ social }: { social?: Social }) => {
 
       <Form>
         <Inputs.Nickname
-          nickname={joinData?.nickname}
+          name={joinData?.name}
           onChange={handleUserChange}
           onBlur={handleUserBlur}
         />
-        {validation.nickname.message && (
-          <ValidationMessage message={validation.nickname.message} />
+        {validation.name.message && (
+          <ValidationMessage message={validation.name.message} />
         )}
 
         <Inputs.Email
@@ -666,11 +665,11 @@ const SignUpForm = ({ social }: { social?: Social }) => {
         <Inputs.Gender
           gender={joinData?.gender}
           setJoinData={
-            setJoinData as React.Dispatch<React.SetStateAction<User>>
+            setJoinData as React.Dispatch<React.SetStateAction<JoinUser>>
           }
         />
         <Inputs.Birthday
-          birthday={joinData?.birthday}
+          birthday={joinData?.birth}
           onChange={handleUserChange}
         />
 
