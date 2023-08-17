@@ -11,6 +11,7 @@ import {
   useCalendarStore,
   useDiaryListStore,
   useDiaryStore,
+  useUserStore,
 } from '@store/index';
 import { dateToSting } from '@utils/index';
 import { theme } from 'src/theme';
@@ -27,7 +28,6 @@ const DetailWrapper = styled.div`
 const Styled3DBox = styled.div`
   position: relative;
   padding: 10px 50px;
-  max-width: 280px;
   margin-top: 30px;
   background-color: ${({ theme }) => theme.palette.background.paper};
   color: #fff;
@@ -53,14 +53,14 @@ export default function DiaryDetail() {
   const {
     calendar: { selectedDate },
   } = useCalendarStore();
+  const { user } = useUserStore();
   const { diary, setDiary } = useDiaryStore();
-  const { diaryList } = useDiaryListStore();
+  const { diaryList } = useDiaryListStore(user?.userID)();
 
   const selectedDiary = React.useMemo(() => {
     if (!selectedDate) return null;
     if (!diaryList.length) return null;
-    console.log('diaryList', diaryList);
-    const diary = diaryList?.find(diary => diary.diaryID === id);
+    const diary = diaryList?.find(diary => diary.diaryID === Number(id));
     return diary;
   }, [selectedDate, diaryList]) as Diary;
 
@@ -68,7 +68,7 @@ export default function DiaryDetail() {
     if (isEmpty(diary)) {
       setDiary(selectedDiary);
     }
-  }, []);
+  }, [selectedDiary]);
 
   // React.useEffect(() => {
   //   const handleRouteChange = () => {
@@ -115,7 +115,7 @@ export default function DiaryDetail() {
           >
             <div
               dangerouslySetInnerHTML={{
-                __html: diary?.aiComment,
+                __html: diary?.comment,
               }}
             />
           </Typography>
