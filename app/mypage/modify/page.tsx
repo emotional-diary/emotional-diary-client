@@ -4,6 +4,7 @@ import React from 'react';
 import { useRouter } from 'next/navigation';
 import styled from 'styled-components';
 import axios from 'axios';
+import { useMutation } from '@tanstack/react-query';
 
 import { Container } from '@components/layout';
 import { Typography } from '@components/typography';
@@ -26,31 +27,40 @@ const SocialRadiusBox = styled.div`
 export default function Modify() {
   const router = useRouter();
   const { user, setUser } = useUserStore();
-  const [userData, setUserData] = React.useState<User>({
-    nickname: '',
+  const [userData, setUserData] = React.useState<
+    Pick<User, 'name' | 'birth' | 'email' | 'gender'>
+  >({
+    name: '',
     email: '',
-    birthday: '',
+    birth: '',
     gender: '',
   });
   const [validation, setValidation] = React.useState<
-    Pick<UserValidation, 'nickname'>
+    Pick<UserValidation, 'name'>
   >({
-    nickname: { status: true, message: '' },
+    name: { status: true, message: '' },
+  });
+
+  const updateUserMutation = useMutation({
+    mutationFn: async (user: Partial<User>) => {
+      const res = await axios.patch('/api/user', user);
+      return res.data;
+    },
   });
 
   const validateNickname = () => {
     let koreanCount = 0;
     let englishCount = 0;
 
-    for (let i = 0; i < userData.nickname.length; i++) {
-      if (/[가-힣]/.test(userData.nickname[i])) {
+    for (let i = 0; i < userData.name.length; i++) {
+      if (/[가-힣]/.test(userData.name[i])) {
         koreanCount++;
-      } else if (/[a-zA-Z]/.test(userData.nickname[i])) {
+      } else if (/[a-zA-Z]/.test(userData.name[i])) {
         englishCount++;
       } else {
         setValidation({
           ...validation,
-          nickname: {
+          name: {
             status: false,
             message: '자음이나 모음만 따로 사용할 수 없어요.',
           },
@@ -62,7 +72,7 @@ export default function Modify() {
     if ((koreanCount === 0 && englishCount === 0) || koreanCount > 3) {
       setValidation({
         ...validation,
-        nickname: {
+        name: {
           status: false,
           message: '한글 이름은 1~3자로 입력해 주세요.',
         },
@@ -72,7 +82,7 @@ export default function Modify() {
     if ((englishCount < 4 || englishCount > 16) && koreanCount === 0) {
       setValidation({
         ...validation,
-        nickname: {
+        name: {
           status: false,
           message: '영문 이름은 4~16자로 입력해 주세요.',
         },
@@ -82,7 +92,7 @@ export default function Modify() {
     if (koreanCount && englishCount) {
       setValidation({
         ...validation,
-        nickname: {
+        name: {
           status: false,
           message: '한글과 영문을 혼용할 수 없어요.',
         },
@@ -129,16 +139,10 @@ export default function Modify() {
       alert('변경된 정보가 없어요.');
       return false;
     }
-    const { nickname } = validation;
+    const { name } = validation;
     console.log(validation);
 
-    // if (social) {
-    //   if (nickname.status) {
-    //     return true;
-    //   }
-    // }
-
-    if (!nickname.status) {
+    if (!name.status) {
       alert('입력값을 확인해 주세요.');
       return false;
     }
@@ -154,19 +158,29 @@ export default function Modify() {
       return;
     }
 
-    const res = await axios.put('/api/user/profile', {
-      user: { ...userData },
-    });
-
-    if (res.status === 200) {
-      console.log('회원정보 변경 성공', res);
-      setUser({
-        ...res.data.user,
+    const { data, responseMessage, statusCode } =
+      await updateUserMutation.mutateAsync({
+        name: userData.name,
+        birth: userData.birth || null,
+        gender: userData.gender || null,
       });
-      router.back();
-    } else {
-      alert('회원정보 변경에 실패했습니다.');
+
+    if (statusCode >= 400) {
+      alert(responseMessage);
+      return;
     }
+
+    const newUser = {
+      ...user,
+      name: userData.name,
+      birth: userData.birth,
+      gender: userData.gender,
+    };
+
+    setUser(newUser);
+
+    alert('회원정보가 수정되었어요.');
+    router.back();
   };
 
   React.useEffect(() => {
@@ -203,12 +217,12 @@ export default function Modify() {
 
         <Form>
           <Inputs.Nickname
-            nickname={userData?.nickname}
+            name={userData?.name}
             onChange={handleUserChange}
             onBlur={handleUserBlur}
           />
-          {validation.nickname.message && (
-            <ValidationMessage message={validation.nickname.message} />
+          {validation.name.message && (
+            <ValidationMessage message={validation.name.message} />
           )}
 
           <Label htmlFor="email">
@@ -221,9 +235,9 @@ export default function Modify() {
               {userData.email}
             </Typography>
 
-            {user?.social && (
+            {user?.loginType !== 'LOCAL' && (
               <SocialRadiusBox>
-                <Typography variant={'subtitle2'}>{user.social}</Typography>
+                <Typography variant={'subtitle2'}>{user.loginType}</Typography>
               </SocialRadiusBox>
             )}
           </StyledInfoBox>
@@ -248,7 +262,7 @@ export default function Modify() {
 
           <Inputs.Gender gender={userData?.gender} setJoinData={setUserData} />
           <Inputs.Birthday
-            birthday={userData?.birthday}
+            birthday={userData?.birth}
             onChange={handleUserChange}
           />
 
