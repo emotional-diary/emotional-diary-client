@@ -159,6 +159,15 @@ export const PasswordChangeModal = ({
     },
   });
 
+  const changePasswordMutation = useMutation({
+    mutationFn: async () => {
+      const res = await axios.patch('/api/user/password/change', {
+        newPassword: password,
+      });
+      return res.data;
+    },
+  });
+
   const reset = () => {
     setStep(0);
     setPassword('');
@@ -249,15 +258,30 @@ export const PasswordChangeModal = ({
     if (statusCode >= 400) {
       alert(responseMessage);
       return false;
+    } else if (data === false) {
+      setValidation({
+        ...validation,
+        password: {
+          status: false,
+          message: '비밀번호가 일치하지 않아요.',
+        },
+      });
+      return false;
     }
     if (data) {
       return true;
     }
   };
 
-  // TODO: 비밀번호 변경 API 연결
   const changePassword = async () => {
-    // success
+    const { data, statusCode, responseMessage } =
+      await changePasswordMutation.mutateAsync();
+
+    if (statusCode >= 400) {
+      alert(responseMessage);
+      return;
+    }
+
     alert('비밀번호가 변경되었어요.');
     onClose();
   };
@@ -394,6 +418,16 @@ export const PasswordFindModal = ({
   ];
   const buttons = ['다음', '변경할래요'];
 
+  const findPasswordMutation = useMutation({
+    mutationFn: async () => {
+      const res = await axios.patch('/api/user/password/find', {
+        email,
+        newPassword: password,
+      });
+      return res.data;
+    },
+  });
+
   const reset = () => {
     setStep(0);
     setEmail('');
@@ -481,16 +515,21 @@ export const PasswordFindModal = ({
     }
   }, [password, passwordCheck]);
 
-  // TODO: 현재 비밀번호 확인 API 연결
-  const verifyPassword = async () => {
-    // success
-    setPassword('');
-    return true;
-  };
+  React.useEffect(() => {
+    if (validation.email.status) {
+      setStep(prev => prev + 1);
+    }
+  }, [validation.email.status]);
 
-  // TODO: 비밀번호 변경 API 연결
   const changePassword = async () => {
-    // success
+    const { data, statusCode, responseMessage } =
+      await findPasswordMutation.mutateAsync();
+
+    if (statusCode >= 400) {
+      alert(responseMessage);
+      return;
+    }
+
     alert('비밀번호가 변경되었어요.');
     onClose();
   };

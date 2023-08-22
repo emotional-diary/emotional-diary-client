@@ -184,7 +184,7 @@ export const Email = ({
     setValidation(validation => ({
       ...validation,
       email: {
-        status: false,
+        status: true,
         message: '',
       },
     }));
