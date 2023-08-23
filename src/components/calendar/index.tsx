@@ -10,6 +10,7 @@ import {
   useCalendarStore,
   useDiaryListStore,
   useDiaryStore,
+  useUserStore,
 } from '@store/index';
 import { Modal } from '@components/modal';
 
@@ -96,9 +97,9 @@ export const Calendar = () => {
     calendar: { selectedDate },
     setCalendar,
   } = useCalendarStore();
+  const { user } = useUserStore();
   const { setDiary } = useDiaryStore();
-  const { diaryList } = useDiaryListStore();
-  const [diaries, setDiaries] = React.useState<Diary[]>([]);
+  const { diaryList } = useDiaryListStore(user?.userID)();
 
   // const pathname =
   //   typeof window !== 'undefined' ? window.location.pathname : '';
@@ -108,15 +109,11 @@ export const Calendar = () => {
     [pathname]
   );
 
-  React.useEffect(() => {
-    setDiaries(diaryList);
-  }, []);
-
   const writtenDate = React.useCallback(
     (date: Date | undefined) => {
       // 선택된 날짜에 작성된 일기가 있는지 확인
       // 날짜가 하나씩 밀리기 때문에 하루 전 날짜를 구해서 비교
-      return diaries.find(diary => {
+      return diaryList.find(diary => {
         const previousDiaryAt = new Date(diary.diaryAt).setDate(
           new Date(diary.diaryAt).getDate() - 1
         );
@@ -126,11 +123,11 @@ export const Calendar = () => {
         );
       });
     },
-    [diaries]
+    [diaryList]
   );
 
   const selectedDiary = (date: Date) => {
-    const diary = diaries.find(
+    const diary = diaryList.find(
       diary => dateToSting(new Date(diary.diaryAt)) === dateToSting(date)
     );
     return diary;
