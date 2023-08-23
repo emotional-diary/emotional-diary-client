@@ -83,11 +83,15 @@ export const Email = ({
   const validateEmailCodeMutation = useMutation({
     mutationKey: ['/api/user/email/validation/check'],
     mutationFn: async () => {
-      const res = await axios.post('/api/user/email/validation/check', {
-        email,
-        code: emailAuth.code,
-      });
-      return res.data;
+      try {
+        const res = await axios.post('/api/user/email/validation/check', {
+          email,
+          code: emailAuth.code,
+        });
+        return res.data;
+      } catch (err: any) {
+        return err.response.data;
+      }
     },
   });
 
