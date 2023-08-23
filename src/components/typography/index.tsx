@@ -23,7 +23,7 @@ const StyledText = styled.div<TypographyProps>`
       'common',
       'black',
     ];
-    return (props.theme.palette as PaletteWithIndexSignature)[
+    return (props.theme.palette as unknown as PaletteWithIndexSignature)[
       `${splitedColor[0]}`
     ][`${splitedColor[1]}`];
   }};

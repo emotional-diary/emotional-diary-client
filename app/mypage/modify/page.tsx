@@ -11,7 +11,7 @@ import { Typography } from '@components/typography';
 import { Button, Form, FormContainer, Label } from '@components/form/style';
 import { useUserStore } from '@store/index';
 import * as Inputs from '@components/form/input';
-import { StyledInfoBox } from 'app/setting/page';
+// import { StyledInfoBox } from 'app/setting/page';
 import { PasswordChangeModal } from '@components/modal';
 import { ValidationMessage } from '@components/form/validation';
 
@@ -22,6 +22,16 @@ const SocialRadiusBox = styled.div`
   background-color: #f9dd4a;
   border-radius: 50px;
   padding: 7px 14px;
+`;
+
+const StyledInfoBox = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 20px;
+  border-radius: 50px;
+  background-color: ${props => props.theme.palette.gray.light};
 `;
 
 export default function Modify() {

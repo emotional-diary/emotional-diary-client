@@ -9,13 +9,7 @@ export type HomeProps = {
   profile: User;
 };
 
-export default async function Home() {
-  const props = await initProps();
-
-  return <HomePage props={props} />;
-}
-
-export async function initProps(): Promise<HomeProps> {
+async function initProps(): Promise<HomeProps> {
   const accessToken = cookies().get('accessToken');
   const { origin } = absoluteUrl();
 
@@ -34,4 +28,10 @@ export async function initProps(): Promise<HomeProps> {
   return {
     profile: profile.data,
   };
+}
+
+export default async function Home() {
+  const props = await initProps();
+
+  return <HomePage props={props} />;
 }

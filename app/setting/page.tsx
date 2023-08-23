@@ -11,7 +11,7 @@ import { theme } from 'src/theme';
 import { useUserStore } from '@store/index';
 import { WithdrawalModal } from '@components/modal';
 
-export const StyledInfoBox = styled.div`
+const StyledInfoBox = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
