@@ -1,9 +1,11 @@
 import 'styled-components';
 
+import { theme } from 'src/theme';
+
+type Theme = typeof theme;
+
 declare module 'styled-components' {
-  export interface DefaultTheme {
-    palette: Palette;
-  }
+  export interface DefaultTheme extends Theme {}
 }
 
 interface Palette {
