@@ -676,6 +676,22 @@ export const WithdrawalModal = ({
     password: { status: false, message: '' },
   });
 
+  const verifyPasswordMutation = useMutation({
+    mutationFn: async () => {
+      const res = await axios.post('/api/user/password/verify', {
+        password,
+      });
+      return res.data;
+    },
+  });
+
+  const withdrawMutation = useMutation({
+    mutationFn: async () => {
+      const res = await axios.delete('/api/user');
+      return res.data;
+    },
+  });
+
   const reset = () => {
     setStep(0);
     setPassword('');
@@ -684,18 +700,45 @@ export const WithdrawalModal = ({
     });
   };
 
-  // TODO: 현재 비밀번호 확인 API 연결
   const verifyPassword = async () => {
-    // success
+    const { data, statusCode, responseMessage } =
+      await verifyPasswordMutation.mutateAsync();
+
     setPassword('');
-    return true;
+
+    if (statusCode >= 400) {
+      alert(responseMessage);
+      return false;
+    } else if (data === false) {
+      setValidation({
+        ...validation,
+        password: {
+          status: false,
+          message: '비밀번호가 일치하지 않아요.',
+        },
+      });
+      return false;
+    }
+    if (data) {
+      return true;
+    }
   };
 
   const withdraw = async () => {
     if (confirm('정말 탈퇴하시겠어요?')) {
-      // TODO: 회원탈퇴 API 연결
-      alert('탈퇴되었어요.');
-      onClose();
+      const { data, statusCode, responseMessage } =
+        await withdrawMutation.mutateAsync();
+
+      if (statusCode >= 400) {
+        alert(responseMessage);
+        onClose();
+        return;
+      }
+
+      alert('회원이 탈퇴되었어요.');
+      setTimeout(() => {
+        window.location.href = '/';
+      }, 1000);
     } else {
       onClose();
     }

@@ -89,3 +89,47 @@ export async function PATCH(request: NextRequest) {
     }
   }
 }
+
+export async function DELETE(request: NextRequest) {
+  try {
+    const accessToken = request.cookies.get('accessToken')?.value;
+
+    if (!accessToken) {
+      return NextResponse.json(
+        {
+          message: 'Unauthorized',
+        },
+        {
+          status: 401,
+          headers: {
+            'Set-Cookie': `accessToken=;Max-Age=0;HttpOnly;Secure;Path=/`,
+          },
+        }
+      );
+    }
+
+    const res = await axios.delete(`${process.env.SERVER_HOST}/v1/users`, {
+      headers: {
+        authorization: `Bearer ${accessToken}`,
+      },
+    });
+
+    return NextResponse.json(res.data, {
+      headers: {
+        'Set-Cookie': `accessToken=;Max-Age=0;HttpOnly;Secure;Path=/`,
+      },
+    });
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      return NextResponse.json(error.response?.data, {
+        status: error.response?.status,
+      });
+    } else {
+      console.error(`${__dirname} error`, error);
+
+      return NextResponse.json(error, {
+        status: 500,
+      });
+    }
+  }
+}
