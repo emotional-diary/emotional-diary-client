@@ -30,37 +30,19 @@ export default function SignUpComplete() {
         <Typography variant={'h3'} color={'gray.dark'}>
           가입을 진심으로 축하해요!
         </Typography>
-        <Typography
-          variant={'subtitle1'}
-          color={'gray.dark'}
-          style={{ marginTop: 16 }}
-        >
-          앞으로 감성일기에서 추억을 쌓아가세요
-        </Typography>
       </div>
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          position: 'absolute',
-          top: '35%',
-        }}
+
+      <div style={{ padding: '10px 30px' }}>
+        <img src={'/images/icons/signup_complete.png'} width={'100%'} />
+      </div>
+
+      <Typography
+        variant={'subtitle1'}
+        color={'gray.dark'}
+        style={{ marginTop: 16 }}
       >
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            marginRight: '5px',
-            marginBottom: '12px',
-          }}
-        >
-          <Icons.Heart width={22} height={20} />
-          <Icons.HeartWhite width={35} height={33} />
-        </div>
-        <Icons.Coffee width={76} height={53} />
-      </div>
+        앞으로 감성일기에서 추억을 쌓아가세요
+      </Typography>
 
       <div
         style={{
