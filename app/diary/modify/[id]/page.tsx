@@ -3,6 +3,8 @@
 import React from 'react';
 import { useRouter, useParams, useSearchParams } from 'next/navigation';
 import dynamic from 'next/dynamic';
+import { useMutation } from '@tanstack/react-query';
+import axios from 'axios';
 
 import { Container } from '@components/layout';
 import { Typography } from '@components/typography';
@@ -13,6 +15,7 @@ import {
   useCalendarStore,
   useDiaryListStore,
   useDiaryStore,
+  useUserStore,
 } from '@store/index';
 import { changeDateFormat } from '@utils/index';
 import { EmotionList } from '@components/diary/emotionList';
@@ -25,8 +28,9 @@ export default function ModifyDiary() {
   const router = useRouter();
   const { id } = useParams() as { id: string };
   const searchParams = useSearchParams();
+  const { user } = useUserStore();
   const { diary, setDiary } = useDiaryStore();
-  const { diaryList, updateDiaryList } = useDiaryListStore();
+  const { diaryList, updateDiaryList } = useDiaryListStore(user?.userID)();
   const { calendar } = useCalendarStore();
   const [step, setStep] = React.useState(0); // 0: select emotion, 1: write diary
   const [isLoading, setIsLoading] = React.useState(false);
@@ -35,30 +39,35 @@ export default function ModifyDiary() {
     ? Number(searchParams?.get('step'))
     : 0;
 
-  // TODO: 일기 수정 후, aiComment를 받아오는 API 호출
-  const getDiaryData = () => {
-    return new Promise<Partial<Diary>>((resolve, reject) => {
-      setTimeout(() => {
-        resolve({
-          aiComment: '오늘 하루도 수고했어요!',
-        });
-      }, 2000);
-    });
-  };
+  const updateDiaryMutation = useMutation({
+    mutationFn: async (diary: Partial<Diary>) => {
+      const res = await axios.patch('/api/diary', diary);
+      return res.data;
+    },
+  });
 
   const handleSaveDiary = async () => {
     if (isLoading) return;
     if (!diary.content?.length) return alert('내용을 추가해 주세요');
     setIsLoading(true);
 
-    const { aiComment } = await getDiaryData();
+    const { data, statusCode, responseMessage } =
+      await updateDiaryMutation.mutateAsync({
+        content: diary.content,
+        diaryAt: changeDateFormat(calendar.selectedDate as Date, true),
+        emotion: diary.emotion,
+        diaryID: diary.diaryID,
+      });
 
-    // TODO: 일기 수정 시에는 날짜 중에 updatedAt만 변경
+    if (statusCode >= 400) {
+      alert(responseMessage);
+      setIsLoading(false);
+      return;
+    }
+
     const diaryData = {
       ...diary,
-      aiComment: aiComment as string,
-      diaryAt: changeDateFormat(calendar.selectedDate as Date),
-      updatedAt: changeDateFormat(new Date()),
+      ...data,
     };
     setDiary({
       ...diaryData,
@@ -72,8 +81,6 @@ export default function ModifyDiary() {
 
     router.replace(`/diary/${id}`);
   };
-
-  // console.log('diary', diary);
 
   const handleNextStep = () => {
     if (!diary.emotion) return alert('기분을 선택해 주세요');

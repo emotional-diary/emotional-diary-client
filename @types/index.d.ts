@@ -1,14 +1,18 @@
 interface User {
-  nickname: string;
+  userID: number;
+  name: string;
   email: string;
-  birthday: string;
-  gender: string;
-  social?: Social;
+  birth: string | null;
+  gender: string | null;
+  loginType: 'LOCAL' | Social;
+  createdAt: string;
+  updatedAt: string;
 }
 
-type JoinUser = User & {
-  password: string;
-};
+type JoinUser = Pick<User, 'name' | 'email' | 'birth' | 'gender'> &
+  Partial<{
+    password: string;
+  }>;
 
 type UserValidationKeys = keyof JoinUser | 'passwordCheck';
 
@@ -32,14 +36,16 @@ type Calendar = {
 };
 
 type Diary = {
-  diaryID: string;
-  writerID: string;
+  diaryID: number;
+  userID: string;
+  userName: string;
   createdAt: string;
   updatedAt: string;
   diaryAt: string;
   content: string;
-  aiComment: string;
-  emotion: 'joy' | 'sad' | 'angry' | 'nervous' | 'hurt' | 'panic' | null;
+  commentID: number;
+  comment: string;
+  emotion: 'happy' | 'sad' | 'angry' | 'uneasy' | 'pain' | 'comfortable' | null;
   imageUrl?: string[];
   metaData?: {};
 };

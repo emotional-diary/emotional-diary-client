@@ -1,31 +1,37 @@
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
+import axios from 'axios';
 
 import HomePage from './client';
+import { absoluteUrl } from '@utils/ssr';
 
 export type HomeProps = {
-  profile: {
-    nickname: string;
-  };
+  profile: User;
 };
 
 export default async function Home() {
-  const props = await getServerSideProps();
+  const props = await initProps();
 
   return <HomePage props={props} />;
 }
 
-export async function getServerSideProps(): Promise<HomeProps> {
+export async function initProps(): Promise<HomeProps> {
   const accessToken = cookies().get('accessToken');
-  const nickname = decodeURIComponent(accessToken?.value || '');
+  const { origin } = absoluteUrl();
 
-  if (!accessToken || !nickname) {
+  if (!accessToken?.value) {
     redirect('/login');
   }
 
-  return {
-    profile: {
-      nickname,
+  const { data: profile } = await axios.get(`${origin}/api/user`, {
+    headers: {
+      Authorization: accessToken?.value,
     },
+  });
+
+  // console.log('profile', profile);
+
+  return {
+    profile: profile.data,
   };
 }

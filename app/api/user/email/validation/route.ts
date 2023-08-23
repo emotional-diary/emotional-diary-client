@@ -1,22 +1,17 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import axios from 'axios';
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   try {
     const req = await request.json();
     const res = await axios.post(
-      `${process.env.SERVER_HOST}/v1/users/login/local`,
+      `${process.env.SERVER_HOST}/v1/users/email-validation`,
       req
     );
-    const { data } = res.data;
 
-    return NextResponse.json(res.data, {
-      headers: {
-        'Set-Cookie': `accessToken=${encodeURIComponent(
-          data.accessToken
-        )};Max-Age=3600;HttpOnly;Secure;Path=/`,
-      },
-    });
+    console.log('res', res.data);
+
+    return NextResponse.json(res.data);
   } catch (error) {
     if (axios.isAxiosError(error)) {
       return NextResponse.json(error.response?.data, {

@@ -7,7 +7,11 @@ import * as Icons from '@components/icons';
 import { Button } from '@components/form/style';
 import { Card } from '@components/styled';
 import { Typography } from '@components/typography';
-import { useCalendarStore, useDiaryListStore } from '@store/index';
+import {
+  useCalendarStore,
+  useDiaryListStore,
+  useUserStore,
+} from '@store/index';
 import { dateToSting } from '@utils/index';
 import { emotions } from '@components/diary/emotionList';
 
@@ -17,8 +21,8 @@ export const DiaryCard = () => {
     calendar: { selectedDate },
     setCalendar,
   } = useCalendarStore();
-  const { diaryList } = useDiaryListStore();
-  const [diaries, setDiaries] = React.useState<Diary[]>([]);
+  const { user } = useUserStore();
+  const { diaryList } = useDiaryListStore(user?.userID)();
 
   const days = ['일', '월', '화', '수', '목', '금', '토'];
 
@@ -26,17 +30,13 @@ export const DiaryCard = () => {
 
   const selectedDiary = React.useMemo(() => {
     if (!selectedDate) return null;
-    if (!diaries.length) return null;
-    const diary = diaries.find(
+    if (!diaryList.length) return null;
+    const diary = diaryList.find(
       diary =>
         dateToSting(new Date(diary.diaryAt)) === dateToSting(selectedDate)
     );
     return diary;
-  }, [selectedDate, diaries]);
-
-  React.useEffect(() => {
-    setDiaries(diaryList);
-  }, []);
+  }, [selectedDate, diaryList]);
 
   return (
     <Card style={{ marginTop: '15px' }}>

@@ -1,6 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useRouter, usePathname, useParams } from 'next/navigation';
+import { useMutation } from '@tanstack/react-query';
+import axios from 'axios';
 
 import * as Icons from '@components/icons';
 import { Button, IconButton } from '@components/form/style';
@@ -10,6 +12,7 @@ import {
   useCalendarStore,
   useDiaryListStore,
   useDiaryStore,
+  useUserStore,
 } from '@store/index';
 import { theme } from 'src/theme';
 import { CalendarModal } from '@components/calendar';
@@ -68,26 +71,55 @@ const Header = ({ title, back, bgcolor, type, icon, style }: HeaderProps) => {
   const router = useRouter();
   const pathname = usePathname();
   const { id } = useParams() as { id: string };
+  const { user } = useUserStore();
   const { resetDiary } = useDiaryStore();
-  const { diaryList } = useDiaryListStore();
+  const { diaryList } = useDiaryListStore(user?.userID)();
   const [isPopperOpen, setIsPopperOpen] = React.useState(false);
   const [isModalOpen, setIsModalOpen] = React.useState(false);
+
+  const removeDiaryMutation = useMutation({
+    mutationFn: async () => {
+      try {
+        const res = await axios.delete('/api/diary', {
+          data: {
+            diaryID: Number(id),
+          },
+        });
+        console.log('res', res);
+        return res.data;
+      } catch (error: any) {
+        console.log('error', error.response.data);
+        return error.response.data;
+      }
+    },
+    // onSuccess: () => {
+    //   queryClient.invalidateQueries('diary-list');
+    //   queryClient.invalidateQueries(['diary', id]);
+    //   router.push('/');
+    // },
+  });
 
   const includeExceptionPath = React.useMemo(
     () => pathname?.includes('/diary/modify'),
     [pathname]
   );
 
-  const removeDiary = () => {
+  const removeDiary = async () => {
     if (!window.confirm('정말 삭제하시겠습니까?')) return;
-    // TODO: 일기 삭제 API 연결
-    const index = diaryList.findIndex(diary => diary.diaryID === id);
+    const { data, responseMessage, statusCode } =
+      await removeDiaryMutation.mutateAsync();
+    if (statusCode >= 400) {
+      alert(responseMessage);
+      return;
+    }
+
+    const index = diaryList.findIndex(diary => diary.diaryID === Number(id));
     diaryList.splice(index, 1);
 
     resetDiary();
 
     window.localStorage.setItem(
-      'diary-list',
+      `diary-list-${user?.userID}`,
       JSON.stringify({
         state: {
           diaryList,

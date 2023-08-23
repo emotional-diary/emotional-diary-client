@@ -1,5 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
+import { useMutation } from '@tanstack/react-query';
+import axios from 'axios';
 
 import { Button, Form, Input, Label } from '@components/form/style';
 import { Typography } from '@components/typography';
@@ -148,6 +150,24 @@ export const PasswordChangeModal = ({
   ];
   const buttons = ['다음', '변경할래요'];
 
+  const verifyPasswordMutation = useMutation({
+    mutationFn: async () => {
+      const res = await axios.post('/api/user/password/verify', {
+        password,
+      });
+      return res.data;
+    },
+  });
+
+  const changePasswordMutation = useMutation({
+    mutationFn: async () => {
+      const res = await axios.patch('/api/user/password/change', {
+        newPassword: password,
+      });
+      return res.data;
+    },
+  });
+
   const reset = () => {
     setStep(0);
     setPassword('');
@@ -229,16 +249,39 @@ export const PasswordChangeModal = ({
     }
   }, [password, passwordCheck]);
 
-  // TODO: 현재 비밀번호 확인 API 연결
-  const comparePassword = async () => {
-    // success
+  const verifyPassword = async () => {
+    const { data, statusCode, responseMessage } =
+      await verifyPasswordMutation.mutateAsync();
+
     setPassword('');
-    return true;
+
+    if (statusCode >= 400) {
+      alert(responseMessage);
+      return false;
+    } else if (data === false) {
+      setValidation({
+        ...validation,
+        password: {
+          status: false,
+          message: '비밀번호가 일치하지 않아요.',
+        },
+      });
+      return false;
+    }
+    if (data) {
+      return true;
+    }
   };
 
-  // TODO: 비밀번호 변경 API 연결
   const changePassword = async () => {
-    // success
+    const { data, statusCode, responseMessage } =
+      await changePasswordMutation.mutateAsync();
+
+    if (statusCode >= 400) {
+      alert(responseMessage);
+      return;
+    }
+
     alert('비밀번호가 변경되었어요.');
     onClose();
   };
@@ -247,7 +290,7 @@ export const PasswordChangeModal = ({
     if (step === 0) {
       if (!validatePassword()) return;
 
-      const success = await comparePassword();
+      const success = await verifyPassword();
       if (!success) return;
     }
     if (step === 1) {
@@ -297,7 +340,9 @@ export const PasswordChangeModal = ({
               name="password"
               placeholder="비밀번호를 입력해주세요."
               value={password}
-              onChange={e => setPassword(e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setPassword(e.target.value)
+              }
               onBlur={handleUserBlur}
               maxLength={128}
             />
@@ -318,7 +363,9 @@ export const PasswordChangeModal = ({
                   name="passwordCheck"
                   placeholder="입력한 비밀번호와 동일하게 입력해주세요!"
                   value={passwordCheck}
-                  onChange={e => setPasswordCheck(e.target.value)}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    setPasswordCheck(e.target.value)
+                  }
                   onBlur={handleUserBlur}
                   maxLength={128}
                 />
@@ -370,6 +417,16 @@ export const PasswordFindModal = ({
     '새로운 비밀번호를 설정해주세요',
   ];
   const buttons = ['다음', '변경할래요'];
+
+  const findPasswordMutation = useMutation({
+    mutationFn: async () => {
+      const res = await axios.patch('/api/user/password/find', {
+        email,
+        newPassword: password,
+      });
+      return res.data;
+    },
+  });
 
   const reset = () => {
     setStep(0);
@@ -458,16 +515,21 @@ export const PasswordFindModal = ({
     }
   }, [password, passwordCheck]);
 
-  // TODO: 현재 비밀번호 확인 API 연결
-  const comparePassword = async () => {
-    // success
-    setPassword('');
-    return true;
-  };
+  React.useEffect(() => {
+    if (validation.email.status) {
+      setStep(prev => prev + 1);
+    }
+  }, [validation.email.status]);
 
-  // TODO: 비밀번호 변경 API 연결
   const changePassword = async () => {
-    // success
+    const { data, statusCode, responseMessage } =
+      await findPasswordMutation.mutateAsync();
+
+    if (statusCode >= 400) {
+      alert(responseMessage);
+      return;
+    }
+
     alert('비밀번호가 변경되었어요.');
     onClose();
   };
@@ -540,7 +602,9 @@ export const PasswordFindModal = ({
                   name="password"
                   placeholder="비밀번호를 입력해주세요."
                   value={password}
-                  onChange={e => setPassword(e.target.value)}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    setPassword(e.target.value)
+                  }
                   onBlur={handleUserBlur}
                   maxLength={128}
                 />
@@ -559,7 +623,9 @@ export const PasswordFindModal = ({
                   name="passwordCheck"
                   placeholder="입력한 비밀번호와 동일하게 입력해주세요!"
                   value={passwordCheck}
-                  onChange={e => setPasswordCheck(e.target.value)}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    setPasswordCheck(e.target.value)
+                  }
                   onBlur={handleUserBlur}
                   maxLength={128}
                 />
@@ -610,6 +676,22 @@ export const WithdrawalModal = ({
     password: { status: false, message: '' },
   });
 
+  const verifyPasswordMutation = useMutation({
+    mutationFn: async () => {
+      const res = await axios.post('/api/user/password/verify', {
+        password,
+      });
+      return res.data;
+    },
+  });
+
+  const withdrawMutation = useMutation({
+    mutationFn: async () => {
+      const res = await axios.delete('/api/user');
+      return res.data;
+    },
+  });
+
   const reset = () => {
     setStep(0);
     setPassword('');
@@ -618,18 +700,45 @@ export const WithdrawalModal = ({
     });
   };
 
-  // TODO: 현재 비밀번호 확인 API 연결
-  const comparePassword = async () => {
-    // success
+  const verifyPassword = async () => {
+    const { data, statusCode, responseMessage } =
+      await verifyPasswordMutation.mutateAsync();
+
     setPassword('');
-    return true;
+
+    if (statusCode >= 400) {
+      alert(responseMessage);
+      return false;
+    } else if (data === false) {
+      setValidation({
+        ...validation,
+        password: {
+          status: false,
+          message: '비밀번호가 일치하지 않아요.',
+        },
+      });
+      return false;
+    }
+    if (data) {
+      return true;
+    }
   };
 
   const withdraw = async () => {
     if (confirm('정말 탈퇴하시겠어요?')) {
-      // TODO: 회원탈퇴 API 연결
-      alert('탈퇴되었어요.');
-      onClose();
+      const { data, statusCode, responseMessage } =
+        await withdrawMutation.mutateAsync();
+
+      if (statusCode >= 400) {
+        alert(responseMessage);
+        onClose();
+        return;
+      }
+
+      alert('회원이 탈퇴되었어요.');
+      setTimeout(() => {
+        window.location.href = '/';
+      }, 1000);
     } else {
       onClose();
     }
@@ -711,7 +820,9 @@ export const WithdrawalModal = ({
               name="password"
               placeholder="비밀번호를 입력해주세요."
               value={password}
-              onChange={e => setPassword(e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setPassword(e.target.value)
+              }
               onBlur={handleUserBlur}
               maxLength={128}
             />
@@ -726,7 +837,7 @@ export const WithdrawalModal = ({
           style={{ width: '100%', marginTop: 20 }}
           onClick={async () => {
             if (!validatePassword()) return;
-            const success = await comparePassword();
+            const success = await verifyPassword();
             if (success) {
               await withdraw();
             }

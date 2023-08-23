@@ -3,6 +3,8 @@
 import React from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import dynamic from 'next/dynamic';
+import axios from 'axios';
+import { useMutation } from '@tanstack/react-query';
 
 import { Container } from '@components/layout';
 import { Typography } from '@components/typography';
@@ -13,6 +15,7 @@ import {
   useCalendarStore,
   useDiaryListStore,
   useDiaryStore,
+  useUserStore,
 } from '@store/index';
 import { changeDateFormat } from '@utils/index';
 import { EmotionList } from '@components/diary/emotionList';
@@ -24,8 +27,9 @@ const TextEditor = dynamic(() => import('@components/textEditor'), {
 export default function NewDiary() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { user } = useUserStore();
   const { diary, setDiary } = useDiaryStore();
-  const { diaryList, setDiaryList } = useDiaryListStore();
+  const { diaryList, setDiaryList } = useDiaryListStore(user?.userID)();
   const { calendar } = useCalendarStore();
   const [step, setStep] = React.useState(0); // 0: select emotion, 1: write diary
   const [isLoading, setIsLoading] = React.useState(false);
@@ -34,41 +38,42 @@ export default function NewDiary() {
     ? Number(searchParams?.get('step'))
     : 0;
 
-  // TODO: 일기 저장 후, diaryID와 aiComment를 받아오는 API 호출
-  const getDiaryData = () => {
-    return new Promise<Partial<Diary>>((resolve, reject) => {
-      setTimeout(() => {
-        resolve({
-          diaryID: Math.floor(Math.random() * 100000).toString(),
-          aiComment: '오늘 하루도 수고했어요!',
-        });
-      }, 2000);
-    });
-  };
+  const saveDiaryMutation = useMutation({
+    mutationFn: async (diary: Partial<Diary>) => {
+      const res = await axios.post('/api/diary', diary);
+      return res.data;
+    },
+  });
 
   const handleSaveDiary = async () => {
     if (isLoading) return;
     if (!diary.content?.length) return alert('내용을 추가해 주세요');
     setIsLoading(true);
 
-    const { diaryID, aiComment } = await getDiaryData();
+    const { data, statusCode, responseMessage } =
+      await saveDiaryMutation.mutateAsync({
+        content: diary.content,
+        diaryAt: changeDateFormat(calendar.selectedDate as Date, true),
+        emotion: diary.emotion,
+      });
+
+    if (statusCode >= 400) {
+      alert(responseMessage);
+      setIsLoading(false);
+      return;
+    }
 
     // 신규 일기 데이터
     const diaryData = {
       ...diary,
-      diaryID: diaryID as string,
-      aiComment: aiComment as string,
-      diaryAt: changeDateFormat(calendar.selectedDate as Date),
-      createdAt: changeDateFormat(new Date()),
-      updatedAt: changeDateFormat(new Date()),
+      ...data,
     };
     setDiary({
       ...diaryData,
     });
     setDiaryList([diaryData, ...diaryList]);
 
-    // TODO: 저장 API 호출 후, diaryID를 받아서 diary/:id로 이동
-    router.replace(`/diary/${diaryID}`);
+    router.replace(`/diary/${data?.diaryID}`);
   };
 
   console.log('diary', diary);

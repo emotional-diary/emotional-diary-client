@@ -1,6 +1,7 @@
 import React from 'react';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
+import { useMutation, useQuery } from '@tanstack/react-query';
 
 import { Typography } from '@components/typography';
 import { useUserStore } from '@store/index';
@@ -33,6 +34,29 @@ const LoginForm = () => {
       setOpen,
     };
   })();
+
+  const loginMutation = useMutation({
+    mutationFn: async () => {
+      const res = await axios.post('/api/user/login', {
+        ...user,
+      });
+      return res.data;
+    },
+    onSuccess: data => {
+      if (data) {
+        setIsLogin(true);
+      }
+    },
+    onError: error => {
+      setValidation({
+        ...validation,
+        password: {
+          status: true,
+          message: '이메일이나 비밀번호가 올바르지 않아요.',
+        },
+      });
+    },
+  });
 
   const validateEmail = () => {
     const regex = /^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[a-zA-Z0-9]+$/;
@@ -91,27 +115,7 @@ const LoginForm = () => {
       return;
     }
 
-    const res = await fetch('/api/user/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        user,
-      }),
-    });
-
-    if (res.status === 200) {
-      setIsLogin(true);
-    } else {
-      setValidation({
-        ...validation,
-        password: {
-          status: true,
-          message: '이메일이나 비밀번호가 올바르지 않아요.',
-        },
-      });
-    }
+    loginMutation.mutate();
   };
 
   const handleSocialLogin =
@@ -129,8 +133,6 @@ const LoginForm = () => {
       router.push('/');
     }
   }, [isLogin]);
-
-  console.log(validation);
 
   return (
     <div
@@ -305,38 +307,69 @@ const SignUpForm = ({ social }: { social?: Social }) => {
   const router = useRouter();
   const { user, setUser } = useUserStore();
   const [joinData, setJoinData] = React.useState<JoinUser>({
-    nickname: '',
+    name: '',
     email: '',
     password: '',
-    birthday: '',
+    birth: '',
     gender: '',
   });
   const [passwordCheck, setPasswordCheck] = React.useState<string>('');
-
-  const [validation, setValidation] = React.useState<
-    Omit<UserValidation, 'social'>
-  >({
-    nickname: { status: false, message: '' },
+  const [validation, setValidation] = React.useState<UserValidation>({
+    name: { status: false, message: '' },
     email: { status: false, message: '' },
     password: { status: false, message: '' },
     passwordCheck: { status: false, message: '' },
-    birthday: { status: false, message: '' },
+    birth: { status: false, message: '' },
     gender: { status: false, message: '' },
   });
+
+  const signupMutation = useMutation({
+    mutationFn: async () => {
+      const res = await axios.post('/api/user/signup', {
+        email: joinData.email,
+        password: joinData.password,
+        name: joinData.name,
+        birth: joinData.birth || null,
+        gender: joinData.gender || null,
+        loginType: social ?? 'LOCAL',
+        terms: [
+          {
+            termId: 1,
+            isAgree: true,
+          },
+          {
+            termId: 2,
+            isAgree: true,
+          },
+        ],
+      });
+      return res.data;
+    },
+  });
+
+  // const getProfile = useMutation({
+  //   mutationKey: ['/api/user/email'],
+  //   mutationFn: async () => {
+  //     const res = await axios.post('/api/user/email', {
+  //       email: joinData.email,
+  //     });
+  //     return res.data;
+  //   },
+  // });
 
   const validateNickname = () => {
     let koreanCount = 0;
     let englishCount = 0;
 
-    for (let i = 0; i < joinData.nickname.length; i++) {
-      if (/[가-힣]/.test(joinData.nickname[i])) {
+    for (let i = 0; i < joinData.name.length; i++) {
+      if (/[가-힣]/.test(joinData.name[i])) {
         koreanCount++;
-      } else if (/[a-zA-Z]/.test(joinData.nickname[i])) {
+      } else if (/[a-zA-Z]/.test(joinData.name[i])) {
         englishCount++;
       } else {
         setValidation({
           ...validation,
-          nickname: {
+          name: {
             status: false,
             message: '자음이나 모음만 따로 사용할 수 없어요.',
           },
@@ -348,7 +381,7 @@ const SignUpForm = ({ social }: { social?: Social }) => {
     if ((koreanCount === 0 && englishCount === 0) || koreanCount > 3) {
       setValidation({
         ...validation,
-        nickname: {
+        name: {
           status: false,
           message: '한글 이름은 1~3자로 입력해 주세요.',
         },
@@ -358,7 +391,7 @@ const SignUpForm = ({ social }: { social?: Social }) => {
     if ((englishCount < 4 || englishCount > 16) && koreanCount === 0) {
       setValidation({
         ...validation,
-        nickname: {
+        name: {
           status: false,
           message: '영문 이름은 4~16자로 입력해 주세요.',
         },
@@ -368,7 +401,7 @@ const SignUpForm = ({ social }: { social?: Social }) => {
     if (koreanCount && englishCount) {
       setValidation({
         ...validation,
-        nickname: {
+        name: {
           status: false,
           message: '한글과 영문을 혼용할 수 없어요.',
         },
@@ -381,7 +414,7 @@ const SignUpForm = ({ social }: { social?: Social }) => {
 
   const validatePassword = () => {
     const regex = /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,16}$/;
-    if (!regex.test(joinData.password)) {
+    if (!regex.test(joinData.password as string)) {
       setValidation({
         ...validation,
         password: {
@@ -465,8 +498,6 @@ const SignUpForm = ({ social }: { social?: Social }) => {
     [joinData]
   );
 
-  console.log(validation);
-
   const handlePasswordCheckChange = (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -474,18 +505,18 @@ const SignUpForm = ({ social }: { social?: Social }) => {
   };
 
   const signupValidation = () => {
-    const { nickname, email, password, passwordCheck } = validation;
+    const { name, email, password, passwordCheck } = validation;
     console.log(validation);
 
     if (social) {
-      if (nickname.status) {
+      if (name.status) {
         return true;
       }
     }
 
     if (
-      !nickname.status ||
-      // !email.status ||
+      !name.status ||
+      !email.status ||
       !password.status ||
       !passwordCheck.status
     ) {
@@ -504,28 +535,21 @@ const SignUpForm = ({ social }: { social?: Social }) => {
       return;
     }
 
-    const res = await axios.post('/api/user/signup', {
-      user: { ...joinData },
-    });
-    // const res = await fetch('/api/user/signup', {
-    //   method: 'POST',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //   },
-    //   body: JSON.stringify({
-    //     user: { ...joinData },
-    //   }),
-    // });
+    const signup = await signupMutation.mutateAsync();
 
-    if (res.status === 200) {
-      console.log('회원가입 성공', res);
-      setUser({
-        ...res.data.user,
-      });
-      router.push('/signup/complete');
-    } else {
-      alert('회원가입에 실패했습니다.');
+    if (signup.statusCode >= 400) {
+      alert(signup.responseMessage);
+      return;
     }
+
+    // const profile = await getProfile.mutateAsync();
+    // console.log('회원가입 성공, 프로필 조회', profile.data);
+    // if (profile.data) {
+    //   setUser({
+    //     ...profile.data,
+    //   });
+    // }
+    router.push('/signup/complete');
   };
 
   if (social === 'kakao') {
@@ -537,22 +561,22 @@ const SignUpForm = ({ social }: { social?: Social }) => {
 
         <Form>
           <Inputs.Nickname
-            nickname={joinData?.nickname}
+            name={joinData?.name}
             onChange={handleUserChange}
             onBlur={handleUserBlur}
           />
-          {validation.nickname.message && (
-            <ValidationMessage message={validation.nickname.message} />
+          {validation.name.message && (
+            <ValidationMessage message={validation.name.message} />
           )}
 
           <Inputs.Gender
             gender={joinData?.gender}
             setJoinData={
-              setJoinData as React.Dispatch<React.SetStateAction<User>>
+              setJoinData as React.Dispatch<React.SetStateAction<JoinUser>>
             }
           />
           <Inputs.Birthday
-            birthday={joinData?.birthday}
+            birthday={joinData?.birth}
             onChange={handleUserChange}
           />
 
@@ -560,7 +584,7 @@ const SignUpForm = ({ social }: { social?: Social }) => {
             color={'secondary'}
             style={{ width: '100%', marginTop: 'auto' }}
             onClick={handleSignUp}
-            disabled={joinData.nickname === ''}
+            disabled={joinData.name === ''}
           >
             <Typography variant={'label1'} color={'common.white'}>
               가입하기
@@ -579,12 +603,12 @@ const SignUpForm = ({ social }: { social?: Social }) => {
 
       <Form>
         <Inputs.Nickname
-          nickname={joinData?.nickname}
+          name={joinData?.name}
           onChange={handleUserChange}
           onBlur={handleUserBlur}
         />
-        {validation.nickname.message && (
-          <ValidationMessage message={validation.nickname.message} />
+        {validation.name.message && (
+          <ValidationMessage message={validation.name.message} />
         )}
 
         <Inputs.Email
@@ -641,11 +665,11 @@ const SignUpForm = ({ social }: { social?: Social }) => {
         <Inputs.Gender
           gender={joinData?.gender}
           setJoinData={
-            setJoinData as React.Dispatch<React.SetStateAction<User>>
+            setJoinData as React.Dispatch<React.SetStateAction<JoinUser>>
           }
         />
         <Inputs.Birthday
-          birthday={joinData?.birthday}
+          birthday={joinData?.birth}
           onChange={handleUserChange}
         />
 

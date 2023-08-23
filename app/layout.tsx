@@ -1,5 +1,6 @@
 import StyledComponentsRegistry from 'lib/registry';
-import ThemeProvider from './client/theme';
+
+import Providers from './providers';
 import './styles/globals.css';
 
 export default function RootLayout({
@@ -81,7 +82,7 @@ export default function RootLayout({
       </head>
       <body>
         <StyledComponentsRegistry>
-          <ThemeProvider>{children}</ThemeProvider>
+          <Providers>{children}</Providers>
         </StyledComponentsRegistry>
       </body>
     </html>
