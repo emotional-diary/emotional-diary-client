@@ -10,6 +10,7 @@ import * as Icons from '@components/icons';
 import { Modal } from '@components/modal';
 import { hexToRgba } from '@utils/index';
 import { theme } from 'src/theme';
+import { SignUpProps } from 'app/signup/page';
 
 const loremIpsum = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
   malesuada lorem maximus mauris scelerisque, at rutrum nulla
@@ -24,7 +25,7 @@ const loremIpsum = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Don
   turpis sem.`;
 const loremIpsum2 = `개인정보 처리방침입니다. lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec`;
 
-export default function Terms() {
+export default function Terms({ searchParams }: { searchParams: SignUpProps }) {
   const router = useRouter();
   const [checked, setChecked] = React.useState({
     terms: false,
@@ -35,6 +36,12 @@ export default function Terms() {
     title: '',
     content: '',
   });
+
+  const queryString = React.useMemo(() => {
+    if (!searchParams) return;
+    const params = new URLSearchParams(searchParams);
+    return params.toString();
+  }, [searchParams]);
 
   return (
     <Container
@@ -206,7 +213,7 @@ export default function Terms() {
             <Button
               color={'secondary'}
               disabled={!checked.privacy || !checked.terms}
-              onClick={() => router.push('/signup')}
+              onClick={() => router.push(`/signup?${queryString}`)}
               style={{ width: '100%' }}
             >
               <Typography variant={'label1'} color={'common.white'}>

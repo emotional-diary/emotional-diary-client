@@ -20,12 +20,45 @@ export async function GET(request: NextRequest) {
         },
       }
     );
+    const { data } = res.data;
 
     console.log('res', res.data);
 
-    // return NextResponse.redirect(res.data.url);
+    // 회원가입이 안되어있으면 회원가입 페이지로 이동
+    if (res.data.statusCode === 201) {
+      return NextResponse.redirect(
+        `/terms?social=${'kakao'}&email=${encodeURIComponent(
+          data.email
+        )}&gender=${encodeURIComponent(data.gender)}`,
+        {
+          status: 302,
+        }
+      );
+    }
+
+    return NextResponse.redirect('/', {
+      status: 302,
+      headers: {
+        'Set-Cookie': `accessToken=${encodeURIComponent(
+          data.accessToken
+        )};Max-Age=3600;HttpOnly;Secure;Path=/`,
+      },
+    });
   } catch (error) {
     if (axios.isAxiosError(error)) {
+      const { origin } = absoluteUrl();
+
+      // 이미 로컬 회원가입이 되어있으면 로그인 페이지로 이동
+      if (error.response?.data.statusCode === 400) {
+        return NextResponse.redirect(`${origin}/login`, {
+          status: 302,
+          headers: {
+            'Set-Cookie': `message=${encodeURIComponent(
+              error.response?.data.responseMessage
+            )}; path=/;`,
+          },
+        });
+      }
       return NextResponse.json(error.response?.data, {
         status: error.response?.status,
       });

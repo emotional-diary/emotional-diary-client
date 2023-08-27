@@ -11,6 +11,7 @@ import { Timer as EmailAuthTimer } from './timer';
 import { PasswordFindModal } from '@components/modal';
 import * as Inputs from './input';
 import { ValidationMessage } from './validation';
+import { SignUpProps } from 'app/signup/page';
 
 const LoginForm = () => {
   const router = useRouter();
@@ -303,15 +304,19 @@ const LoginForm = () => {
   );
 };
 
-const SignUpForm = ({ social }: { social?: Social }) => {
+const SignUpForm = ({
+  social,
+  email: socialEmail,
+  gender: socialGender,
+}: Partial<SignUpProps>) => {
   const router = useRouter();
   const { user, setUser } = useUserStore();
   const [joinData, setJoinData] = React.useState<JoinUser>({
     name: '',
-    email: '',
+    email: socialEmail ?? '',
     password: '',
     birth: '',
-    gender: '',
+    gender: socialGender?.toUpperCase() ?? '',
   });
   const [passwordCheck, setPasswordCheck] = React.useState<string>('');
   const [validation, setValidation] = React.useState<UserValidation>({

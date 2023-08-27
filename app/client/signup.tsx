@@ -13,7 +13,7 @@ export default function SignUpPage({ props }: { props: SignUpProps }) {
         back: true,
       }}
     >
-      <SignUpForm social={props.social} />
+      <SignUpForm {...props} />
     </Container>
   );
 }
