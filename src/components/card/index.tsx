@@ -55,7 +55,6 @@ export const DiaryCard = () => {
           >
             {`${selectedDate.getMonth() + 1}월 ${selectedDate.getDate()}일`}
           </Typography>
-          {selectedDiary && <Icons.Written width={15} height={15} />}
         </div>
       </div>
 
@@ -109,18 +108,24 @@ export const DiaryCard = () => {
 };
 
 export const DiaryListCard = ({
+  diaryID,
   date,
   content,
   emotion,
 }: {
+  diaryID: number;
   date: Date;
   content: string;
   emotion: Diary['emotion'];
 }) => {
+  const router = useRouter();
   const days = ['일', '월', '화', '수', '목', '금', '토'];
 
   return (
-    <Card style={{ marginTop: '15px' }}>
+    <Card
+      style={{ marginTop: '15px' }}
+      onClick={() => router.push(`/diary/${diaryID}`)}
+    >
       <div
         style={{
           display: 'flex',
@@ -136,7 +141,6 @@ export const DiaryListCard = ({
           >
             {`${date.getMonth() + 1}월 ${date.getDate()}일`}
           </Typography>
-          <Icons.Written width={15} height={15} />
         </div>
 
         <div>{emotions[emotion as keyof typeof emotions]}</div>

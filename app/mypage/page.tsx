@@ -113,6 +113,7 @@ export default function MyPage() {
             return (
               <DiaryListCard
                 key={diary.diaryID}
+                diaryID={diary.diaryID}
                 date={new Date(diary.diaryAt)}
                 content={diary.content}
                 emotion={diary.emotion}
