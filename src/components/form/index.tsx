@@ -336,7 +336,7 @@ const SignUpForm = ({
         name: joinData.name,
         birth: joinData.birth || null,
         gender: joinData.gender || null,
-        loginType: social ?? 'LOCAL',
+        loginType: social?.toUpperCase() ?? 'LOCAL',
         terms: [
           {
             termId: 1,
