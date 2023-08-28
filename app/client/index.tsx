@@ -85,7 +85,7 @@ export default function HomePage({ props }: { props: HomeProps }) {
   }, [selectedDate, diaryList]);
 
   React.useEffect(() => {
-    if (!user?.name || user.name !== props.profile?.name) {
+    if (!user?.name || user.userID !== props.profile?.userID) {
       setUser(props.profile);
     }
   }, []);
