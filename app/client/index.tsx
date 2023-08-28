@@ -41,6 +41,7 @@ const MessageOfToday = styled.div`
   align-items: center;
   width: 100%;
   padding: 14px 16px;
+  text-align: center;
   background-color: #fff;
   border-radius: 15px;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);

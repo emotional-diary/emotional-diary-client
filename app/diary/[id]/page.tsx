@@ -28,12 +28,11 @@ const DetailWrapper = styled.div`
 const Styled3DBox = styled.div`
   position: relative;
   padding: 10px 50px;
-  margin-top: 30px;
+  margin: 30px 30px 0;
   background-color: ${({ theme }) => theme.palette.background.paper};
   color: #fff;
   border-radius: 10px;
-  box-shadow: 5px 5px 1px #73caab;
-  white-space: nowrap;
+  box-shadow: 4px 4px 1px #a7d2b6;
 `;
 
 const ContentWrapper = styled.div`
@@ -127,7 +126,7 @@ export default function DiaryDetail() {
           <Typography
             className={'ql-editor'}
             variant={'body3'}
-            style={{ lineHeight: 1.5, marginTop: '16px' }}
+            style={{ lineHeight: 1.5, marginTop: '16px', padding: 0 }}
           >
             <div
               dangerouslySetInnerHTML={{
