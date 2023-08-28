@@ -87,5 +87,6 @@ interface ButtonProps {
     | 'tertiary.light'
     | 'error.light'
     | 'white'
-    | 'gray';
+    | 'gray'
+    | 'gray.dark';
 }

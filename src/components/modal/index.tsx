@@ -725,23 +725,19 @@ export const WithdrawalModal = ({
   };
 
   const withdraw = async () => {
-    if (confirm('정말 탈퇴하시겠어요?')) {
-      const { data, statusCode, responseMessage } =
-        await withdrawMutation.mutateAsync();
+    const { data, statusCode, responseMessage } =
+      await withdrawMutation.mutateAsync();
 
-      if (statusCode >= 400) {
-        alert(responseMessage);
-        onClose();
-        return;
-      }
-
-      alert('회원이 탈퇴되었어요.');
-      setTimeout(() => {
-        window.location.href = '/';
-      }, 1000);
-    } else {
+    if (statusCode >= 400) {
+      alert(responseMessage);
       onClose();
+      return;
     }
+
+    alert('회원이 탈퇴되었어요.');
+    setTimeout(() => {
+      window.location.href = '/';
+    }, 1000);
   };
 
   const validatePassword = () => {
@@ -792,61 +788,110 @@ export const WithdrawalModal = ({
       <Backdrop onClick={onClose} />
 
       <ModalWrapper>
-        <Typography
-          variant={'h1'}
-          color={'gray.dark'}
-          style={{ marginBottom: 12 }}
-        >
-          회원 탈퇴
-        </Typography>
-        <Typography
-          variant={'h4'}
-          color={'gray.dark'}
-          style={{ marginBottom: 20 }}
-        >
-          현재 비밀번호를 입력해주세요
-        </Typography>
+        {step === 0 && (
+          <>
+            <Typography
+              variant={'h1'}
+              color={'gray.dark'}
+              style={{ marginBottom: 12 }}
+            >
+              회원 탈퇴
+            </Typography>
+            <Typography
+              variant={'h4'}
+              color={'gray.dark'}
+              style={{ marginBottom: 20 }}
+            >
+              현재 비밀번호를 입력해주세요
+            </Typography>
 
-        <div style={{ width: '100%' }}>
-          <Form>
-            <Label htmlFor="password">
-              <Typography variant={'subtitle3'} color={'gray.dark'}>
-                현재 비밀번호
+            <div style={{ width: '100%' }}>
+              <Form>
+                <Label htmlFor="password">
+                  <Typography variant={'subtitle3'} color={'gray.dark'}>
+                    현재 비밀번호
+                  </Typography>
+                </Label>
+                <Input
+                  type="password"
+                  id="password"
+                  name="password"
+                  placeholder="비밀번호를 입력해주세요."
+                  value={password}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    setPassword(e.target.value)
+                  }
+                  onBlur={handleUserBlur}
+                  maxLength={128}
+                />
+                {validation.password && (
+                  <ValidationMessage message={validation.password.message} />
+                )}
+              </Form>
+            </div>
+            <Button
+              disabled={!password}
+              color={'secondary'}
+              style={{ width: '100%', marginTop: 20 }}
+              onClick={async () => {
+                if (!validatePassword()) return;
+                const success = await verifyPassword();
+                if (success) {
+                  setStep(1);
+                  // await withdraw();
+                }
+              }}
+            >
+              <Typography variant={'label1'} color={'common.white'}>
+                탈퇴할래요
               </Typography>
-            </Label>
-            <Input
-              type="password"
-              id="password"
-              name="password"
-              placeholder="비밀번호를 입력해주세요."
-              value={password}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                setPassword(e.target.value)
-              }
-              onBlur={handleUserBlur}
-              maxLength={128}
-            />
-            {validation.password && (
-              <ValidationMessage message={validation.password.message} />
-            )}
-          </Form>
-        </div>
-        <Button
-          disabled={!password}
-          color={'secondary'}
-          style={{ width: '100%', marginTop: 20 }}
-          onClick={async () => {
-            if (!validatePassword()) return;
-            const success = await verifyPassword();
-            if (success) {
-              await withdraw();
-            }
-          }}
-        >
-          <Typography variant={'label1'} color={'common.white'}>
-            탈퇴할래요
-          </Typography>
-        </Button>
+            </Button>
+          </>
+        )}
+        {step === 1 && (
+          <>
+            <Typography variant={'h4'}>정말 탈퇴하시겠어요?</Typography>
+
+            <Typography
+              variant={'body4'}
+              color={'error.main'}
+              style={{ marginTop: 20 }}
+            >
+              * 탈퇴 시 모든 회원정보는 삭제되며,복구가 불가능합니다.
+            </Typography>
+
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                width: '100%',
+                marginTop: 20,
+              }}
+            >
+              <Button
+                color={'gray.dark'}
+                style={{ width: '48%' }}
+                onClick={() => {
+                  reset();
+                  onClose();
+                }}
+              >
+                <Typography variant={'label1'} color={'common.white'}>
+                  취소
+                </Typography>
+              </Button>
+              <Button
+                color={'secondary'}
+                style={{ width: '48%' }}
+                onClick={withdraw}
+              >
+                <Typography variant={'label1'} color={'common.white'}>
+                  탈퇴하기
+                </Typography>
+              </Button>
+            </div>
+          </>
+        )}
       </ModalWrapper>
     </ModalContainer>
   );
