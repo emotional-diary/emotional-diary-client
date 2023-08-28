@@ -76,11 +76,9 @@ export async function POST(request: NextRequest) {
         },
       }
     );
-    const { data } = res.data;
-
     console.log('res', res.data);
 
-    return NextResponse.json(data);
+    return NextResponse.json(res.data);
   } catch (error) {
     if (axios.isAxiosError(error)) {
       return NextResponse.json(error.response?.data, {
@@ -133,11 +131,9 @@ export async function PATCH(request: NextRequest) {
         },
       }
     );
-    const { data } = res.data;
-
     console.log('res', res.data);
 
-    return NextResponse.json(data);
+    return NextResponse.json(res.data);
   } catch (error) {
     if (axios.isAxiosError(error)) {
       return NextResponse.json(error.response?.data, {

@@ -46,8 +46,9 @@ export default function NewDiary() {
   });
 
   const handleSaveDiary = async () => {
+    const existContent = diary.content?.replace(/(<([^>]+)>)/gi, '').trim();
     if (isLoading) return;
-    if (!diary.content?.length) return alert('내용을 추가해 주세요');
+    if (!existContent) return alert('내용을 추가해 주세요');
     setIsLoading(true);
 
     const { data, statusCode, responseMessage } =
