@@ -247,7 +247,9 @@ export default function Modify() {
 
             {user?.loginType !== 'LOCAL' && (
               <SocialRadiusBox>
-                <Typography variant={'subtitle2'}>{user.loginType}</Typography>
+                <Typography variant={'subtitle2'}>
+                  {user.loginType.toLowerCase()}
+                </Typography>
               </SocialRadiusBox>
             )}
           </StyledInfoBox>

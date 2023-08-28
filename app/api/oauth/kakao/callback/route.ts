@@ -6,11 +6,7 @@ import { absoluteUrl } from '@utils/ssr';
 export async function GET(request: NextRequest) {
   try {
     const code = await request.nextUrl.searchParams.get('code');
-    console.log('code', code);
-
-    const clientId = process.env.KAKAO_REST_API_KEY;
     const { origin } = absoluteUrl();
-    const redirectUri = `${origin}/api/oauth/kakao/callback`;
 
     const res = await axios.get(
       `${process.env.SERVER_HOST}/v1/users/login/kakao`,
@@ -27,7 +23,7 @@ export async function GET(request: NextRequest) {
     // 회원가입이 안되어있으면 회원가입 페이지로 이동
     if (res.data.statusCode === 201) {
       return NextResponse.redirect(
-        `/terms?social=${'kakao'}&email=${encodeURIComponent(
+        `${origin}/terms?social=${'kakao'}&email=${encodeURIComponent(
           data.email
         )}&gender=${encodeURIComponent(data.gender)}`,
         {
@@ -36,7 +32,7 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    return NextResponse.redirect('/', {
+    return NextResponse.redirect(origin, {
       status: 302,
       headers: {
         'Set-Cookie': `accessToken=${encodeURIComponent(
