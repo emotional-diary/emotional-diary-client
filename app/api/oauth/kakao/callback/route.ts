@@ -8,6 +8,12 @@ export async function GET(request: NextRequest) {
     const code = await request.nextUrl.searchParams.get('code');
     const { origin } = absoluteUrl();
 
+    if (!code) {
+      return NextResponse.redirect(origin, {
+        status: 302,
+      });
+    }
+
     const res = await axios.get(
       `${process.env.SERVER_HOST}/v1/users/login/kakao`,
       {
