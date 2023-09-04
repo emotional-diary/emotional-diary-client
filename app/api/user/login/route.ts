@@ -1,7 +1,32 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import axios from 'axios';
 
-export async function POST(request: Request) {
+export async function GET(request: NextRequest) {
+  try {
+    const accessToken = request.cookies.get('accessToken')?.value;
+
+    if (!accessToken) {
+      return NextResponse.json(
+        {
+          message: 'Non-login',
+        },
+        {
+          status: 200,
+        }
+      );
+    }
+
+    return NextResponse.redirect('/');
+  } catch (error) {
+    console.error(`${__dirname} error`, error);
+
+    return NextResponse.json(error, {
+      status: 500,
+    });
+  }
+}
+
+export async function POST(request: NextRequest) {
   try {
     const req = await request.json();
     const res = await axios.post(
