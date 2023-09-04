@@ -668,22 +668,22 @@ export const WithdrawalModal = ({
   open: boolean;
   onClose: () => void;
 }) => {
-  const [step, setStep] = React.useState<number>(0);
-  const [password, setPassword] = React.useState<string>('');
-  const [validation, setValidation] = React.useState<
-    Pick<UserValidation, 'password'>
-  >({
-    password: { status: false, message: '' },
-  });
+  // const [step, setStep] = React.useState<number>(0);
+  // const [password, setPassword] = React.useState<string>('');
+  // const [validation, setValidation] = React.useState<
+  //   Pick<UserValidation, 'password'>
+  // >({
+  //   password: { status: false, message: '' },
+  // });
 
-  const verifyPasswordMutation = useMutation({
-    mutationFn: async () => {
-      const res = await axios.post('/api/user/password/verify', {
-        password,
-      });
-      return res.data;
-    },
-  });
+  // const verifyPasswordMutation = useMutation({
+  //   mutationFn: async () => {
+  //     const res = await axios.post('/api/user/password/verify', {
+  //       password,
+  //     });
+  //     return res.data;
+  //   },
+  // });
 
   const withdrawMutation = useMutation({
     mutationFn: async () => {
@@ -692,37 +692,37 @@ export const WithdrawalModal = ({
     },
   });
 
-  const reset = () => {
-    setStep(0);
-    setPassword('');
-    setValidation({
-      password: { status: false, message: '' },
-    });
-  };
+  // const reset = () => {
+  //   setStep(0);
+  //   setPassword('');
+  //   setValidation({
+  //     password: { status: false, message: '' },
+  //   });
+  // };
 
-  const verifyPassword = async () => {
-    const { data, statusCode, responseMessage } =
-      await verifyPasswordMutation.mutateAsync();
+  // const verifyPassword = async () => {
+  //   const { data, statusCode, responseMessage } =
+  //     await verifyPasswordMutation.mutateAsync();
 
-    setPassword('');
+  //   setPassword('');
 
-    if (statusCode >= 400) {
-      alert(responseMessage);
-      return false;
-    } else if (data === false) {
-      setValidation({
-        ...validation,
-        password: {
-          status: false,
-          message: '비밀번호가 일치하지 않아요.',
-        },
-      });
-      return false;
-    }
-    if (data) {
-      return true;
-    }
-  };
+  //   if (statusCode >= 400) {
+  //     alert(responseMessage);
+  //     return false;
+  //   } else if (data === false) {
+  //     setValidation({
+  //       ...validation,
+  //       password: {
+  //         status: false,
+  //         message: '비밀번호가 일치하지 않아요.',
+  //       },
+  //     });
+  //     return false;
+  //   }
+  //   if (data) {
+  //     return true;
+  //   }
+  // };
 
   const withdraw = async () => {
     const { data, statusCode, responseMessage } =
@@ -740,46 +740,46 @@ export const WithdrawalModal = ({
     }, 1000);
   };
 
-  const validatePassword = () => {
-    const regex = /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,16}$/;
-    if (!regex.test(password)) {
-      setValidation({
-        ...validation,
-        password: {
-          status: false,
-          message:
-            '비밀번호는 영문, 숫자, 특수문자를 포함한 8자 이상 16자 이하로 입력해 주세요.',
-        },
-      });
-      return false;
-    }
-    return true;
-  };
+  // const validatePassword = () => {
+  //   const regex = /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,16}$/;
+  //   if (!regex.test(password)) {
+  //     setValidation({
+  //       ...validation,
+  //       password: {
+  //         status: false,
+  //         message:
+  //           '비밀번호는 영문, 숫자, 특수문자를 포함한 8자 이상 16자 이하로 입력해 주세요.',
+  //       },
+  //     });
+  //     return false;
+  //   }
+  //   return true;
+  // };
 
-  const handleUserBlur = (e: React.FocusEvent<HTMLInputElement>) => {
-    switch (e.target.name) {
-      case 'password':
-        if (!validatePassword()) {
-          return false;
-        }
-        break;
-      default:
-        break;
-    }
+  // const handleUserBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+  //   switch (e.target.name) {
+  //     case 'password':
+  //       if (!validatePassword()) {
+  //         return false;
+  //       }
+  //       break;
+  //     default:
+  //       break;
+  //   }
 
-    setValidation({
-      ...validation,
-      [e.target.name]: {
-        status: true,
-        message: '',
-      },
-    });
-    return true;
-  };
+  //   setValidation({
+  //     ...validation,
+  //     [e.target.name]: {
+  //       status: true,
+  //       message: '',
+  //     },
+  //   });
+  //   return true;
+  // };
 
-  React.useEffect(() => {
-    reset();
-  }, [open]);
+  // React.useEffect(() => {
+  //   reset();
+  // }, [open]);
 
   if (!open) return null;
 
@@ -788,7 +788,7 @@ export const WithdrawalModal = ({
       <Backdrop onClick={onClose} />
 
       <ModalWrapper>
-        {step === 0 && (
+        {/* {step === 0 && (
           <>
             <Typography
               variant={'h1'}
@@ -848,50 +848,50 @@ export const WithdrawalModal = ({
             </Button>
           </>
         )}
-        {step === 1 && (
-          <>
-            <Typography variant={'h4'}>정말 탈퇴하시겠어요?</Typography>
+        {step === 1 && ( */}
+        <>
+          <Typography variant={'h4'}>정말 탈퇴하시겠어요?</Typography>
 
-            <Typography
-              variant={'body4'}
-              color={'error.main'}
-              style={{ marginTop: 20 }}
-            >
-              * 탈퇴 시 모든 회원정보는 삭제되며,복구가 불가능합니다.
-            </Typography>
+          <Typography
+            variant={'body4'}
+            color={'error.main'}
+            style={{ marginTop: 20 }}
+          >
+            * 탈퇴 시 모든 회원정보는 삭제되며,복구가 불가능합니다.
+          </Typography>
 
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                width: '100%',
-                marginTop: 20,
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              width: '100%',
+              marginTop: 20,
+            }}
+          >
+            <Button
+              color={'gray.dark'}
+              style={{ width: '48%' }}
+              onClick={() => {
+                // reset();
+                onClose();
               }}
             >
-              <Button
-                color={'gray.dark'}
-                style={{ width: '48%' }}
-                onClick={() => {
-                  reset();
-                  onClose();
-                }}
-              >
-                <Typography variant={'label1'} color={'common.white'}>
-                  취소
-                </Typography>
-              </Button>
-              <Button
-                color={'secondary'}
-                style={{ width: '48%' }}
-                onClick={withdraw}
-              >
-                <Typography variant={'label1'} color={'common.white'}>
-                  탈퇴하기
-                </Typography>
-              </Button>
-            </div>
-          </>
-        )}
+              <Typography variant={'label1'} color={'common.white'}>
+                취소
+              </Typography>
+            </Button>
+            <Button
+              color={'secondary'}
+              style={{ width: '48%' }}
+              onClick={withdraw}
+            >
+              <Typography variant={'label1'} color={'common.white'}>
+                탈퇴하기
+              </Typography>
+            </Button>
+          </div>
+        </>
+        {/* )} */}
       </ModalWrapper>
     </ModalContainer>
   );
