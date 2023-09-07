@@ -4,6 +4,7 @@ import axios from 'axios';
 export async function GET(request: NextRequest) {
   try {
     const accessToken = request.cookies.get('accessToken')?.value;
+    const { origin } = request.nextUrl;
 
     if (!accessToken) {
       return NextResponse.json(
@@ -16,7 +17,9 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    return NextResponse.redirect('/');
+    return NextResponse.redirect(origin, {
+      status: 302,
+    });
   } catch (error) {
     console.error(`${__dirname} error`, error);
 
