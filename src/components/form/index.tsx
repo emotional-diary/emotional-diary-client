@@ -510,8 +510,23 @@ const SignUpForm = ({
   };
 
   const signupValidation = () => {
-    const { name, email, password, passwordCheck } = validation;
+    const { name, email, password, passwordCheck, birth } = validation;
     console.log(validation);
+
+    if (
+      joinData.birth &&
+      joinData.birth.length > 0 &&
+      joinData.birth.length < 6
+    ) {
+      setValidation({
+        ...validation,
+        birth: {
+          status: false,
+          message: '생년월일은 6자로 입력해 주세요.',
+        },
+      });
+      return false;
+    }
 
     if (social) {
       if (name.status) {
@@ -584,6 +599,9 @@ const SignUpForm = ({
             birthday={joinData?.birth}
             onChange={handleUserChange}
           />
+          {validation.birth.message && (
+            <ValidationMessage message={validation.birth.message} />
+          )}
 
           <Button
             color={'secondary'}
@@ -677,6 +695,9 @@ const SignUpForm = ({
           birthday={joinData?.birth}
           onChange={handleUserChange}
         />
+        {validation.birth.message && (
+          <ValidationMessage message={validation.birth.message} />
+        )}
 
         <Button
           color={'secondary'}
