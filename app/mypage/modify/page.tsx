@@ -259,18 +259,20 @@ export default function Modify() {
               비밀번호
             </Typography>
           </Label>
-          <Button
-            color={'tertiary'}
-            style={{ marginBottom: '10px' }}
-            onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-              e.preventDefault();
-              changePasswordModal.setOpen(true);
-            }}
-          >
-            <Typography variant={'label2'} color={'common.white'}>
-              비밀번호 변경하기
-            </Typography>
-          </Button>
+          {user?.loginType === 'LOCAL' && (
+            <Button
+              color={'tertiary'}
+              style={{ marginBottom: '10px' }}
+              onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+                e.preventDefault();
+                changePasswordModal.setOpen(true);
+              }}
+            >
+              <Typography variant={'label2'} color={'common.white'}>
+                비밀번호 변경하기
+              </Typography>
+            </Button>
+          )}
 
           <Inputs.Gender gender={userData?.gender} setJoinData={setUserData} />
           <Inputs.Birthday
