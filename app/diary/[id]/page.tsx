@@ -64,7 +64,7 @@ export default function DiaryDetail() {
   }, [selectedDate, diaryList]) as Diary;
 
   React.useEffect(() => {
-    if (isEmpty(diary)) {
+    if (isEmpty(diary) || diary?.diaryID !== Number(id)) {
       setDiary(selectedDiary);
     }
   }, [selectedDiary]);
