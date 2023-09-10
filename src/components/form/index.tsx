@@ -324,8 +324,8 @@ const SignUpForm = ({
     email: { status: false, message: '' },
     password: { status: false, message: '' },
     passwordCheck: { status: false, message: '' },
-    birth: { status: false, message: '' },
-    gender: { status: false, message: '' },
+    birth: { status: true, message: '' },
+    gender: { status: true, message: '' },
   });
 
   const signupMutation = useMutation({
@@ -455,6 +455,29 @@ const SignUpForm = ({
     return true;
   };
 
+  const validateBirth = () => {
+    const { birth } = joinData;
+    if (birth && birth.length > 0 && birth.length < 6) {
+      setValidation({
+        ...validation,
+        birth: {
+          status: false,
+          message: '생년월일은 6자로 입력해 주세요.',
+        },
+      });
+      return false;
+    } else {
+      setValidation({
+        ...validation,
+        birth: {
+          status: true,
+          message: '',
+        },
+      });
+      return true;
+    }
+  };
+
   // 비밀번호 확인 에러 메세지 처리
   React.useEffect(() => {
     if (passwordCheck.length > 7) {
@@ -510,21 +533,11 @@ const SignUpForm = ({
   };
 
   const signupValidation = () => {
-    const { name, email, password, passwordCheck, birth } = validation;
+    const { name, email, password, passwordCheck } = validation;
     console.log(validation);
 
-    if (
-      joinData.birth &&
-      joinData.birth.length > 0 &&
-      joinData.birth.length < 6
-    ) {
-      setValidation({
-        ...validation,
-        birth: {
-          status: false,
-          message: '생년월일은 6자로 입력해 주세요.',
-        },
-      });
+    // 선택사항
+    if (!validateBirth()) {
       return false;
     }
 
@@ -540,7 +553,7 @@ const SignUpForm = ({
       !password.status ||
       !passwordCheck.status
     ) {
-      alert('입력값을 확인해 주세요.');
+      alert('필수 입력값을 확인해 주세요.');
       return false;
     }
 
