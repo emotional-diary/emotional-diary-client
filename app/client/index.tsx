@@ -57,7 +57,7 @@ const BottomFixedLayout = styled.div`
 export default function HomePage({ props }: { props: HomeProps }) {
   const router = useRouter();
   const { user, setUser } = useUserStore();
-  const { diary } = useDiaryStore();
+  const { diary, resetDiary } = useDiaryStore();
   const { diaryList, setDiaryList } = useDiaryListStore(user?.userID)();
   const {
     calendar: { selectedDate },
@@ -113,6 +113,12 @@ export default function HomePage({ props }: { props: HomeProps }) {
       })();
     }
   }, [user]);
+
+  React.useEffect(() => {
+    if (!selectedDiary) {
+      resetDiary();
+    }
+  }, [selectedDiary]);
 
   const handleTooltipClose = () => {
     setIsTooltipOpen(false);
