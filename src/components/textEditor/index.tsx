@@ -35,10 +35,9 @@ const CustomToolbar = ({ date }: { date: string }) => (
   </div>
 );
 
-const TextEditorWrapper = styled.div`
+const TextEditorWrapper = styled.div<{ calculatedHeight: number }>`
   display: flex;
   flex-direction: column;
-  flex-grow: 1;
   width: 100%;
   background-color: ${theme.palette.background.paper};
   border-radius: 30px 30px 0px 0px;
@@ -58,14 +57,15 @@ const TextEditorWrapper = styled.div`
     line-height: 18px;
     font-family: 'GangwonEduAll', sans-serif;
     border: none !important;
-    padding: 0px 30px 120px;
+    padding: 0px 30px;
     overflow-y: auto;
     ::-webkit-scrollbar {
       width: 0px;
     }
   }
   .ql-editor {
-    min-height: 300px;
+    min-height: ${props => props.calculatedHeight}px;
+    max-height: ${props => props.calculatedHeight}px;
     padding: 0px;
   }
   /* placeholder */
@@ -77,18 +77,82 @@ const TextEditorWrapper = styled.div`
 `;
 
 const TextEditor = () => {
-  const { diary, setDiary } = useDiaryStore();
+  const { diary, setPrevDiary } = useDiaryStore();
+  const [clientHeight, setClientHeight] = React.useState<number>(
+    window.innerHeight
+  );
+
+  const quillRef = React.useRef<ReactQuill>(null);
+
+  const calculatedHeight = React.useMemo(() => {
+    if (clientHeight > 800) return clientHeight * 0.45;
+    if (clientHeight > 750) return clientHeight * 0.4;
+    if (clientHeight > 700) return clientHeight * 0.35;
+    return clientHeight * 0.33;
+  }, [clientHeight]);
+
+  React.useEffect(() => {
+    if (!quillRef.current) return;
+    quillRef.current.focus();
+
+    // const toolbar = quillRef.current.getEditor().getModule('toolbar');
+    // toolbar.addHandler('image', () => {
+    //   const input = document.createElement('input');
+    //   input.setAttribute('type', 'file');
+    //   input.setAttribute('accept', 'image/*');
+    //   input.click();
+    //   input.onchange = async () => {
+    //     const file = input.files?.[0];
+    //     // const formData = new FormData();
+    //     // formData.append('image', file);
+    //     // const res = await fetch('/api/upload', {
+    //     //   method: 'POST',
+    //     //   body: formData,
+    //     // });
+    //     // const imageUrl = await res.text();
+    //     console.log('file', input.files);
+    //   };
+    // });
+  }, []);
+
+  React.useEffect(() => {
+    const handleResize = () => {
+      setClientHeight(window.innerHeight);
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
 
   return (
-    <TextEditorWrapper>
+    <TextEditorWrapper calculatedHeight={calculatedHeight}>
       <CustomToolbar date={diary.diaryAt} />
       <ReactQuill
+        ref={quillRef}
         value={diary.content}
-        onChange={(value: string) => {
-          setDiary({
-            ...diary,
-            content: value,
+        onChange={(value, delta, source, editor) => {
+          console.log('params', {
+            value,
+            delta,
+            source,
+            editor: editor.getContents(),
           });
+
+          const images: string =
+            delta.ops?.[0]?.insert?.image ?? delta.ops?.[1]?.insert?.image;
+
+          setPrevDiary(prevDiary => {
+            return {
+              ...prevDiary,
+              ...(images
+                ? { images: [...(prevDiary?.images ?? []), images] }
+                : { content: value }),
+            };
+          });
+          console.log('diary', diary);
         }}
         modules={{
           toolbar: { container: '#ql-toolbar' },
