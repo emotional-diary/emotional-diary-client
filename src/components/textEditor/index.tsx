@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import ReactQuill from 'react-quill';
+import Resizer from 'react-image-file-resizer';
 
 import { useDiaryStore } from '@store/index';
 import { Typography } from '@components/typography';
@@ -76,8 +77,26 @@ const TextEditorWrapper = styled.div<{ calculatedHeight: number }>`
   }
 `;
 
+const resizeFile = (file: File) =>
+  new Promise(resolve => {
+    Resizer.imageFileResizer(
+      file,
+      600,
+      800,
+      'JPEG',
+      100,
+      0,
+      uri => {
+        resolve(uri);
+      },
+      'base64',
+      80,
+      80
+    );
+  });
+
 const TextEditor = () => {
-  const { diary, setPrevDiary } = useDiaryStore();
+  const { diary, setDiary, setPrevDiary } = useDiaryStore();
   const [clientHeight, setClientHeight] = React.useState<number>(
     window.innerHeight
   );
@@ -91,29 +110,72 @@ const TextEditor = () => {
     return clientHeight * 0.33;
   }, [clientHeight]);
 
+  const handleImageUpload = async (file: File) => {
+    const resizedImage = (await resizeFile(file)) as string;
+
+    console.log('resizedImage', resizedImage);
+
+    setPrevDiary(prevDiary => {
+      return {
+        ...prevDiary,
+        images: [...(prevDiary?.images ?? []), resizedImage],
+      };
+    });
+  };
+
+  const validateImage = (file: File) => {
+    if (file.size > 1024 * 1024 * 5) {
+      alert('5MB 이하의 이미지만 업로드 가능합니다.');
+      return false;
+    }
+    if (!file.type.includes('image')) {
+      alert('이미지 파일만 업로드 가능합니다.');
+      return false;
+    }
+    if (file.type.includes('gif')) {
+      alert('gif 파일은 업로드 할 수 없습니다.');
+      return false;
+    }
+    return true;
+  };
+
   React.useEffect(() => {
     if (!quillRef.current) return;
     quillRef.current.focus();
-
-    // const toolbar = quillRef.current.getEditor().getModule('toolbar');
-    // toolbar.addHandler('image', () => {
-    //   const input = document.createElement('input');
-    //   input.setAttribute('type', 'file');
-    //   input.setAttribute('accept', 'image/*');
-    //   input.click();
-    //   input.onchange = async () => {
-    //     const file = input.files?.[0];
-    //     // const formData = new FormData();
-    //     // formData.append('image', file);
-    //     // const res = await fetch('/api/upload', {
-    //     //   method: 'POST',
-    //     //   body: formData,
-    //     // });
-    //     // const imageUrl = await res.text();
-    //     console.log('file', input.files);
-    //   };
-    // });
   }, []);
+
+  React.useEffect(() => {
+    if (!quillRef.current) return;
+
+    const toolbar = quillRef.current.getEditor().getModule('toolbar');
+    toolbar.addHandler('image', () => {
+      if (diary.images?.length === 3) {
+        alert('이미지는 최대 3개까지 업로드 가능합니다.');
+        return;
+      }
+      const input = document.createElement('input');
+      input.setAttribute('type', 'file');
+      input.setAttribute('accept', 'image/*');
+      input.click();
+      input.onchange = async () => {
+        const file = input.files?.[0];
+        console.log('file', file);
+
+        if (!file) return;
+        if (!validateImage(file)) return;
+
+        handleImageUpload(file);
+
+        // const formData = new FormData();
+        // formData.append('image', file);
+        // const res = await fetch('/api/upload', {
+        //   method: 'POST',
+        //   body: formData,
+        // });
+        // const imageUrl = await res.text();
+      };
+    });
+  }, [diary.images]);
 
   React.useEffect(() => {
     const handleResize = () => {
@@ -141,17 +203,22 @@ const TextEditor = () => {
             editor: editor.getContents(),
           });
 
-          const images: string =
-            delta.ops?.[0]?.insert?.image ?? delta.ops?.[1]?.insert?.image;
-
-          setPrevDiary(prevDiary => {
-            return {
-              ...prevDiary,
-              ...(images
-                ? { images: [...(prevDiary?.images ?? []), images] }
-                : { content: value }),
-            };
+          setDiary({
+            ...diary,
+            content: value,
           });
+
+          // const images: string =
+          //   delta.ops?.[0]?.insert?.image ?? delta.ops?.[1]?.insert?.image;
+
+          // setPrevDiary(prevDiary => {
+          //   return {
+          //     ...prevDiary,
+          //     ...(images
+          //       ? { images: [...(prevDiary?.images ?? []), images] }
+          //       : { content: value }),
+          //   };
+          // });
           console.log('diary', diary);
         }}
         modules={{

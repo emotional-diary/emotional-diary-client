@@ -206,6 +206,7 @@ export default function NewDiary() {
             {images.map((image, index) =>
               image === 'dummy' ? (
                 <div
+                  key={index}
                   style={{
                     width: 80,
                     height: 80,
@@ -228,7 +229,12 @@ export default function NewDiary() {
                   <img
                     src={image}
                     alt={'diary_image'}
-                    style={{ width: 80, height: 80, borderRadius: 6 }}
+                    style={{
+                      width: 80,
+                      height: 80,
+                      borderRadius: 6,
+                      objectFit: 'cover',
+                    }}
                   />
                 </div>
               )
