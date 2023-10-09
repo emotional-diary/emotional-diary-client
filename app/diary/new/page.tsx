@@ -19,10 +19,82 @@ import {
 } from '@store/index';
 import { changeDateFormat } from '@utils/index';
 import { EmotionList } from '@components/diary/emotionList';
+import styled from 'styled-components';
 
 const TextEditor = dynamic(() => import('@components/textEditor'), {
   ssr: false,
 });
+
+export const ImageContainer = styled.div`
+  display: flex;
+  flex-grow: 1;
+  flex-wrap: wrap;
+  width: 100%;
+  background-color: ${theme.palette.background.paper};
+  padding-top: 20px;
+  padding-left: 30px;
+  padding-right: 30px;
+  overflow-x: scroll;
+
+  img {
+    margin-right: 10px;
+  }
+`;
+
+export const CloseButton = ({
+  onClick,
+  style,
+}: {
+  onClick?: () => void;
+  style?: React.CSSProperties;
+}) => (
+  <div
+    onClick={onClick}
+    style={{
+      position: 'absolute',
+      top: 5,
+      right: 15,
+      zIndex: 1,
+      width: 15,
+      height: 15,
+      borderRadius: '50%',
+      backgroundColor: theme.palette.common.white,
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      color: theme.palette.common.black,
+      fontWeight: 'bold',
+      cursor: 'pointer',
+
+      ...(style ?? {}),
+    }}
+  >
+    &#215;
+  </div>
+);
+
+const steps = [
+  {
+    title: (
+      <div>
+        오늘 나의 기분을
+        <br />
+        선택해주세요
+      </div>
+    ),
+    buttonName: '다음',
+  },
+  {
+    title: (
+      <div>
+        오늘 하루 어떤일이
+        <br />
+        있었을까요?
+      </div>
+    ),
+    buttonName: '저장할래요',
+  },
+];
 
 export default function NewDiary() {
   const router = useRouter();
@@ -37,6 +109,14 @@ export default function NewDiary() {
   const queryStep = searchParams?.get('step')
     ? Number(searchParams?.get('step'))
     : 0;
+
+  const images = React.useMemo(
+    () =>
+      (diary.images ?? [])
+        .concat(['dummy', 'dummy', 'dummy'])
+        .slice(0, 3) as string[],
+    [diary.images]
+  );
 
   const saveDiaryMutation = useMutation({
     mutationFn: async (diary: Partial<Diary>) => {
@@ -77,7 +157,7 @@ export default function NewDiary() {
     router.replace(`/diary/${data?.diaryID}`);
   };
 
-  console.log('diary', diary);
+  // console.log('diary', diary);
 
   const handleNextStep = () => {
     if (!diary.emotion) return alert('기분을 선택해 주세요');
@@ -97,29 +177,6 @@ export default function NewDiary() {
       diaryAt: changeDateFormat(calendar.selectedDate as Date),
     });
   }, [calendar]);
-
-  const steps = [
-    {
-      title: (
-        <div>
-          오늘 나의 기분을
-          <br />
-          선택해주세요
-        </div>
-      ),
-      buttonName: '다음',
-    },
-    {
-      title: (
-        <div>
-          오늘 하루 어떤일이
-          <br />
-          있었을까요?
-        </div>
-      ),
-      buttonName: '저장할래요',
-    },
-  ];
 
   return (
     <Container
@@ -144,6 +201,39 @@ export default function NewDiary() {
         <>
           <LoadingModal open={isLoading} />
           <TextEditor />
+
+          <ImageContainer>
+            {images.map((image, index) =>
+              image === 'dummy' ? (
+                <div
+                  style={{
+                    width: 80,
+                    height: 80,
+                    border: `1px solid ${theme.palette.gray.main}`,
+                    borderRadius: 6,
+                    backgroundColor: theme.palette.gray.light,
+                    marginRight: 10,
+                  }}
+                />
+              ) : (
+                <div key={index} style={{ position: 'relative' }}>
+                  <CloseButton
+                    onClick={() => {
+                      setDiary({
+                        ...diary,
+                        images: diary.images?.filter((_, i) => i !== index),
+                      });
+                    }}
+                  />
+                  <img
+                    src={image}
+                    alt={'diary_image'}
+                    style={{ width: 80, height: 80, borderRadius: 6 }}
+                  />
+                </div>
+              )
+            )}
+          </ImageContainer>
         </>
       )}
 
