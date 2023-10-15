@@ -60,9 +60,6 @@ const TextEditorWrapper = styled.div<{ calculatedHeight: number }>`
     border: none !important;
     padding: 0px 30px;
     overflow-y: auto;
-    ::-webkit-scrollbar {
-      width: 0px;
-    }
   }
   .ql-editor {
     min-height: ${props => props.calculatedHeight}px;
