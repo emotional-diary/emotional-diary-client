@@ -1,3 +1,4 @@
+import React from 'react';
 import styled from 'styled-components';
 
 import { Typography } from '@components/typography';
@@ -6,20 +7,38 @@ import { theme } from 'src/theme';
 
 export const StyledEmojiContainer = styled('div')`
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: 100px;
-  height: 100px;
-  background-color: #d9d9d9;
+  width: 120px;
+  border-radius: 50%;
+`;
+
+const StyledTitleContainer = styled('div')`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 70px;
+  padding: 4px 10px;
+  border-radius: 5px;
 `;
 
 export const emotions = {
-  happy: '😀',
-  sad: '😢',
-  angry: '😡',
-  uneasy: '😨',
-  pain: '😭',
-  comfortable: '😳',
+  happy: 'emotion_happy',
+  angry: 'emotion_angry',
+  sad: 'emotion_sad',
+  uneasy: 'emotion_uneasy',
+  pain: 'emotion_pain',
+  comfortable: 'emotion_comfortable',
+};
+
+const backgroundByEmotion = {
+  happy: '#FF6B6B',
+  angry: '#000',
+  sad: '#00A3FF',
+  uneasy: '#2E6584',
+  pain: '#842EA3',
+  comfortable: '#23C0B6',
 };
 
 export const EmotionList = () => {
@@ -39,7 +58,7 @@ export const EmotionList = () => {
         justifyContent: 'space-between',
         flexWrap: 'wrap',
         width: '100%',
-        maxWidth: 250,
+        maxWidth: 300,
         marginTop: '15px',
       }}
     >
@@ -54,9 +73,29 @@ export const EmotionList = () => {
             marginTop: '30px',
           }}
         >
-          <Typography variant={'h1'}>
-            {emotions[emoji as keyof typeof emotions]}
-          </Typography>
+          <img
+            src={`/images/icons/${
+              emotions[emoji as keyof typeof emotions]
+            }.png`}
+            alt={emoji}
+            width={'auto'}
+            height={'100%'}
+            style={{
+              maxHeight: 100,
+              objectFit: 'contain',
+              padding: '10px',
+            }}
+          />
+          <StyledTitleContainer
+            style={{
+              backgroundColor:
+                backgroundByEmotion[emoji as keyof typeof backgroundByEmotion],
+            }}
+          >
+            <Typography variant={'body4'} color={'background.paper'}>
+              {emoji.toUpperCase()}
+            </Typography>
+          </StyledTitleContainer>
         </StyledEmojiContainer>
       ))}
     </div>
