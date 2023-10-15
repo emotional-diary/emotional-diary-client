@@ -110,14 +110,6 @@ export default function NewDiary() {
     ? Number(searchParams?.get('step'))
     : 0;
 
-  const images = React.useMemo(
-    () =>
-      (diary.images ?? [])
-        .concat(['dummy', 'dummy', 'dummy'])
-        .slice(0, 3) as string[],
-    [diary.images]
-  );
-
   const saveDiaryMutation = useMutation({
     mutationFn: async (diary: Partial<Diary>) => {
       const res = await axios.post('/api/diary', diary);
@@ -203,7 +195,7 @@ export default function NewDiary() {
           <TextEditor />
 
           <ImageContainer>
-            {images.map((image, index) =>
+            {diary.images?.map((image, index) =>
               image === 'dummy' ? (
                 <div
                   key={index}
