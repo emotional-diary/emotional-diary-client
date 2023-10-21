@@ -6,7 +6,7 @@ import styled from 'styled-components';
 
 import * as Icons from '@components/icons';
 import { Container } from '@components/layout';
-import { Button, IconButton } from '@components/form/style';
+import { Button, IconButton } from '@components/button';
 import { Typography } from '@components/typography';
 import { useDiaryListStore, useUserStore } from '@store/index';
 import { DiaryListCard } from '@components/card';

@@ -1,15 +1,10 @@
 import React from 'react';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 
 import { Typography } from '@components/typography';
+import { Button } from '@components/button';
 import { Timer as EmailAuthTimer } from '../timer';
-import {
-  Label,
-  GenderButton,
-  GenderRadioButton,
-  Input,
-  Button,
-} from '../style';
+import { Label, GenderButton, GenderRadioButton, Input } from '../style';
 import axios from 'axios';
 
 export const Nickname = ({

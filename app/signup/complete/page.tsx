@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 
 import * as Icons from '@components/icons';
 import { Container } from '@components/layout';
-import { Button } from '@components/form/style';
+import { Button } from '@components/button';
 import { Typography } from '@components/typography';
 import { theme } from 'src/theme';
 

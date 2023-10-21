@@ -4,18 +4,18 @@ import { useRouter, usePathname, useParams } from 'next/navigation';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 
-import * as Icons from '@components/icons';
-import { Button, IconButton } from '@components/form/style';
-import { Typography } from '@components/typography';
-import Popper from '@components/popper';
 import {
   useCalendarStore,
   useDiaryListStore,
   useDiaryStore,
   useUserStore,
 } from '@store/index';
-import { theme } from 'src/theme';
+import * as Icons from '@components/icons';
+import { Button, IconButton } from '@components/button';
+import { Typography } from '@components/typography';
+import Popper from '@components/popper';
 import { CalendarModal } from '@components/calendar';
+import { theme } from 'src/theme';
 
 export type HeaderProps = {
   title?: string;

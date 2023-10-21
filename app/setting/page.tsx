@@ -6,7 +6,7 @@ import styled from 'styled-components';
 
 import { Container } from '@components/layout';
 import { Typography } from '@components/typography';
-import { Button } from '@components/form/style';
+import { Button } from '@components/button';
 import { theme } from 'src/theme';
 import { useUserStore } from '@store/index';
 import { WithdrawalModal } from '@components/modal';

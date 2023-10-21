@@ -3,7 +3,8 @@ import styled from 'styled-components';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 
-import { Button, Form, Input, Label } from '@components/form/style';
+import { Button } from '@components/button';
+import { Form, Input, Label } from '@components/form/style';
 import { Typography } from '@components/typography';
 import { ValidationMessage } from '@components/form/validation';
 import * as Inputs from '@components/form/input';

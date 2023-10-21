@@ -4,7 +4,8 @@ import React from 'react';
 import { useRouter } from 'next/navigation';
 
 import { Container } from '@components/layout';
-import { Button, FormContainer, IconButton } from '@components/form/style';
+import { Button, IconButton } from '@components/button';
+import { FormContainer } from '@components/form/style';
 import { Typography } from '@components/typography';
 import * as Icons from '@components/icons';
 import { Modal } from '@components/modal';

@@ -9,7 +9,7 @@ import { useMutation } from '@tanstack/react-query';
 import { Container } from '@components/layout';
 import { Typography } from '@components/typography';
 import { theme } from 'src/theme';
-import { Button } from '@components/form/style';
+import { Button } from '@components/button';
 import { LoadingModal } from '@components/modal';
 import {
   useCalendarStore,

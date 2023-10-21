@@ -8,7 +8,8 @@ import { useMutation } from '@tanstack/react-query';
 
 import { Container } from '@components/layout';
 import { Typography } from '@components/typography';
-import { Button, Form, FormContainer, Label } from '@components/form/style';
+import { Button } from '@components/button';
+import { Form, FormContainer, Label } from '@components/form/style';
 import { useUserStore } from '@store/index';
 import * as Inputs from '@components/form/input';
 // import { StyledInfoBox } from 'app/setting/page';

@@ -2,10 +2,10 @@
 
 import React from 'react';
 import { useRouter } from 'next/navigation';
+import styled from 'styled-components';
 
 import * as Icons from '@components/icons';
-import { Button } from '@components/form/style';
-import { Card } from '@components/styled';
+import { Button } from '@components/button';
 import { Typography } from '@components/typography';
 import {
   useCalendarStore,
@@ -14,6 +14,14 @@ import {
 } from '@store/index';
 import { dateToSting } from '@utils/index';
 import { emotions } from '@components/diary/emotionList';
+
+const Card = styled.div`
+  width: 100%;
+  background-color: ${({ theme }) => theme.palette.background.paper};
+  border-radius: 15px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  padding: 16px;
+`;
 
 export const DiaryCard = () => {
   const router = useRouter();
