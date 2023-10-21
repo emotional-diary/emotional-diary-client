@@ -6,15 +6,15 @@ import styled from 'styled-components';
 import axios from 'axios';
 import { useMutation } from '@tanstack/react-query';
 
+import { useUserStore } from '@store/index';
 import { Container } from '@components/layout';
 import { Typography } from '@components/typography';
 import { Button } from '@components/button';
 import { Form, FormContainer, Label } from '@components/form/style';
-import { useUserStore } from '@store/index';
 import * as Inputs from '@components/form/input';
-// import { StyledInfoBox } from 'app/setting/page';
 import { PasswordChangeModal } from '@components/modal';
 import { ValidationMessage } from '@components/form/validation';
+import { StyledInfoBox } from 'app/setting/page';
 
 const SocialRadiusBox = styled.div`
   display: flex;
@@ -25,17 +25,7 @@ const SocialRadiusBox = styled.div`
   padding: 7px 14px;
 `;
 
-const StyledInfoBox = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-  padding: 20px;
-  border-radius: 50px;
-  background-color: ${props => props.theme.palette.gray.light};
-`;
-
-export default function Modify() {
+export default function ProfileModify() {
   const router = useRouter();
   const { user, setUser } = useUserStore();
   const [userData, setUserData] = React.useState<
@@ -144,6 +134,8 @@ export default function Modify() {
     },
     [userData]
   );
+
+  console.log(userData);
 
   const modifyValidation = () => {
     if (user === userData) {

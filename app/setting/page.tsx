@@ -6,12 +6,11 @@ import styled from 'styled-components';
 
 import { Container } from '@components/layout';
 import { Typography } from '@components/typography';
-import { Button } from '@components/button';
+import { IconButton } from '@components/button';
 import { theme } from 'src/theme';
-import { useUserStore } from '@store/index';
-import { WithdrawalModal } from '@components/modal';
+import * as Icons from '@components/icons';
 
-const StyledInfoBox = styled.div`
+export const StyledInfoBox = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -23,26 +22,6 @@ const StyledInfoBox = styled.div`
 
 export default function Setting() {
   const router = useRouter();
-  const { user } = useUserStore();
-  const [info, setInfo] = React.useState<User>();
-
-  const withdrawalModal = (() => {
-    const [open, setOpen] = React.useState(false);
-
-    return {
-      open,
-      setOpen,
-    };
-  })();
-
-  const gender = {
-    MALE: '남성',
-    FEMALE: '여성',
-  };
-
-  React.useEffect(() => {
-    setInfo(user);
-  }, []);
 
   return (
     <Container
@@ -57,11 +36,6 @@ export default function Setting() {
         },
       }}
     >
-      <WithdrawalModal
-        open={withdrawalModal.open}
-        onClose={() => withdrawalModal.setOpen(false)}
-      />
-
       <div
         style={{
           display: 'flex',
@@ -71,69 +45,53 @@ export default function Setting() {
           marginTop: '14px',
         }}
       >
-        <Typography variant={'h3'}>회원정보</Typography>
-
-        <Button
-          style={{ height: 34, padding: '10px', borderRadius: '10px' }}
-          color={'tertiary.light'}
-          onClick={() => router.push('/mypage/modify')}
-        >
-          <Typography variant={'label2'} color={'tertiary.main'}>
-            회원정보 수정하기
-          </Typography>
-        </Button>
+        <Typography variant={'h3'}>설정</Typography>
       </div>
 
-      <StyledInfoBox style={{ marginTop: '24px' }}>
-        <Typography variant={'body4'} color={'gray.dark'}>
-          나의 이름
-        </Typography>
-        <Typography variant={'subtitle2'} color={'gray.dark'}>
-          {info?.name}
-        </Typography>
-      </StyledInfoBox>
-
-      <StyledInfoBox style={{ marginTop: '15px' }}>
-        <Typography variant={'body4'} color={'gray.dark'}>
-          나의 이메일
-        </Typography>
-        <Typography variant={'subtitle2'} color={'gray.dark'}>
-          {info?.email}
-        </Typography>
-      </StyledInfoBox>
-
-      <StyledInfoBox style={{ marginTop: '15px' }}>
-        <Typography variant={'body4'} color={'gray.dark'}>
-          나의 성별
-        </Typography>
-        <Typography variant={'subtitle2'} color={'gray.dark'}>
-          {gender[info?.gender as 'MALE' | 'FEMALE']}
-        </Typography>
-      </StyledInfoBox>
-
-      <StyledInfoBox style={{ marginTop: '15px' }}>
-        <Typography variant={'body4'} color={'gray.dark'}>
-          내가 태어난날
-        </Typography>
-        <Typography variant={'subtitle2'} color={'gray.dark'}>
-          {info?.birth}
-        </Typography>
-      </StyledInfoBox>
-
-      <Button
-        color={'error.light'}
-        style={{
-          height: 34,
-          padding: '10px 12px',
-          margin: '30px auto 0px',
-          borderRadius: '10px',
-        }}
-        onClick={() => withdrawalModal.setOpen(true)}
+      <IconButton
+        onClick={() => router.push('/setting/profile')}
+        style={{ width: '100%', marginTop: '24px' }}
       >
-        <Typography variant={'label2'} color={'error.main'}>
-          탈퇴하기
+        <StyledInfoBox>
+          <Typography variant={'subtitle2'} color={'gray.dark'}>
+            회원정보
+          </Typography>
+          <Icons.Arrow direction={'right'} width={12} height={12} />
+        </StyledInfoBox>
+      </IconButton>
+
+      <IconButton
+        onClick={() => router.push('/setting/inquiry')}
+        style={{ width: '100%', marginTop: '15px' }}
+      >
+        <StyledInfoBox>
+          <Typography variant={'subtitle2'} color={'gray.dark'}>
+            문의하기
+          </Typography>
+          <Icons.Arrow direction={'right'} width={12} height={12} />
+        </StyledInfoBox>
+      </IconButton>
+
+      <IconButton
+        onClick={() => router.push('/setting/terms')}
+        style={{ width: '100%', marginTop: '15px' }}
+      >
+        <StyledInfoBox>
+          <Typography variant={'subtitle2'} color={'gray.dark'}>
+            이용약관
+          </Typography>
+          <Icons.Arrow direction={'right'} width={12} height={12} />
+        </StyledInfoBox>
+      </IconButton>
+
+      <StyledInfoBox style={{ marginTop: '15px' }}>
+        <Typography variant={'subtitle2'} color={'gray.dark'}>
+          버전정보
         </Typography>
-      </Button>
+        <Typography variant={'subtitle2'} color={'gray.dark'}>
+          v1.0.0
+        </Typography>
+      </StyledInfoBox>
     </Container>
   );
 }
