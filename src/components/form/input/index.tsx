@@ -391,7 +391,7 @@ export const Birthday = ({
       id="birth"
       name="birth"
       placeholder="6자리로 입력해주세요! 예) 961024"
-      value={birthday as string}
+      value={(birthday as string) || ''}
       onChange={onChange}
       maxLength={6}
     />
