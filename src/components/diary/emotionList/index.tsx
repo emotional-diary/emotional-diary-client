@@ -43,8 +43,10 @@ const backgroundByEmotion = {
 
 export const EmotionList = () => {
   const { diary, setDiary } = useDiaryStore();
+  const [isFirstSelect, setIsFirstSelect] = React.useState(true);
 
   const handleSelectEmotion = (emoji: string) => {
+    setIsFirstSelect(false);
     setDiary({
       ...diary,
       emotion: emoji as Diary['emotion'],
@@ -67,10 +69,14 @@ export const EmotionList = () => {
           key={index}
           onClick={() => handleSelectEmotion(emoji)}
           style={{
-            cursor: 'pointer',
-            backgroundColor:
-              diary?.emotion === emoji ? theme.palette.primary.main : '#d9d9d9',
             marginTop: '30px',
+            transition: 'all 0.3s ease-in-out',
+            transform:
+              diary?.emotion === emoji
+                ? 'scale(1.3)'
+                : isFirstSelect
+                ? 'scale(1)'
+                : 'scale(0.9)',
           }}
         >
           <img
