@@ -1,7 +1,9 @@
 'use client';
 
 import React from 'react';
+import axios from 'axios';
 import { styled } from 'styled-components';
+import { useMutation } from '@tanstack/react-query';
 
 import { Container } from '@components/layout';
 import { Typography } from '@components/typography';
@@ -26,10 +28,39 @@ const TextArea = styled.textarea`
 
 export default function Inquiry() {
   const { user } = useUserStore();
-  const [inquiryData, setInquiryData] = React.useState({
+  const [inquiryData, setInquiryData] = React.useState<Inquiry>({
     email: user?.email,
     content: '',
   });
+
+  const sendInquiryMutation = useMutation({
+    mutationFn: async (inquiryData: Inquiry) => {
+      try {
+        const res = await axios.post('/api/user/inquiry', inquiryData);
+        return res.data;
+      } catch (error: any) {
+        console.log('error', error);
+        return error.response.data;
+      }
+    },
+  });
+
+  const sendInquiry = async () => {
+    const { data, statusCode, responseMessage } =
+      await sendInquiryMutation.mutateAsync({
+        email: inquiryData.email,
+        content: inquiryData.content,
+      });
+
+    console.log('data', data);
+
+    if (statusCode >= 400) {
+      alert(responseMessage);
+      return;
+    }
+
+    alert('문의가 접수되었습니다.');
+  };
 
   return (
     <Container
@@ -88,7 +119,11 @@ export default function Inquiry() {
         </div>
       </div>
 
-      <Button color={'secondary'} style={{ width: '100%', marginTop: 20 }}>
+      <Button
+        color={'secondary'}
+        style={{ width: '100%', marginTop: 20 }}
+        onClick={sendInquiry}
+      >
         <Typography variant={'label1'} color={'common.white'}>
           문의하기
         </Typography>

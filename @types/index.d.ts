@@ -49,3 +49,8 @@ type Diary = {
   images?: string[];
   metaData?: {};
 };
+
+type Inquiry = {
+  email: string;
+  content: string;
+};
