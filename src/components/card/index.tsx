@@ -131,7 +131,7 @@ export const DiaryListCard = ({
 
   return (
     <Card
-      style={{ marginTop: '15px' }}
+      style={{ marginTop: '15px', padding: '12px 20px 20px 16px' }}
       onClick={() => router.push(`/diary/${diaryID}`)}
     >
       <div
@@ -151,7 +151,20 @@ export const DiaryListCard = ({
           </Typography>
         </div>
 
-        <div>{emotions[emotion as keyof typeof emotions]}</div>
+        <div>
+          <img
+            src={`/images/icons/${
+              emotions[emotion as keyof typeof emotions]
+            }.png`}
+            alt={emotions[emotion as keyof typeof emotions]}
+            width={'auto'}
+            height={'100%'}
+            style={{
+              maxHeight: 32,
+              objectFit: 'contain',
+            }}
+          />
+        </div>
       </div>
 
       <Typography
