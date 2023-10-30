@@ -107,8 +107,13 @@ export default function Inquiry() {
           />
 
           <Input
-            readOnly={inquiryData?.email ? true : false}
             value={inquiryData?.email}
+            onChange={e => {
+              setInquiryData({
+                ...inquiryData,
+                email: e.target.value,
+              });
+            }}
             style={{
               backgroundColor: theme.palette.background.paper,
               borderRadius: '10px',
@@ -116,6 +121,11 @@ export default function Inquiry() {
               padding: '20px 16px',
             }}
           />
+
+          <Typography variant={'caption1'} color={'error.main'}>
+            *답변 받을 이메일을 정확히 입력해주세요. 잘못 기입하신 경우 원활한
+            안내가 어려울 수 있습니다.
+          </Typography>
         </div>
       </div>
 
