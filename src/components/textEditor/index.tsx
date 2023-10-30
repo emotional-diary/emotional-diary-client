@@ -36,7 +36,7 @@ const CustomToolbar = ({ date }: { date: string }) => (
   </div>
 );
 
-const TextEditorWrapper = styled.div<{ calculatedHeight: number }>`
+const TextEditorWrapper = styled.div<{ $calculatedHeight: number }>`
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -62,8 +62,8 @@ const TextEditorWrapper = styled.div<{ calculatedHeight: number }>`
     overflow-y: auto;
   }
   .ql-editor {
-    min-height: ${props => props.calculatedHeight}px;
-    max-height: ${props => props.calculatedHeight}px;
+    min-height: ${props => props.$calculatedHeight}px;
+    max-height: ${props => props.$calculatedHeight}px;
     padding: 0px;
   }
   /* placeholder */
@@ -187,7 +187,7 @@ const TextEditor = () => {
   }, []);
 
   return (
-    <TextEditorWrapper calculatedHeight={calculatedHeight}>
+    <TextEditorWrapper $calculatedHeight={calculatedHeight}>
       <CustomToolbar date={diary.diaryAt} />
       <ReactQuill
         ref={quillRef}
