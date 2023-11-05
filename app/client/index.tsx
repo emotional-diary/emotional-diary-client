@@ -84,6 +84,14 @@ export default function HomePage({ props }: { props: HomeProps }) {
     return diary;
   }, [selectedDate, diaryList]);
 
+  const existTodayDiary = React.useMemo(() => {
+    if (!diaryList.length) return false;
+    const diary = diaryList.find(
+      diary => dateToSting(new Date(diary.diaryAt)) === dateToSting(new Date())
+    );
+    return !!diary;
+  }, [diaryList]);
+
   React.useEffect(() => {
     if (!user?.name || user.userID !== props.profile?.userID) {
       setUser(props.profile);
@@ -189,7 +197,11 @@ export default function HomePage({ props }: { props: HomeProps }) {
       <BottomFixedLayout>
         <Tooltip
           anchor={'left'}
-          open={isTooltipOpen}
+          open={(() => {
+            if (existTodayDiary) return false;
+            if (isTooltipOpen) return true;
+            return true;
+          })()}
           onClose={handleTooltipClose}
           text={'오늘도 나의 하루를 기록해보세요'}
         >
