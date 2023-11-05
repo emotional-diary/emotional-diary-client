@@ -201,42 +201,28 @@ export default function NewDiary() {
           <TextEditor />
 
           <ImageContainer>
-            {diary.images?.map((image, index) =>
-              image === 'dummy' ? (
-                <div
-                  key={index}
+            {diary.images?.map((image, index) => (
+              <div key={index} style={{ position: 'relative' }}>
+                <CloseButton
+                  onClick={() => {
+                    setDiary({
+                      ...diary,
+                      images: diary.images?.filter((_, i) => i !== index),
+                    });
+                  }}
+                />
+                <img
+                  src={image}
+                  alt={'diary_image'}
                   style={{
                     width: 80,
                     height: 80,
-                    border: `1px solid ${theme.palette.gray.main}`,
                     borderRadius: 6,
-                    backgroundColor: theme.palette.gray.light,
-                    marginRight: 10,
+                    objectFit: 'cover',
                   }}
                 />
-              ) : (
-                <div key={index} style={{ position: 'relative' }}>
-                  <CloseButton
-                    onClick={() => {
-                      setDiary({
-                        ...diary,
-                        images: diary.images?.filter((_, i) => i !== index),
-                      });
-                    }}
-                  />
-                  <img
-                    src={image}
-                    alt={'diary_image'}
-                    style={{
-                      width: 80,
-                      height: 80,
-                      borderRadius: 6,
-                      objectFit: 'cover',
-                    }}
-                  />
-                </div>
-              )
-            )}
+              </div>
+            ))}
           </ImageContainer>
         </>
       )}

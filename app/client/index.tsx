@@ -172,8 +172,8 @@ export default function HomePage({ props }: { props: HomeProps }) {
 
       <MessageOfToday>
         <Typography variant={'subtitle2'} color={'gray.dark'}>
-          {diary?.comment ? (
-            <div dangerouslySetInnerHTML={{ __html: diary.comment }} />
+          {selectedDiary?.comment ? (
+            <div dangerouslySetInnerHTML={{ __html: selectedDiary.comment }} />
           ) : (
             <>
               <Typography
