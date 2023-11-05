@@ -16,6 +16,8 @@ import {
 import { dateToSting } from '@utils/index';
 import { theme } from 'src/theme';
 import { StyledEmojiContainer, emotions } from '@components/diary/emotionList';
+import { ImageModal } from '@components/modal';
+import { ImageContainer } from '../new/page';
 
 const DetailWrapper = styled.div`
   display: flex;
@@ -28,7 +30,7 @@ const DetailWrapper = styled.div`
 const Styled3DBox = styled.div`
   position: relative;
   padding: 10px 50px;
-  margin: 30px 30px 0;
+  margin: 10px 30px 0;
   background-color: ${({ theme }) => theme.palette.background.paper};
   color: #fff;
   border-radius: 10px;
@@ -56,6 +58,17 @@ export default function DiaryDetail() {
   const { diary, setDiary } = useDiaryStore();
   const { diaryList } = useDiaryListStore(user?.userID)();
 
+  const [modal, setModal] = React.useState<{
+    open: boolean;
+    imageIndex: number;
+  }>({
+    open: false,
+    imageIndex: 0,
+  });
+  const [clientHeight, setClientHeight] = React.useState<number>(
+    window.innerHeight
+  );
+
   const selectedDiary = React.useMemo(() => {
     if (!selectedDate) return null;
     if (!diaryList.length) return null;
@@ -63,25 +76,30 @@ export default function DiaryDetail() {
     return diary;
   }, [selectedDate, diaryList]) as Diary;
 
+  const calculatedHeight = React.useMemo(() => {
+    if (clientHeight > 800) return clientHeight * 0.33;
+    if (clientHeight > 750) return clientHeight * 0.3;
+    if (clientHeight > 700) return clientHeight * 0.27;
+    return clientHeight * 0.33;
+  }, [clientHeight]);
+
   React.useEffect(() => {
     if (isEmpty(diary) || diary?.diaryID !== Number(id)) {
       setDiary(selectedDiary);
     }
   }, [selectedDiary]);
 
-  // React.useEffect(() => {
-  //   const handleRouteChange = () => {
-  //     // 초기화 시간을 주기 위해 setTimeout 사용
-  //     setTimeout(() => {
-  //       setDiary({} as Diary);
-  //     }, 100);
-  //   };
+  React.useEffect(() => {
+    const handleResize = () => {
+      setClientHeight(window.innerHeight);
+    };
 
-  //   router.events.on('routeChangeStart', handleRouteChange);
-  //   return () => {
-  //     router.events.off('routeChangeStart', handleRouteChange);
-  //   };
-  // }, []);
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
 
   // console.log('diary', diary);
 
@@ -99,11 +117,27 @@ export default function DiaryDetail() {
         backgroundColor: theme.palette.common.white,
       }}
     >
+      <ImageModal
+        open={modal.open}
+        onClose={() => setModal({ open: false, imageIndex: 0 })}
+        imageUrl={diary.images?.[modal?.imageIndex]?.imgUrl}
+      />
+
       <DetailWrapper>
         <StyledEmojiContainer>
-          <Typography variant={'h1'}>
-            {emotions[diary?.emotion as keyof typeof emotions]}
-          </Typography>
+          <img
+            src={`/images/icons/${
+              emotions[diary.emotion as keyof typeof emotions]
+            }.png`}
+            alt={diary.emotion as keyof typeof emotions}
+            width={'auto'}
+            height={'100%'}
+            style={{
+              maxHeight: 100,
+              objectFit: 'contain',
+              padding: '10px',
+            }}
+          />
         </StyledEmojiContainer>
 
         <Styled3DBox>
@@ -124,9 +158,15 @@ export default function DiaryDetail() {
           <Typography variant={'h4'}>{dateToSting(diary?.diaryAt)}</Typography>
 
           <Typography
-            className={'ql-editor'}
             variant={'body3'}
-            style={{ lineHeight: 1.5, marginTop: '16px', padding: 0 }}
+            style={{
+              lineHeight: 1.5,
+              minHeight: diary?.images?.length ? calculatedHeight : 'auto',
+              maxHeight: diary?.images?.length ? calculatedHeight : 'none',
+              marginTop: '16px',
+              padding: 0,
+              overflowY: 'auto',
+            }}
           >
             <div
               dangerouslySetInnerHTML={{
@@ -135,6 +175,25 @@ export default function DiaryDetail() {
             />
           </Typography>
         </ContentWrapper>
+
+        <ImageContainer style={{ paddingTop: 0 }}>
+          {diary.images?.map((image, index) => (
+            <img
+              key={image.diaryImgID}
+              src={image.imgUrl}
+              alt={'diary_image'}
+              style={{
+                width: 80,
+                height: 80,
+                borderRadius: 6,
+                objectFit: 'cover',
+              }}
+              onClick={() => {
+                setModal({ open: true, imageIndex: index });
+              }}
+            />
+          ))}
+        </ImageContainer>
       </DetailWrapper>
     </Container>
   );

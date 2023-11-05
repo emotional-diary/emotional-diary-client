@@ -94,6 +94,49 @@ export const Modal = ({
   );
 };
 
+export const ImageModal = ({
+  open,
+  onClose,
+  imageUrl,
+}: {
+  open: boolean;
+  onClose: () => void;
+  imageUrl: string;
+}) => {
+  if (!open) return null;
+
+  return (
+    <ModalContainer>
+      <Backdrop onClick={onClose} />
+
+      <ModalWrapper
+        style={{
+          width: 'calc(100% - 40px)',
+          padding: 0,
+          backgroundColor: 'transparent',
+        }}
+      >
+        <img
+          src={imageUrl}
+          alt={''}
+          width={'100%'}
+          height={'auto'}
+          style={{
+            borderRadius: '20px',
+          }}
+        />
+        <Button
+          color={'secondary'}
+          style={{ width: '100%', marginTop: 10 }}
+          onClick={onClose}
+        >
+          닫기
+        </Button>
+      </ModalWrapper>
+    </ModalContainer>
+  );
+};
+
 export const LoadingModal = ({ open }: { open: boolean }) => {
   return (
     <div
