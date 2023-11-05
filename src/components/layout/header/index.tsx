@@ -18,7 +18,6 @@ import { CalendarModal } from '@components/calendar';
 import { theme } from 'src/theme';
 
 export type HeaderProps = {
-  title?: string;
   back?: boolean;
   bgcolor?: string;
   type?: 'datepicker' | 'diary';
@@ -67,7 +66,7 @@ const DatepickerTitle = ({
   );
 };
 
-const Header = ({ title, back, bgcolor, type, icon, style }: HeaderProps) => {
+const Header = ({ back, bgcolor, type, icon, style }: HeaderProps) => {
   const router = useRouter();
   const pathname = usePathname();
   const { id } = useParams() as { id: string };
@@ -76,6 +75,8 @@ const Header = ({ title, back, bgcolor, type, icon, style }: HeaderProps) => {
   const { diaryList } = useDiaryListStore(user?.userID)();
   const [isPopperOpen, setIsPopperOpen] = React.useState(false);
   const [isModalOpen, setIsModalOpen] = React.useState(false);
+
+  const isMain = React.useMemo(() => pathname === '/', [pathname]);
 
   const removeDiaryMutation = useMutation({
     mutationFn: async () => {
@@ -224,10 +225,8 @@ const Header = ({ title, back, bgcolor, type, icon, style }: HeaderProps) => {
         </IconButton>
       )}
 
-      {title && (
-        <Typography variant={'h3'} color={'common.white'}>
-          {title}
-        </Typography>
+      {isMain && (
+        <img src={'/images/icons/logo.png'} alt={''} width={71} height={46} />
       )}
       {icon}
     </StyledHeader>

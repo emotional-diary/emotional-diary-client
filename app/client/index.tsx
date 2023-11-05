@@ -153,7 +153,10 @@ export default function HomePage({ props }: { props: HomeProps }) {
   return (
     <Container
       headerProps={{
-        title: '감성일기',
+        style: {
+          paddingTop: '20px',
+          paddingBottom: '20px',
+        },
         bgcolor: theme.palette.primary.main,
         icon: (
           <IconButton onClick={() => router.push('/mypage')}>

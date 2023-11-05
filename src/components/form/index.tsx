@@ -159,25 +159,11 @@ const LoginForm = () => {
           margin: '20px 0px',
         }}
       >
-        <img
-          src={'/images/icons/coffee_main.png'}
-          alt={'coffee_main'}
-          width={41}
-          height={41}
-        />
-        <Typography
-          variant={'h1'}
-          style={{
-            marginTop: '10px',
-          }}
-          color={'common.white'}
-        >
-          감성일기
-        </Typography>
+        <img src={'/images/icons/logo.png'} alt={''} width={104} height={67} />
         <Typography
           variant={'subtitle1'}
           style={{
-            marginTop: '10px',
+            marginTop: '20px',
             marginBottom: '0px',
           }}
           color={'common.white'}
