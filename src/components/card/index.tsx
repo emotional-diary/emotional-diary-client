@@ -157,21 +157,16 @@ export const DiaryListCard = ({
               emotions[emotion as keyof typeof emotions]
             }.png`}
             alt={emotions[emotion as keyof typeof emotions]}
-            width={'auto'}
-            height={'100%'}
+            width={32}
+            height={32}
             style={{
-              maxHeight: 32,
               objectFit: 'contain',
             }}
           />
         </div>
       </div>
 
-      <Typography
-        variant={'body4'}
-        color={'gray.dark'}
-        style={{ marginTop: '4px' }}
-      >
+      <Typography variant={'body4'} color={'gray.dark'}>
         {days[date.getDay()]}요일
       </Typography>
 
@@ -179,7 +174,7 @@ export const DiaryListCard = ({
         className={'ql-editor'}
         variant={'body4'}
         color={'gray.dark'}
-        style={{ lineHeight: '22px', marginTop: '10px' }}
+        style={{ lineHeight: '22px', marginTop: '10px', padding: 0 }}
       >
         <div
           dangerouslySetInnerHTML={{
