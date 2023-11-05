@@ -110,7 +110,7 @@ const TextEditor = () => {
   const handleImageUpload = async (file: File) => {
     const resizedImage = (await resizeFile(file)) as string;
 
-    console.log('resizedImage', resizedImage);
+    // console.log('resizedImage', resizedImage);
 
     setPrevDiary(prevDiary => {
       return {
@@ -216,7 +216,7 @@ const TextEditor = () => {
           //       : { content: value }),
           //   };
           // });
-          console.log('diary', diary);
+          // console.log('diary', diary);
         }}
         modules={{
           toolbar: { container: '#ql-toolbar' },

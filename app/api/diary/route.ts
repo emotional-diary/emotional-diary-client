@@ -73,7 +73,6 @@ export async function POST(request: NextRequest) {
       {
         headers: {
           authorization: `Bearer ${accessToken.value}`,
-          'Content-Type': 'multipart/form-data',
         },
       }
     );

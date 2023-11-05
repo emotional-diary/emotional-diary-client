@@ -112,8 +112,13 @@ export default function NewDiary() {
 
   const saveDiaryMutation = useMutation({
     mutationFn: async (diary: Partial<Diary>) => {
-      const res = await axios.post('/api/diary', diary);
-      return res.data;
+      try {
+        const res = await axios.post('/api/diary', diary);
+        return res.data;
+      } catch (error: any) {
+        console.log('error', error);
+        return error.response;
+      }
     },
   });
 
@@ -123,15 +128,16 @@ export default function NewDiary() {
     if (!existContent) return alert('내용을 추가해 주세요');
     setIsLoading(true);
 
-    const { data, statusCode, responseMessage } =
+    const { data, status, statusText, responseMessage } =
       await saveDiaryMutation.mutateAsync({
         content: diary.content,
         diaryAt: changeDateFormat(calendar.selectedDate as Date, true),
         emotion: diary.emotion,
+        images: diary.images,
       });
 
-    if (statusCode >= 400) {
-      alert(responseMessage);
+    if (status >= 400) {
+      alert(responseMessage ?? statusText);
       setIsLoading(false);
       return;
     }
