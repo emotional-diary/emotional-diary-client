@@ -40,7 +40,7 @@ export default function Terms() {
 
       <IconButton
         onClick={() => {
-          /** */
+          router.push('/setting/terms/use');
         }}
         style={{ width: '100%', marginTop: '24px' }}
       >
@@ -54,7 +54,7 @@ export default function Terms() {
 
       <IconButton
         onClick={() => {
-          /** */
+          router.push('/setting/terms/policy');
         }}
         style={{ width: '100%', marginTop: '15px' }}
       >
