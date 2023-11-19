@@ -4,6 +4,8 @@ import React from 'react';
 import { useRouter } from 'next/navigation';
 import styled from 'styled-components';
 import { isEmpty } from 'lodash';
+import axios from 'axios';
+import { useQuery } from '@tanstack/react-query';
 
 import { Container } from '@components/layout';
 import { Typography } from '@components/typography';
@@ -13,6 +15,7 @@ import { Calendar } from '@components/calendar';
 import Tooltip from '@components/tooltip';
 import { DiaryCard } from '@components/card';
 import { dateToSting } from '@utils/index';
+import { HomeProps } from 'app/page';
 
 import { theme } from 'src/theme';
 import {
@@ -22,9 +25,6 @@ import {
   useUserStore,
 } from '../../src/store';
 import 'react-datepicker/dist/react-datepicker.css';
-import { HomeProps } from 'app/page';
-import { useQuery } from '@tanstack/react-query';
-import axios from 'axios';
 
 // top background
 export const StyledTopBackground = styled.div`
@@ -130,7 +130,6 @@ export default function HomePage({ props }: { props: HomeProps }) {
 
   const handleTooltipClose = () => {
     setIsTooltipOpen(false);
-    //TODO: localstorage에 저장
   };
 
   const handleWriteDiary = () => {
@@ -143,7 +142,6 @@ export default function HomePage({ props }: { props: HomeProps }) {
       return;
     }
 
-    handleTooltipClose();
     router.push('/diary/new?step=0');
   };
 
@@ -202,7 +200,7 @@ export default function HomePage({ props }: { props: HomeProps }) {
           anchor={'left'}
           open={(() => {
             if (existTodayDiary) return false;
-            if (isTooltipOpen) return true;
+            if (!isTooltipOpen) return false;
             return true;
           })()}
           onClose={handleTooltipClose}
