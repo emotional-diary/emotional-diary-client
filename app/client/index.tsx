@@ -49,8 +49,8 @@ const MessageOfToday = styled.div`
 `;
 
 const BottomFixedLayout = styled.div`
-  position: absolute;
-  bottom: 60px;
+  position: fixed;
+  bottom: 30px;
   right: 30px;
 `;
 
