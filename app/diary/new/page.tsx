@@ -228,13 +228,21 @@ export default function NewDiary() {
       )}
 
       <div
-        style={{
-          position: 'absolute',
-          bottom: 0,
-          left: 0,
-          width: '100%',
-          padding: '0 30px 30px 30px',
-        }}
+        style={
+          step === 0
+            ? {
+                display: 'flex',
+                width: 'calc(100% - 60px)',
+                margin: '30px 0',
+              }
+            : {
+                position: 'absolute',
+                bottom: 0,
+                left: 0,
+                width: '100%',
+                padding: '0 30px 30px 30px',
+              }
+        }
       >
         <Button
           color={'secondary'}

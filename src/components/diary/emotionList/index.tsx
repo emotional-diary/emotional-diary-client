@@ -41,6 +41,15 @@ const backgroundByEmotion = {
   comfortable: '#23C0B6',
 };
 
+const textByEmotion = {
+  happy: '행복해요',
+  angry: '화가나요',
+  sad: '슬퍼요',
+  uneasy: '불안해요',
+  pain: '아파요',
+  comfortable: '편안해요',
+};
+
 export const EmotionList = () => {
   const { diary, setDiary } = useDiaryStore();
   const [isFirstSelect, setIsFirstSelect] = React.useState(true);
@@ -99,7 +108,7 @@ export const EmotionList = () => {
             }}
           >
             <Typography variant={'body4'} color={'background.paper'}>
-              {emoji.toUpperCase()}
+              {textByEmotion[emoji as keyof typeof textByEmotion]}
             </Typography>
           </StyledTitleContainer>
         </StyledEmojiContainer>
