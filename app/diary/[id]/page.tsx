@@ -120,7 +120,7 @@ export default function DiaryDetail() {
       <ImageModal
         open={modal.open}
         onClose={() => setModal({ open: false, imageIndex: 0 })}
-        imageUrl={diary.images?.[modal?.imageIndex]?.imgUrl}
+        imageUrl={diary.images?.[modal?.imageIndex]?.imgUrl as string}
       />
 
       <DetailWrapper>

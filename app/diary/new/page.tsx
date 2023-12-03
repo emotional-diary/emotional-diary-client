@@ -201,7 +201,7 @@ export default function NewDiary() {
           <TextEditor />
 
           <ImageContainer>
-            {diary.images?.map((image, index) => (
+            {(diary.images as string[])?.map((image, index) => (
               <div key={index} style={{ position: 'relative' }}>
                 <CloseButton
                   onClick={() => {
