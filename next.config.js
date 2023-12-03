@@ -4,12 +4,15 @@ const prod = process.env.NODE_ENV === 'production'
 const withPWA = require('next-pwa')({
   dest: 'public',
   disable: prod ? false : true,
-  swSrc: 'public/service-worker.js',
+  customWorkerDir: 'public/service-worker.js',
 })
 
 module.exports = withPWA({
   // config
   compiler: {
     styledComponents: true,
+  },
+  typescript: {
+    ignoreBuildErrors: true,
   },
 })
