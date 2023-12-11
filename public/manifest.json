@@ -2,7 +2,7 @@
   "name": "원두잇",
   "short_name": "원두잇",
   "theme_color": "#ffffff",
-  "background_color": "#2B625B",
+  "background_color": "#94B49F",
   "display": "standalone",
   "orientation": "portrait",
   "scope": "/",
