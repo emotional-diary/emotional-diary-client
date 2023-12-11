@@ -2,18 +2,19 @@
 
 importScripts('https://storage.googleapis.com/workbox-cdn/releases/5.1.2/workbox-sw.js');
 
-const CACHE = "pwabuilder-page";
+const CACHE = "onedoit-page";
 
-// TODO: replace the following with the correct offline fallback page i.e.: const offlineFallbackPage = "offline.html";
-const offlineFallbackPage = "ToDo-replace-this-name.html";
+const offlineFallbackPage = "offline.html";
 
 self.addEventListener("message", (event) => {
+  console.log("SW Received Message: " + event.data);
   if (event.data && event.data.type === "SKIP_WAITING") {
     self.skipWaiting();
   }
 });
 
 self.addEventListener('install', async (event) => {
+  console.log('[SW] Install event', event);
   event.waitUntil(
     caches.open(CACHE)
       .then((cache) => cache.add(offlineFallbackPage))
@@ -26,6 +27,7 @@ if (workbox.navigationPreload.isSupported()) {
 
 self.addEventListener('fetch', (event) => {
   if (event.request.mode === 'navigate') {
+    console.log('[SW] Fetch event.request.url', event.request.url);
     event.respondWith((async () => {
       try {
         const preloadResp = await event.preloadResponse;
@@ -44,4 +46,26 @@ self.addEventListener('fetch', (event) => {
       }
     })());
   }
+});
+
+const showLocalNotification = (title, body, swRegistration) => {
+  const options = {
+    body,
+    // here you can add more properties like icon, image, vibrate, etc.
+  };
+  swRegistration.showNotification(title, options);
+};
+
+self.addEventListener('push', function (event) {
+  if (event.data) {
+    console.log('Push event!! ', event.data.text());
+    showLocalNotification("Yolo", event.data.text(), self.registration);
+  } else {
+    console.log('Push event but no data');
+  }
+});
+
+self.addEventListener('activate', (event) => {
+  console.log('[SW] Activate event');
+  event.waitUntil(self.clients.claim());
 });
