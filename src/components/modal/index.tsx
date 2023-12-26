@@ -464,11 +464,16 @@ export const PasswordFindModal = ({
 
   const findPasswordMutation = useMutation({
     mutationFn: async () => {
-      const res = await axios.patch('/api/user/password/find', {
-        email,
-        newPassword: password,
-      });
-      return res.data;
+      try {
+        const res = await axios.patch('/api/user/password/find', {
+          email,
+          newPassword: password,
+        });
+        return res.data;
+      } catch (error: any) {
+        console.log('error', error);
+        return error.response.data;
+      }
     },
   });
 
@@ -685,7 +690,7 @@ export const PasswordFindModal = ({
         <Button
           disabled={(() => {
             if (step === 0) {
-              return validation.email.status;
+              return !validation.email.status;
             }
             if (step === 1) {
               return !validation.password.status || !validation.passwordCheck;
