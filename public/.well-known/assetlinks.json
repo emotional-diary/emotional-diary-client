@@ -1,0 +1,8 @@
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "site.onedoit.www.twa",
+        "sha256_cert_fingerprints": ["90:0E:10:CE:F5:F0:6C:91:47:0B:6F:3A:D5:5E:1D:23:3C:AB:DB:7D:60:0E:1C:F4:0D:07:90:74:F2:77:AD:28"]
+      }
+    }]
