@@ -1,11 +1,12 @@
 import React from 'react';
+import { usePathname } from 'next/navigation';
+import axios from 'axios';
 import { useMutation } from '@tanstack/react-query';
 
 import { Typography } from '@components/typography';
 import { Button } from '@components/button';
 import { Timer as EmailAuthTimer } from '../timer';
 import { Label, GenderButton, GenderRadioButton, Input } from '../style';
-import axios from 'axios';
 
 export const Nickname = ({
   name,
@@ -49,11 +50,14 @@ export const Email = ({
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   setValidation: React.Dispatch<React.SetStateAction<UserValidation>>;
 }) => {
+  const pathname = usePathname();
   const [emailAuth, setEmailAuth] = React.useState<{
     level: number;
     code: string;
     reset: boolean;
   }>({ level: 0, code: '', reset: false });
+
+  const isSignUp = React.useMemo(() => pathname === '/signup', [pathname]);
 
   const checkDuplicateEmailMutation = useMutation({
     mutationKey: ['/api/user/email'],
@@ -113,6 +117,31 @@ export const Email = ({
           message: responseMessage,
         },
       }));
+      return false;
+    }
+
+    // 회원가입 시 이미 가입된 이메일인지 확인
+    if (isSignUp && data) {
+      setValidation(validation => ({
+        ...validation,
+        email: {
+          status: false,
+          message: '이미 가입된 이메일이에요.',
+        },
+      }));
+      return false;
+    }
+
+    // 비밀번호 찾기 시 존재하는 이메일인지 확인
+    if (!isSignUp && !data) {
+      setValidation(validation => ({
+        ...validation,
+        email: {
+          status: false,
+          message: '존재하지 않는 이메일이에요.',
+        },
+      }));
+
       return false;
     }
 
