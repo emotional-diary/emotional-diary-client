@@ -4,9 +4,10 @@ import axios from 'axios';
 export async function POST(request: NextRequest) {
   try {
     const req = await request.json();
-    const res = await axios.post(`${process.env.SERVER_HOST}/v1/users/email`, {
-      req,
-    });
+    const res = await axios.post(
+      `${process.env.SERVER_HOST}/v1/users/email`,
+      req
+    );
 
     console.log('res', res.data);
 
