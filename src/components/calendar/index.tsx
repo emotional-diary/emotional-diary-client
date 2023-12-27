@@ -223,16 +223,19 @@ export const Calendar = () => {
                 variant={'subtitle2'}
                 style={{
                   fontWeight:
-                    selectedDate?.getDate() === day ? 'bold' : 'normal',
+                    (selectedDate?.getMonth() === date?.getMonth() &&
+                      selectedDate?.getDate()) === day
+                      ? 'bold'
+                      : 'normal',
                 }}
               >
                 {day}
               </Typography>
               {writtenDate(date) ? (
                 <img
-                  src={'/images/icons/coffee_calendar.png'}
+                  src={'/images/icons/calendar_heart.png'}
                   alt={'coffee_icon'}
-                  width={13}
+                  width={10}
                   height={9}
                 />
               ) : (
