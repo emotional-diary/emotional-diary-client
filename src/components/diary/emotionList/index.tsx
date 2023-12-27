@@ -70,7 +70,6 @@ export const EmotionList = () => {
         flexWrap: 'wrap',
         width: '100%',
         maxWidth: 300,
-        marginTop: '15px',
       }}
     >
       {Object.keys(emotions).map((emoji, index) => (
@@ -78,11 +77,11 @@ export const EmotionList = () => {
           key={index}
           onClick={() => handleSelectEmotion(emoji)}
           style={{
-            marginTop: '30px',
-            transition: 'all 0.3s ease-in-out',
+            marginTop: '20px',
+            transition: 'all 0.2s ease-in-out',
             transform:
               diary?.emotion === emoji
-                ? 'scale(1.3)'
+                ? 'scale(1.2)'
                 : isFirstSelect
                 ? 'scale(1)'
                 : 'scale(0.9)',
