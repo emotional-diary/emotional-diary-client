@@ -39,6 +39,7 @@ const CustomToolbar = ({ date }: { date: string }) => (
 const TextEditorWrapper = styled.div<{ $calculatedHeight: number }>`
   display: flex;
   flex-direction: column;
+  flex-grow: 1;
   width: 100%;
   background-color: ${theme.palette.background.paper};
   border-radius: 30px 30px 0px 0px;
@@ -115,7 +116,7 @@ const TextEditor = () => {
     setPrevDiary(prevDiary => {
       return {
         ...prevDiary,
-        images: [...(prevDiary?.images ?? []), resizedImage],
+        images: [...(prevDiary?.images ?? []), { imageUrl: resizedImage }],
       };
     });
   };
@@ -135,11 +136,6 @@ const TextEditor = () => {
     }
     return true;
   };
-
-  React.useEffect(() => {
-    if (!quillRef.current) return;
-    quillRef.current.focus();
-  }, []);
 
   React.useEffect(() => {
     if (!quillRef.current) return;

@@ -55,8 +55,8 @@ export const CloseButton = ({
       top: 5,
       right: 15,
       zIndex: 1,
-      width: 15,
-      height: 15,
+      width: 18,
+      height: 18,
       borderRadius: '50%',
       backgroundColor: theme.palette.common.white,
       display: 'flex',
@@ -200,30 +200,32 @@ export default function NewDiary() {
           <LoadingModal open={isLoading} />
           <TextEditor />
 
-          <ImageContainer>
-            {(diary.images as string[])?.map((image, index) => (
-              <div key={index} style={{ position: 'relative' }}>
-                <CloseButton
-                  onClick={() => {
-                    setDiary({
-                      ...diary,
-                      images: diary.images?.filter((_, i) => i !== index),
-                    });
-                  }}
-                />
-                <img
-                  src={image}
-                  alt={'diary_image'}
-                  style={{
-                    width: 80,
-                    height: 80,
-                    borderRadius: 6,
-                    objectFit: 'cover',
-                  }}
-                />
-              </div>
-            ))}
-          </ImageContainer>
+          {diary?.images?.length > 0 && (
+            <ImageContainer style={{ paddingBottom: '10px' }}>
+              {diary.images?.map((image, index) => (
+                <div key={index} style={{ position: 'relative' }}>
+                  <CloseButton
+                    onClick={() => {
+                      setDiary({
+                        ...diary,
+                        images: diary.images?.filter((_, i) => i !== index),
+                      });
+                    }}
+                  />
+                  <img
+                    src={image.imageUrl}
+                    alt={'diary_image'}
+                    style={{
+                      width: 80,
+                      height: 80,
+                      borderRadius: 6,
+                      objectFit: 'cover',
+                    }}
+                  />
+                </div>
+              ))}
+            </ImageContainer>
+          )}
         </>
       )}
 
@@ -233,14 +235,15 @@ export default function NewDiary() {
             ? {
                 display: 'flex',
                 width: 'calc(100% - 60px)',
-                margin: '30px 0',
+                margin: 'auto',
               }
             : {
-                position: 'absolute',
-                bottom: 0,
-                left: 0,
                 width: '100%',
-                padding: '0 30px 30px 30px',
+                marginTop: 'auto',
+                paddingBottom: '30px',
+                paddingLeft: '30px',
+                paddingRight: '30px',
+                backgroundColor: theme.palette.background.paper,
               }
         }
       >

@@ -120,7 +120,7 @@ export default function DiaryDetail() {
       <ImageModal
         open={modal.open}
         onClose={() => setModal({ open: false, imageIndex: 0 })}
-        imageUrl={diary.images?.[modal?.imageIndex]?.imgUrl as string}
+        imageUrl={diary.images?.[modal?.imageIndex]?.imageUrl as string}
       />
 
       <DetailWrapper>
@@ -179,8 +179,8 @@ export default function DiaryDetail() {
         <ImageContainer style={{ paddingTop: 0 }}>
           {diary.images?.map((image, index) => (
             <img
-              key={image.diaryImgID}
-              src={image.imgUrl}
+              key={image.diaryImageID}
+              src={image.imageUrl}
               alt={'diary_image'}
               style={{
                 width: 80,
