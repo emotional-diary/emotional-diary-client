@@ -86,7 +86,12 @@ export default function MyPage() {
         </Typography>
 
         <StyledRadiusBox
-          style={{ maxWidth: 131, position: 'sticky', marginTop: '24px' }}
+          style={{
+            maxWidth: 131,
+            position: 'sticky',
+            marginTop: '24px',
+            whiteSpace: 'nowrap',
+          }}
         >
           <Typography variant={'subtitle1'} color={'secondary.light'}>
             내가 작성한 일기
