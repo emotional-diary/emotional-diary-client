@@ -111,7 +111,13 @@ export default function NewDiary() {
     : 0;
 
   const saveDiaryMutation = useMutation({
-    mutationFn: async (diary: Partial<Diary>) => {
+    mutationFn: async (
+      diary: Partial<
+        {
+          images: string[];
+        } & Omit<Diary, 'images'>
+      >
+    ) => {
       try {
         const res = await axios.post('/api/diary', diary);
         return res.data;
@@ -133,7 +139,9 @@ export default function NewDiary() {
         content: diary.content,
         diaryAt: changeDateFormat(calendar.selectedDate as Date, true),
         emotion: diary.emotion,
-        images: diary.images,
+        images: diary.images
+          .map(image => image.imageUrl)
+          .filter((imageUrl): imageUrl is string => imageUrl !== undefined),
       });
 
     if (status >= 400) {
