@@ -50,7 +50,7 @@ const MessageOfToday = styled.div`
 
 const BottomFixedLayout = styled.div`
   position: fixed;
-  bottom: 30px;
+  bottom: 70px;
   right: 30px;
 `;
 
