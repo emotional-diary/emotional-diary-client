@@ -67,7 +67,7 @@ export default function Profile() {
         <Button
           style={{ height: 34, padding: '10px', borderRadius: '10px' }}
           color={'tertiary.light'}
-          onClick={() => router.push('/setting/profile')}
+          onClick={() => router.push('/setting/profile/modify')}
         >
           <Typography variant={'label2'} color={'tertiary.main'}>
             회원정보 수정하기
