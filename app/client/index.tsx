@@ -157,9 +157,14 @@ export default function HomePage({ props }: { props: HomeProps }) {
         },
         bgcolor: theme.palette.primary.main,
         icon: (
-          <IconButton onClick={() => router.push('/mypage')}>
-            <Icons.User />
-          </IconButton>
+          <>
+            <IconButton onClick={() => router.push('/mypage')}>
+              <Icons.User />
+            </IconButton>
+            <IconButton onClick={() => router.push('/setting')}>
+              <Icons.Setting />
+            </IconButton>
+          </>
         ),
       }}
       bodyProps={{

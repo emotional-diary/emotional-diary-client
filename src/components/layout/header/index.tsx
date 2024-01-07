@@ -34,6 +34,15 @@ const StyledHeader = styled.header`
   background-color: #f5f5f5;
 `;
 
+const StyledNav = styled.nav`
+  display: flex;
+  align-items: center;
+
+  & > *:not(:last-child) {
+    margin-right: 16px;
+  }
+`;
+
 const DatepickerTitle = ({
   onClick,
 }: {
@@ -228,7 +237,8 @@ const Header = ({ back, bgcolor, type, icon, style }: HeaderProps) => {
       {isMain && (
         <img src={'/images/icons/logo.png'} alt={''} width={71} height={46} />
       )}
-      {icon}
+
+      {icon && <StyledNav>{icon}</StyledNav>}
     </StyledHeader>
   );
 };
