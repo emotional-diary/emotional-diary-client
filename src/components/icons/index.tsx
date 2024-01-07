@@ -147,7 +147,6 @@ export const HeartWhite = ({ width = 36, height = 34 }) => {
 };
 
 export const User = ({ width = 24, height = 24 }) => {
-  const color = '#FFF';
   return (
     <svg
       width={width}
@@ -158,19 +157,19 @@ export const User = ({ width = 24, height = 24 }) => {
     >
       <circle
         cx="12.0001"
-        cy="9.77776"
+        cy="9.77789"
         r="2.22222"
-        stroke="#F5F5F5"
+        stroke="white"
         strokeWidth="1.5"
       />
       <path
         d="M7.55566 16.4444C7.88488 15.7036 9.23468 14.2222 12.0001 14.2222C14.7655 14.2222 16.1153 15.7036 16.4446 16.4444"
-        stroke="#F5F5F5"
+        stroke="white"
         strokeWidth="1.5"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
-      <circle cx="12" cy="12" r="9.25" stroke="#F5F5F5" strokeWidth="1.5" />
+      <circle cx="12" cy="12" r="9.25" stroke="white" strokeWidth="1.5" />
     </svg>
   );
 };

@@ -11,12 +11,18 @@ export default function TermsUse() {
     <Container
       headerProps={{
         back: true,
+        style: {
+          position: 'fixed',
+          top: 0,
+          zIndex: 10,
+        },
       }}
       bodyProps={{
         style: {
           backgroundColor: theme.palette.common.white,
           padding: '0 30px 30px 30px',
           alignItems: 'flex-start',
+          marginTop: '84px',
         },
       }}
     >
@@ -343,7 +349,7 @@ export default function TermsUse() {
         <br />
         <br />
         <br />
-        제23조 (캐시버튼 서비스 이용약관 변경에 관한 사항)
+        제23조 (원두잇 서비스 이용약관 변경에 관한 사항)
         <br />
         <br />① 이 약관은 2023.11.01부터 적용됩니다.
       </Typography>

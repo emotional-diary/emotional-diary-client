@@ -11,12 +11,18 @@ export default function TermsPolicy() {
     <Container
       headerProps={{
         back: true,
+        style: {
+          position: 'fixed',
+          top: 0,
+          zIndex: 10,
+        },
       }}
       bodyProps={{
         style: {
           backgroundColor: theme.palette.common.white,
           padding: '0 30px 30px 30px',
           alignItems: 'flex-start',
+          marginTop: '84px',
         },
       }}
     >
@@ -192,7 +198,7 @@ export default function TermsPolicy() {
         <br />
         개인정보 보호 책임자 성명 : 김민성
         <br />
-        연락처 : 010-4773-2531
+        연락처 : skfkgkdlaos@gmail.com
         <br />
         <br />
         ② 정보주체는 원두잇 서비스을 이용하시면서 발생한 모든 개인정보 보호 관련

@@ -54,7 +54,7 @@ export default function MyPage() {
     <Container
       headerProps={{
         back: true,
-        bgcolor: theme.palette.primary.main,
+        bgcolor: theme.palette.common.white,
         icon: (
           <IconButton onClick={() => router.push('/setting')}>
             <Icons.Setting />
@@ -75,11 +75,17 @@ export default function MyPage() {
       }}
     >
       <div style={{ position: 'sticky', top: '84px', zIndex: 10 }}>
-        <StyledTopBackground style={{ position: 'fixed', height: 80 }} />
+        <StyledTopBackground
+          style={{
+            position: 'fixed',
+            height: 80,
+            backgroundColor: theme.palette.common.white,
+          }}
+        />
 
         <Typography
           variant={'h3'}
-          color={'background.paper'}
+          color={'gray.dark'}
           style={{ position: 'sticky', marginTop: '10px' }}
         >
           {nickname}님의 마이페이지
@@ -128,7 +134,7 @@ export default function MyPage() {
         )}
       </DiaryListWrapper>
 
-      {diaries?.length >= 5 && (
+      {/* {diaries?.length >= 5 && (
         <Button
           color={'secondary'}
           style={{
@@ -142,7 +148,7 @@ export default function MyPage() {
             더보기
           </Typography>
         </Button>
-      )}
+      )} */}
     </Container>
   );
 }
