@@ -17,16 +17,23 @@ async function initProps(): Promise<HomeProps> {
     redirect('/login');
   }
 
-  const { data: profile } = await axios.get(`${origin}/api/user`, {
-    headers: {
-      Authorization: accessToken?.value,
+  const {
+    data: {
+      data: { password, ...profileWithoutPassword },
     },
-  });
+  } = await axios.get<{ data: User & { password: string } }>(
+    `${origin}/api/user`,
+    {
+      headers: {
+        Authorization: accessToken?.value,
+      },
+    }
+  );
 
   // console.log('profile', profile);
 
   return {
-    profile: profile.data,
+    profile: profileWithoutPassword,
   };
 }
 
