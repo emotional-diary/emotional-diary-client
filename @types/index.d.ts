@@ -47,8 +47,8 @@ type Diary = {
   comment: string;
   emotion: 'happy' | 'sad' | 'angry' | 'uneasy' | 'pain' | 'comfortable' | null;
   images: {
+    imageID?: number;
     imageUrl?: string;
-    diaryImageID?: string;
   }[];
   metaData?: {};
 };

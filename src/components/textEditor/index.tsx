@@ -96,7 +96,7 @@ const resizeFile = (file: File) =>
 const TextEditor = () => {
   const { diary, setDiary, setPrevDiary } = useDiaryStore();
   const [clientHeight, setClientHeight] = React.useState<number>(
-    window.innerHeight
+    typeof window !== 'undefined' ? window.innerHeight : 750
   );
 
   const quillRef = React.useRef<ReactQuill>(null);

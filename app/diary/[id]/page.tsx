@@ -66,7 +66,7 @@ export default function DiaryDetail() {
     imageIndex: 0,
   });
   const [clientHeight, setClientHeight] = React.useState<number>(
-    window.innerHeight
+    typeof window !== 'undefined' ? window.innerHeight : 750
   );
 
   const selectedDiary = React.useMemo(() => {
@@ -179,7 +179,7 @@ export default function DiaryDetail() {
         <ImageContainer style={{ paddingTop: 0 }}>
           {diary.images?.map((image, index) => (
             <img
-              key={image.diaryImageID}
+              key={image.imageID}
               src={image.imageUrl}
               alt={'diary_image'}
               style={{
