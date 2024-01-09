@@ -12,7 +12,10 @@ export async function GET(request: NextRequest) {
 
     if (!accessToken) {
       return NextResponse.json(
-        { message: 'Unauthorized' },
+        {
+          statusCode: 401,
+          responseMessage: 'Unauthorized',
+        },
         {
           status: 401,
           headers: {
