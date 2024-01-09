@@ -45,14 +45,27 @@ export default function Inquiry() {
     },
   });
 
+  const validate = () => {
+    if (!inquiryData.content) {
+      alert('문의 내용을 입력해주세요.');
+      return false;
+    }
+
+    if (!inquiryData.email) {
+      alert('이메일을 입력해주세요.');
+      return false;
+    }
+
+    return true;
+  };
+
   const sendInquiry = async () => {
+    if (!validate()) return;
     const { data, statusCode, responseMessage } =
       await sendInquiryMutation.mutateAsync({
         email: inquiryData.email,
         content: inquiryData.content,
       });
-
-    console.log('data', data);
 
     if (statusCode >= 400) {
       alert(responseMessage);
