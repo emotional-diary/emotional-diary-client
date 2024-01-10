@@ -32,7 +32,7 @@ export default function RootLayout({
         <link rel="manifest" href="/manifest.json" />
 
         {/* 브라우저 테마 */}
-        <meta name="theme-color" content="#2B625B" />
+        <meta name="theme-color" content="#94B49F" />
 
         {/* 파비콘 */}
         <link
