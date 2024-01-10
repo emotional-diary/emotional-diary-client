@@ -15,7 +15,7 @@ import { Calendar } from '@components/calendar';
 import Tooltip from '@components/tooltip';
 import { DiaryCard } from '@components/card';
 import { dateToSting } from '@utils/index';
-import { HomeProps } from 'app/page';
+import { HomeProps } from 'src/app/page';
 
 import { theme } from 'src/theme';
 import {
@@ -23,7 +23,7 @@ import {
   useDiaryListStore,
   useDiaryStore,
   useUserStore,
-} from '../../src/store';
+} from '../../store';
 import 'react-datepicker/dist/react-datepicker.css';
 
 // top background

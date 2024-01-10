@@ -14,7 +14,7 @@ import { Form, FormContainer, Label } from '@components/form/style';
 import * as Inputs from '@components/form/input';
 import { PasswordChangeModal } from '@components/modal';
 import { ValidationMessage } from '@components/form/validation';
-import { StyledInfoBox } from 'app/setting/page';
+import { StyledInfoBox } from 'src/app/setting/page';
 
 const SocialRadiusBox = styled.div`
   display: flex;

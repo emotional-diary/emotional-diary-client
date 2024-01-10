@@ -10,7 +10,7 @@ import { Button } from '@components/button';
 import { theme } from 'src/theme';
 import { useUserStore } from '@store/index';
 import { WithdrawalModal } from '@components/modal';
-import { StyledInfoBox } from 'app/setting/page';
+import { StyledInfoBox } from 'src/app/setting/page';
 
 export default function Profile() {
   const router = useRouter();

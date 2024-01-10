@@ -1,6 +1,6 @@
 import React from 'react';
 
-import SignUpPage from 'app/client/signup';
+import SignUpPage from './client';
 
 export type SignUpProps = {
   social: Social;

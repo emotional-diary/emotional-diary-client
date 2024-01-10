@@ -1,4 +1,4 @@
-import StyledComponentsRegistry from 'lib/registry';
+import StyledComponentsRegistry from '../lib/registry';
 
 import Providers from './providers';
 import './styles/globals.css';
