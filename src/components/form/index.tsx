@@ -7,7 +7,7 @@ import { useUserStore } from '@store/index';
 import { Typography } from '@components/typography';
 import { PasswordFindModal } from '@components/modal';
 import { Button, IconButton } from '@components/button';
-import { SignUpProps } from 'app/signup/page';
+import { SignUpProps } from 'src/app/signup/page';
 import { ValidationMessage } from './validation';
 import { FormContainer, Form, Label, Input } from './style';
 import * as Inputs from './input';
@@ -130,7 +130,7 @@ const LoginForm = () => {
 
   React.useEffect(() => {
     if (isLogin) {
-      router.push('/');
+      router.replace('/');
     }
   }, [isLogin]);
 
