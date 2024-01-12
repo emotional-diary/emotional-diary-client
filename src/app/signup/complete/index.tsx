@@ -56,7 +56,7 @@ export default function SignUpComplete() {
         <Button
           color={'secondary'}
           style={{ width: '100%' }}
-          onClick={() => router.push('/')}
+          onClick={() => router.replace('/')}
         >
           <Typography variant={'label1'} color={'common.white'}>
             기록하러 가기

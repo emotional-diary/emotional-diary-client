@@ -293,7 +293,10 @@ const SignUpForm = ({
   social,
   email: socialEmail,
   gender: socialGender,
-}: Partial<SignUpProps>) => {
+  setIsComplete,
+}: Partial<SignUpProps> & {
+  setIsComplete: React.Dispatch<React.SetStateAction<boolean>>;
+}) => {
   const router = useRouter();
   const { user, setUser } = useUserStore();
   const [joinData, setJoinData] = React.useState<JoinUser>({
@@ -315,25 +318,30 @@ const SignUpForm = ({
 
   const signupMutation = useMutation({
     mutationFn: async () => {
-      const res = await axios.post('/api/user/signup', {
-        email: joinData.email,
-        password: joinData.password,
-        name: joinData.name,
-        birth: joinData.birth || null,
-        gender: joinData.gender || null,
-        loginType: social?.toUpperCase() ?? 'LOCAL',
-        terms: [
-          {
-            termId: 1,
-            isAgree: true,
-          },
-          {
-            termId: 2,
-            isAgree: true,
-          },
-        ],
-      });
-      return res.data;
+      try {
+        const res = await axios.post('/api/user/signup', {
+          email: joinData.email,
+          password: joinData.password,
+          name: joinData.name,
+          birth: joinData.birth || null,
+          gender: joinData.gender || null,
+          loginType: social?.toUpperCase() ?? 'LOCAL',
+          terms: [
+            {
+              termId: 1,
+              isAgree: true,
+            },
+            {
+              termId: 2,
+              isAgree: true,
+            },
+          ],
+        });
+        return res.data;
+      } catch (error: any) {
+        console.log(error);
+        return error.response.data;
+      }
     },
   });
 
@@ -553,10 +561,11 @@ const SignUpForm = ({
       return;
     }
 
-    const signup = await signupMutation.mutateAsync();
+    const { data, statusCode, responseMessage } =
+      await signupMutation.mutateAsync();
 
-    if (signup.statusCode >= 400) {
-      alert(signup.responseMessage);
+    if (statusCode >= 400) {
+      alert(responseMessage);
       return;
     }
 
@@ -567,7 +576,8 @@ const SignUpForm = ({
     //     ...profile.data,
     //   });
     // }
-    router.push('/signup/complete');
+
+    setIsComplete(true);
   };
 
   if (social === 'kakao') {
