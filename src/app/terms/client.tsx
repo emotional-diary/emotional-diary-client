@@ -11,20 +11,8 @@ import * as Icons from '@components/icons';
 import { Modal } from '@components/modal';
 import { hexToRgba } from '@utils/index';
 import { theme } from 'src/theme';
-import { SignUpProps } from 'app/signup/page';
-
-const loremIpsum = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
-  malesuada lorem maximus mauris scelerisque, at rutrum nulla
-  dictum. Ut ac ligula sapien. Suspendisse cursus faucibus finibus.
-  Curabitur ut augue finibus, luctus tortor at, ornare erat. Nulla
-  facilisi. Sed est risus, laoreet et quam non, malesuada viverra
-  lacus. Mauris semper vehicula mauris, eget interdum sem congue
-  quis. Proin et urna turpis. Fusce tincidunt augue in velit
-  tincidunt posuere. Ut ac faucibus lectus. Vivamus consequat mi ut
-  massa ultrices varius. Maecenas vitae eros lorem. Cras in varius
-  enim. Vestibulum eget est ac felis aliquet bibendum. Cras eget
-  turpis sem.`;
-const loremIpsum2 = `개인정보 처리방침입니다. lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec`;
+import { SignUpProps } from 'src/app/signup/page';
+import { TERMS } from 'src/constants/terms';
 
 export default function TermsClient({
   searchParams,
@@ -39,7 +27,7 @@ export default function TermsClient({
   const [modal, setModal] = React.useState({
     open: false,
     title: '',
-    content: '',
+    content: <></>,
   });
 
   console.log('searchParams', searchParams);
@@ -154,7 +142,7 @@ export default function TermsClient({
                 setModal({
                   open: true,
                   title: '서비스 이용약관',
-                  content: loremIpsum,
+                  content: TERMS.USE,
                 })
               }
             >
@@ -197,7 +185,7 @@ export default function TermsClient({
                 setModal({
                   open: true,
                   title: '개인정보 처리방침',
-                  content: loremIpsum2,
+                  content: TERMS.POLICY,
                 })
               }
             >
