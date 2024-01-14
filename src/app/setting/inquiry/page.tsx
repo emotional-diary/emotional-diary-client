@@ -65,7 +65,7 @@ export default function Inquiry() {
       await sendInquiryMutation.mutateAsync({
         email: inquiryData.email,
         content: inquiryData.content,
-        userAgent: navigator.userAgent,
+        userAgent: navigator ? navigator?.userAgent : 'Unknown',
       });
 
     if (statusCode >= 400) {
