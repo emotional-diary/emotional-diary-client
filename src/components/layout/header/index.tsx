@@ -30,6 +30,7 @@ const StyledHeader = styled.header`
   justify-content: space-between;
   align-items: center;
   width: 100%;
+  max-width: 600px;
   padding: 30px;
   background-color: #f5f5f5;
 `;

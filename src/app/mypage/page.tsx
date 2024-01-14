@@ -79,6 +79,9 @@ export default function MyPage() {
           style={{
             position: 'fixed',
             height: 80,
+            maxWidth: 600,
+            transform: 'translateX(-50%)',
+            left: '50%',
             backgroundColor: theme.palette.common.white,
           }}
         />
