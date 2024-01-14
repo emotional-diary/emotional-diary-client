@@ -34,7 +34,7 @@ export default function Inquiry() {
   });
 
   const sendInquiryMutation = useMutation({
-    mutationFn: async (inquiryData: Inquiry) => {
+    mutationFn: async (inquiryData: Inquiry & { userAgent: string }) => {
       try {
         const res = await axios.post('/api/user/inquiry', inquiryData);
         return res.data;
@@ -65,6 +65,7 @@ export default function Inquiry() {
       await sendInquiryMutation.mutateAsync({
         email: inquiryData.email,
         content: inquiryData.content,
+        userAgent: navigator.userAgent,
       });
 
     if (statusCode >= 400) {
