@@ -44,8 +44,13 @@ export default function ProfileModify() {
 
   const updateUserMutation = useMutation({
     mutationFn: async (user: Partial<User>) => {
-      const res = await axios.patch('/api/user', user);
-      return res.data;
+      try {
+        const res = await axios.patch('/api/user', user);
+        return res.data;
+      } catch (error: any) {
+        console.log('error', error);
+        return error.response.data;
+      }
     },
   });
 

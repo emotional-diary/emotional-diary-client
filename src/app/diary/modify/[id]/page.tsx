@@ -41,8 +41,13 @@ export default function ModifyDiary() {
 
   const updateDiaryMutation = useMutation({
     mutationFn: async (diary: Partial<Diary>) => {
-      const res = await axios.patch('/api/diary', diary);
-      return res.data;
+      try {
+        const res = await axios.patch('/api/diary', diary);
+        return res.data;
+      } catch (error: any) {
+        console.log('error', error);
+        return error.response.data;
+      }
     },
   });
 

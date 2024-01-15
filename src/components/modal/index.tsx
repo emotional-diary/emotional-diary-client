@@ -196,19 +196,29 @@ export const PasswordChangeModal = ({
 
   const verifyPasswordMutation = useMutation({
     mutationFn: async () => {
-      const res = await axios.post('/api/user/password/verify', {
-        password,
-      });
-      return res.data;
+      try {
+        const res = await axios.post('/api/user/password/verify', {
+          password,
+        });
+        return res.data;
+      } catch (error: any) {
+        console.log('error', error);
+        return error.response.data;
+      }
     },
   });
 
   const changePasswordMutation = useMutation({
     mutationFn: async () => {
-      const res = await axios.patch('/api/user/password/change', {
-        newPassword: password,
-      });
-      return res.data;
+      try {
+        const res = await axios.patch('/api/user/password/change', {
+          newPassword: password,
+        });
+        return res.data;
+      } catch (error: any) {
+        console.log('error', error);
+        return error.response.data;
+      }
     },
   });
 
@@ -736,8 +746,13 @@ export const WithdrawalModal = ({
 
   const withdrawMutation = useMutation({
     mutationFn: async () => {
-      const res = await axios.delete('/api/user');
-      return res.data;
+      try {
+        const res = await axios.delete('/api/user');
+        return res.data;
+      } catch (error: any) {
+        console.log('error', error);
+        return error.response.data;
+      }
     },
   });
 

@@ -62,20 +62,30 @@ export const Email = ({
   const checkDuplicateEmailMutation = useMutation({
     mutationKey: ['/api/user/email'],
     mutationFn: async () => {
-      const res = await axios.post('/api/user/email', {
-        email,
-      });
-      return res.data;
+      try {
+        const res = await axios.post('/api/user/email', {
+          email,
+        });
+        return res.data;
+      } catch (error: any) {
+        console.log('error', error);
+        return error.response.data;
+      }
     },
   });
 
   const validateEmailMutation = useMutation({
     mutationKey: ['/api/user/email/validation'],
     mutationFn: async () => {
-      const res = await axios.post('/api/user/email/validation', {
-        email,
-      });
-      return res.data;
+      try {
+        const res = await axios.post('/api/user/email/validation', {
+          email,
+        });
+        return res.data;
+      } catch (error: any) {
+        console.log('error', error);
+        return error.response.data;
+      }
     },
   });
 
@@ -88,8 +98,9 @@ export const Email = ({
           code: emailAuth.code,
         });
         return res.data;
-      } catch (err: any) {
-        return err.response.data;
+      } catch (error: any) {
+        console.log('error', error);
+        return error.response.data;
       }
     },
   });
