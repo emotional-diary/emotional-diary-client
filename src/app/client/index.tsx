@@ -68,8 +68,13 @@ export default function HomePage({ props }: { props: HomeProps }) {
   const getDiaryList = useQuery({
     queryKey: ['diaries'],
     queryFn: async () => {
-      const res = await axios.get('/api/diaries');
-      return res.data;
+      try {
+        const res = await axios.get('/api/diaries');
+        return res.data;
+      } catch (error: any) {
+        console.log('error', error);
+        return error.response.data;
+      }
     },
     enabled: false,
     retry: false,
@@ -114,10 +119,16 @@ export default function HomePage({ props }: { props: HomeProps }) {
     console.log('parsedDiaryList', parsedDiaryList?.state?.diaryList);
     if (!parsedDiaryList?.state?.diaryList?.length) {
       (async () => {
-        const { data: result } = await getDiaryList.refetch();
-        console.log('data', result);
-        if (result) {
-          setDiaryList(result.data.diarysDtoList);
+        const {
+          data: { data, responseMessage, statusCode },
+        } = await getDiaryList.refetch();
+        if (statusCode >= 400) {
+          alert(responseMessage);
+          return;
+        }
+
+        if (data) {
+          setDiaryList(data.diarysDtoList);
         }
       })();
     }
