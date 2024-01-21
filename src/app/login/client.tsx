@@ -10,7 +10,9 @@ import { deleteCookie, getCookie } from '@utils/storage';
 
 export default function LoginClient() {
   // 로그인 상태에서 로그인 페이지 접근 시 메인 페이지로 리다이렉트
-  useQuery(['checkLogin'], () => axios.get('/api/user/login'), {
+  useQuery({
+    queryKey: ['checkLogin'],
+    queryFn: () => axios.get('/api/user/login'),
     retry: false,
     refetchOnWindowFocus: false,
   });
