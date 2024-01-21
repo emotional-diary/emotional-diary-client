@@ -35,13 +35,8 @@ export default function Inquiry() {
 
   const sendInquiryMutation = useMutation({
     mutationFn: async (inquiryData: Inquiry & { userAgent: string }) => {
-      try {
-        const res = await axios.post('/api/user/inquiry', inquiryData);
-        return res.data;
-      } catch (error: any) {
-        console.log('error', error);
-        return error.response.data;
-      }
+      const res = await axios.post('/api/user/inquiry', inquiryData);
+      return res.data;
     },
   });
 
@@ -61,17 +56,11 @@ export default function Inquiry() {
 
   const sendInquiry = async () => {
     if (!validate()) return;
-    const { data, statusCode, responseMessage } =
-      await sendInquiryMutation.mutateAsync({
-        email: inquiryData.email,
-        content: inquiryData.content,
-        userAgent: navigator ? navigator?.userAgent : 'Unknown',
-      });
-
-    if (statusCode >= 400) {
-      alert(responseMessage);
-      return;
-    }
+    await sendInquiryMutation.mutateAsync({
+      email: inquiryData.email,
+      content: inquiryData.content,
+      userAgent: navigator ? navigator?.userAgent : 'Unknown',
+    });
 
     alert('문의가 접수되었습니다.');
   };

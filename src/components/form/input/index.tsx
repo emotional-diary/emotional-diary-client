@@ -62,46 +62,31 @@ export const Email = ({
   const checkDuplicateEmailMutation = useMutation({
     mutationKey: ['/api/user/email'],
     mutationFn: async () => {
-      try {
-        const res = await axios.post('/api/user/email', {
-          email,
-        });
-        return res.data;
-      } catch (error: any) {
-        console.log('error', error);
-        return error.response.data;
-      }
+      const res = await axios.post('/api/user/email', {
+        email,
+      });
+      return res.data;
     },
   });
 
   const validateEmailMutation = useMutation({
     mutationKey: ['/api/user/email/validation'],
     mutationFn: async () => {
-      try {
-        const res = await axios.post('/api/user/email/validation', {
-          email,
-        });
-        return res.data;
-      } catch (error: any) {
-        console.log('error', error);
-        return error.response.data;
-      }
+      const res = await axios.post('/api/user/email/validation', {
+        email,
+      });
+      return res.data;
     },
   });
 
   const validateEmailCodeMutation = useMutation({
     mutationKey: ['/api/user/email/validation/check'],
     mutationFn: async () => {
-      try {
-        const res = await axios.post('/api/user/email/validation/check', {
-          email,
-          code: emailAuth.code,
-        });
-        return res.data;
-      } catch (error: any) {
-        console.log('error', error);
-        return error.response.data;
-      }
+      const res = await axios.post('/api/user/email/validation/check', {
+        email,
+        code: emailAuth.code,
+      });
+      return res.data;
     },
   });
 
@@ -118,18 +103,17 @@ export const Email = ({
       return false;
     }
 
-    const { data, statusCode, responseMessage } =
-      await checkDuplicateEmailMutation.mutateAsync();
-    if (statusCode >= 400) {
-      setValidation(validation => ({
-        ...validation,
-        email: {
-          status: false,
-          message: responseMessage,
-        },
-      }));
-      return false;
-    }
+    const { data } = await checkDuplicateEmailMutation.mutateAsync(void 0, {
+      onError: (error: any) => {
+        setValidation(validation => ({
+          ...validation,
+          email: {
+            status: false,
+            message: error.response.data.responseMessage,
+          },
+        }));
+      },
+    });
 
     // 회원가입 시 이미 가입된 이메일인지 확인
     if (isSignUp && data) {
@@ -164,18 +148,17 @@ export const Email = ({
       return;
     }
 
-    const { data, statusCode, responseMessage } =
-      await validateEmailMutation.mutateAsync();
-    if (statusCode >= 400) {
-      setValidation(validation => ({
-        ...validation,
-        email: {
-          status: false,
-          message: responseMessage,
-        },
-      }));
-      return;
-    }
+    const { data } = await validateEmailMutation.mutateAsync(void 0, {
+      onError: (error: any) => {
+        setValidation(validation => ({
+          ...validation,
+          email: {
+            status: false,
+            message: error.response.data.responseMessage,
+          },
+        }));
+      },
+    });
 
     // 이메일 재전송
     if (emailAuth.level === 1) {
@@ -201,18 +184,17 @@ export const Email = ({
   };
 
   const handleEmailAuthCheck = async () => {
-    const { data, statusCode, responseMessage } =
-      await validateEmailCodeMutation.mutateAsync();
-    if (statusCode >= 400) {
-      setValidation(validation => ({
-        ...validation,
-        email: {
-          status: false,
-          message: responseMessage,
-        },
-      }));
-      return;
-    }
+    const { data } = await validateEmailCodeMutation.mutateAsync(void 0, {
+      onError: (error: any) => {
+        setValidation(validation => ({
+          ...validation,
+          email: {
+            status: false,
+            message: error.response.data.responseMessage,
+          },
+        }));
+      },
+    });
 
     alert('이메일 인증에 성공했어요.');
     setEmailAuth({

@@ -41,13 +41,8 @@ export default function ModifyDiary() {
 
   const updateDiaryMutation = useMutation({
     mutationFn: async (diary: Partial<Diary>) => {
-      try {
-        const res = await axios.patch('/api/diary', diary);
-        return res.data;
-      } catch (error: any) {
-        console.log('error', error);
-        return error.response.data;
-      }
+      const res = await axios.patch('/api/diary', diary);
+      return res.data;
     },
   });
 
@@ -57,19 +52,19 @@ export default function ModifyDiary() {
     if (!existContent) return alert('내용을 추가해 주세요');
     setIsLoading(true);
 
-    const { data, statusCode, responseMessage } =
-      await updateDiaryMutation.mutateAsync({
+    const { data } = await updateDiaryMutation.mutateAsync(
+      {
         content: diary.content,
         diaryAt: changeDateFormat(calendar.selectedDate as Date, true),
         emotion: diary.emotion,
         diaryID: diary.diaryID,
-      });
-
-    if (statusCode >= 400) {
-      alert(responseMessage);
-      setIsLoading(false);
-      return;
-    }
+      },
+      {
+        onError: error => {
+          setIsLoading(false);
+        },
+      }
+    );
 
     const diaryData = {
       ...diary,

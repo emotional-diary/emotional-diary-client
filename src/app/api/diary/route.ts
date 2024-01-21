@@ -124,7 +124,7 @@ export async function PATCH(request: NextRequest) {
 
     if (!req.diaryID) {
       return NextResponse.json(
-        { message: 'diaryID is required' },
+        { responseMessage: 'diaryID is required' },
         {
           status: 400,
         }
@@ -182,7 +182,7 @@ export async function DELETE(request: NextRequest) {
 
     if (!req.diaryID) {
       return NextResponse.json(
-        { message: 'diaryID is required' },
+        { responseMessage: 'diaryID is required' },
         {
           status: 400,
         }

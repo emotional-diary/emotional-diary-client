@@ -118,13 +118,8 @@ export default function NewDiary() {
         } & Omit<Diary, 'images'>
       >
     ) => {
-      try {
-        const res = await axios.post('/api/diary', diary);
-        return res.data;
-      } catch (error: any) {
-        console.log('error', error);
-        return error.response.data;
-      }
+      const res = await axios.post('/api/diary', diary);
+      return res.data;
     },
   });
 
@@ -134,8 +129,8 @@ export default function NewDiary() {
     if (!existContent) return alert('내용을 추가해 주세요');
     setIsLoading(true);
 
-    const { data, responseMessage, statusCode } =
-      await saveDiaryMutation.mutateAsync({
+    const { data } = await saveDiaryMutation.mutateAsync(
+      {
         content: diary.content,
         diaryAt: changeDateFormat(calendar.selectedDate as Date, true),
         emotion: diary.emotion,
@@ -144,17 +139,13 @@ export default function NewDiary() {
           diary.images
             .map(image => image.imageUrl)
             .filter((imageUrl): imageUrl is string => imageUrl !== undefined),
-      });
-
-    if (statusCode >= 400) {
-      alert(
-        responseMessage === 'AI_INTERNAL_SERVER_ERROR'
-          ? '현재 AI 상태가 좋지 않아 일기 저장에 실패했어요.'
-          : '일기 저장에 실패했어요'
-      );
-      setIsLoading(false);
-      return;
-    }
+      },
+      {
+        onError: error => {
+          setIsLoading(false);
+        },
+      }
+    );
 
     // 신규 일기 데이터
     const diaryData = {

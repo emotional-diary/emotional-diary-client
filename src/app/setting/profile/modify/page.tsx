@@ -44,13 +44,8 @@ export default function ProfileModify() {
 
   const updateUserMutation = useMutation({
     mutationFn: async (user: Partial<User>) => {
-      try {
-        const res = await axios.patch('/api/user', user);
-        return res.data;
-      } catch (error: any) {
-        console.log('error', error);
-        return error.response.data;
-      }
+      const res = await axios.patch('/api/user', user);
+      return res.data;
     },
   });
 
@@ -166,17 +161,11 @@ export default function ProfileModify() {
       return;
     }
 
-    const { data, responseMessage, statusCode } =
-      await updateUserMutation.mutateAsync({
-        name: userData.name,
-        birth: userData.birth || null,
-        gender: userData.gender || null,
-      });
-
-    if (statusCode >= 400) {
-      alert(responseMessage);
-      return;
-    }
+    const { data } = await updateUserMutation.mutateAsync({
+      name: userData.name,
+      birth: userData.birth || null,
+      gender: userData.gender || null,
+    });
 
     const newUser = {
       ...user,

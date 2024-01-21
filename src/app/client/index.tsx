@@ -68,13 +68,8 @@ export default function HomePage({ props }: { props: HomeProps }) {
   const getDiaryList = useQuery({
     queryKey: ['diaries'],
     queryFn: async () => {
-      try {
-        const res = await axios.get('/api/diaries');
-        return res.data;
-      } catch (error: any) {
-        console.log('error', error);
-        return error.response.data;
-      }
+      const res = await axios.get('/api/diaries');
+      return res.data;
     },
     enabled: false,
     retry: false,
@@ -120,12 +115,8 @@ export default function HomePage({ props }: { props: HomeProps }) {
     if (!parsedDiaryList?.state?.diaryList?.length) {
       (async () => {
         const {
-          data: { data, responseMessage, statusCode },
+          data: { data },
         } = await getDiaryList.refetch();
-        if (statusCode >= 400) {
-          alert(responseMessage);
-          return;
-        }
 
         if (data) {
           setDiaryList(data.diarysDtoList);

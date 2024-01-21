@@ -196,29 +196,19 @@ export const PasswordChangeModal = ({
 
   const verifyPasswordMutation = useMutation({
     mutationFn: async () => {
-      try {
-        const res = await axios.post('/api/user/password/verify', {
-          password,
-        });
-        return res.data;
-      } catch (error: any) {
-        console.log('error', error);
-        return error.response.data;
-      }
+      const res = await axios.post('/api/user/password/verify', {
+        password,
+      });
+      return res.data;
     },
   });
 
   const changePasswordMutation = useMutation({
     mutationFn: async () => {
-      try {
-        const res = await axios.patch('/api/user/password/change', {
-          newPassword: password,
-        });
-        return res.data;
-      } catch (error: any) {
-        console.log('error', error);
-        return error.response.data;
-      }
+      const res = await axios.patch('/api/user/password/change', {
+        newPassword: password,
+      });
+      return res.data;
     },
   });
 
@@ -304,15 +294,19 @@ export const PasswordChangeModal = ({
   }, [password, passwordCheck]);
 
   const verifyPassword = async () => {
-    const { data, statusCode, responseMessage } =
-      await verifyPasswordMutation.mutateAsync();
+    const { data } = await verifyPasswordMutation.mutateAsync(void 0, {
+      onError: (error: any) => {
+        if (error.response?.data?.statusCode === 400) {
+          alert(error.response?.data?.responseMessage);
+        }
+      },
+    });
 
     setPassword('');
 
-    if (statusCode >= 400) {
-      alert(responseMessage);
-      return false;
-    } else if (data === false) {
+    if (data) {
+      return true;
+    } else {
       setValidation({
         ...validation,
         password: {
@@ -322,19 +316,16 @@ export const PasswordChangeModal = ({
       });
       return false;
     }
-    if (data) {
-      return true;
-    }
   };
 
   const changePassword = async () => {
-    const { data, statusCode, responseMessage } =
-      await changePasswordMutation.mutateAsync();
-
-    if (statusCode >= 400) {
-      alert(responseMessage);
-      return;
-    }
+    await changePasswordMutation.mutateAsync(void 0, {
+      onError: (error: any) => {
+        if (error.response?.data?.statusCode === 400) {
+          alert(error.response?.data?.responseMessage);
+        }
+      },
+    });
 
     alert('비밀번호가 변경되었어요.');
     onClose();
@@ -474,16 +465,11 @@ export const PasswordFindModal = ({
 
   const findPasswordMutation = useMutation({
     mutationFn: async () => {
-      try {
-        const res = await axios.patch('/api/user/password/find', {
-          email,
-          newPassword: password,
-        });
-        return res.data;
-      } catch (error: any) {
-        console.log('error', error);
-        return error.response.data;
-      }
+      const res = await axios.patch('/api/user/password/find', {
+        email,
+        newPassword: password,
+      });
+      return res.data;
     },
   });
 
@@ -581,13 +567,13 @@ export const PasswordFindModal = ({
   }, [validation.email.status]);
 
   const changePassword = async () => {
-    const { data, statusCode, responseMessage } =
-      await findPasswordMutation.mutateAsync();
-
-    if (statusCode >= 400) {
-      alert(responseMessage);
-      return;
-    }
+    await findPasswordMutation.mutateAsync(void 0, {
+      onError: (error: any) => {
+        if (error.response?.data?.statusCode === 400) {
+          alert(error.response?.data?.responseMessage);
+        }
+      },
+    });
 
     alert('비밀번호가 변경되었어요.');
     onClose();
@@ -746,13 +732,8 @@ export const WithdrawalModal = ({
 
   const withdrawMutation = useMutation({
     mutationFn: async () => {
-      try {
-        const res = await axios.delete('/api/user');
-        return res.data;
-      } catch (error: any) {
-        console.log('error', error);
-        return error.response.data;
-      }
+      const res = await axios.delete('/api/user');
+      return res.data;
     },
   });
 
@@ -764,39 +745,12 @@ export const WithdrawalModal = ({
   //   });
   // };
 
-  // const verifyPassword = async () => {
-  //   const { data, statusCode, responseMessage } =
-  //     await verifyPasswordMutation.mutateAsync();
-
-  //   setPassword('');
-
-  //   if (statusCode >= 400) {
-  //     alert(responseMessage);
-  //     return false;
-  //   } else if (data === false) {
-  //     setValidation({
-  //       ...validation,
-  //       password: {
-  //         status: false,
-  //         message: '비밀번호가 일치하지 않아요.',
-  //       },
-  //     });
-  //     return false;
-  //   }
-  //   if (data) {
-  //     return true;
-  //   }
-  // };
-
   const withdraw = async () => {
-    const { data, statusCode, responseMessage } =
-      await withdrawMutation.mutateAsync();
-
-    if (statusCode >= 400) {
-      alert(responseMessage);
-      onClose();
-      return;
-    }
+    await withdrawMutation.mutateAsync(void 0, {
+      onError: error => {
+        onClose();
+      },
+    });
 
     alert('회원이 탈퇴되었어요.');
     setTimeout(() => {

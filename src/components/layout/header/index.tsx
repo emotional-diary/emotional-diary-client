@@ -90,18 +90,12 @@ const Header = ({ back, bgcolor, type, icon, style }: HeaderProps) => {
 
   const removeDiaryMutation = useMutation({
     mutationFn: async () => {
-      try {
-        const res = await axios.delete('/api/diary', {
-          data: {
-            diaryID: Number(id),
-          },
-        });
-        console.log('res', res);
-        return res.data;
-      } catch (error: any) {
-        console.log('error', error.response.data);
-        return error.response.data;
-      }
+      const res = await axios.delete('/api/diary', {
+        data: {
+          diaryID: Number(id),
+        },
+      });
+      return res.data;
     },
     // onSuccess: () => {
     //   queryClient.invalidateQueries('diary-list');
@@ -117,12 +111,13 @@ const Header = ({ back, bgcolor, type, icon, style }: HeaderProps) => {
 
   const removeDiary = async () => {
     if (!window.confirm('정말 삭제하시겠습니까?')) return;
-    const { data, responseMessage, statusCode } =
-      await removeDiaryMutation.mutateAsync();
-    if (statusCode >= 400) {
-      alert(responseMessage);
-      return;
-    }
+    const { data } = await removeDiaryMutation.mutateAsync(void 0, {
+      onError: (error: any) => {
+        if (error.response?.data?.statusCode === 400) {
+          alert(error.response?.data?.responseMessage);
+        }
+      },
+    });
 
     const index = diaryList.findIndex(diary => diary.diaryID === Number(id));
     diaryList.splice(index, 1);

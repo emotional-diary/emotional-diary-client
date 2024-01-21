@@ -318,30 +318,25 @@ const SignUpForm = ({
 
   const signupMutation = useMutation({
     mutationFn: async () => {
-      try {
-        const res = await axios.post('/api/user/signup', {
-          email: joinData.email,
-          password: joinData.password,
-          name: joinData.name,
-          birth: joinData.birth || null,
-          gender: joinData.gender || null,
-          loginType: social?.toUpperCase() ?? 'LOCAL',
-          terms: [
-            {
-              termId: 1,
-              isAgree: true,
-            },
-            {
-              termId: 2,
-              isAgree: true,
-            },
-          ],
-        });
-        return res.data;
-      } catch (error: any) {
-        console.log(error);
-        return error.response.data;
-      }
+      const res = await axios.post('/api/user/signup', {
+        email: joinData.email,
+        password: joinData.password,
+        name: joinData.name,
+        birth: joinData.birth || null,
+        gender: joinData.gender || null,
+        loginType: social?.toUpperCase() ?? 'LOCAL',
+        terms: [
+          {
+            termId: 1,
+            isAgree: true,
+          },
+          {
+            termId: 2,
+            isAgree: true,
+          },
+        ],
+      });
+      return res.data;
     },
   });
 
@@ -561,13 +556,7 @@ const SignUpForm = ({
       return;
     }
 
-    const { data, statusCode, responseMessage } =
-      await signupMutation.mutateAsync();
-
-    if (statusCode >= 400) {
-      alert(responseMessage);
-      return;
-    }
+    const { data } = await signupMutation.mutateAsync();
 
     // const profile = await getProfile.mutateAsync();
     // console.log('회원가입 성공, 프로필 조회', profile.data);
