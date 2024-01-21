@@ -37,15 +37,10 @@ const LoginForm = () => {
 
   const loginMutation = useMutation({
     mutationFn: async () => {
-      try {
-        const res = await axios.post('/api/user/login', {
-          ...user,
-        });
-        return res.data;
-      } catch (error: any) {
-        console.log('error', error);
-        return error.response.data;
-      }
+      const res = await axios.post('/api/user/login', {
+        ...user,
+      });
+      return res.data;
     },
     onSuccess: data => {
       if (data) {
