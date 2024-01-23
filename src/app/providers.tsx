@@ -9,7 +9,7 @@ import {
   QueryClientProvider,
 } from '@tanstack/react-query';
 
-import { commonErrorHandler } from '@utils/error';
+import { commonErrorHandler } from '@modules/errorHandler';
 import { theme } from 'src/theme';
 
 export default ({ children }: { children: React.ReactNode }) => {
