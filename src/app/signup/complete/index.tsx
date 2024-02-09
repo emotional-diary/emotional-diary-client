@@ -41,7 +41,7 @@ export default function SignUpComplete() {
         color={'gray.dark'}
         style={{ marginTop: 16 }}
       >
-        앞으로 감성일기에서 추억을 쌓아가세요
+        앞으로 원두잇에서 추억을 쌓아가세요
       </Typography>
 
       <div
