@@ -30,7 +30,7 @@ export const Nickname = ({
       placeholder="성을 제외하고 이름만 적어주세요!"
       value={name}
       onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-        if (!/^[가-힣ㄱ-ㅎㅏ-ㅣa-zA-Z]*$/.test(e.target.value)) {
+        if (!/^[가-힣ㄱ-ㅎㅏ-ㅣa-zA-Zㆍᆞᆢ]*$/.test(e.target.value)) {
           return;
         }
         onChange(e);
