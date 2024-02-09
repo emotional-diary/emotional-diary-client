@@ -9,6 +9,7 @@ import { Typography } from '@components/typography';
 import { ValidationMessage } from '@components/form/validation';
 import * as Inputs from '@components/form/input';
 import { theme } from 'src/theme';
+import { useDiaryListStore, useUserStore } from '@store/index';
 
 const ModalContainer = styled.div`
   position: fixed;
@@ -713,6 +714,8 @@ export const WithdrawalModal = ({
   open: boolean;
   onClose: () => void;
 }) => {
+  const { user, setUser } = useUserStore();
+  const { setDiaryList } = useDiaryListStore(user?.userID)();
   // const [step, setStep] = React.useState<number>(0);
   // const [password, setPassword] = React.useState<string>('');
   // const [validation, setValidation] = React.useState<
@@ -751,6 +754,10 @@ export const WithdrawalModal = ({
         onClose();
       },
     });
+
+    setUser({} as never);
+    setDiaryList([]);
+    window.localStorage.clear();
 
     alert('회원이 탈퇴되었어요.');
     setTimeout(() => {
