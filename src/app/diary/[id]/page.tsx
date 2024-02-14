@@ -18,6 +18,7 @@ import { theme } from 'src/theme';
 import { StyledEmojiContainer, emotions } from '@components/diary/emotionList';
 import { ImageModal } from '@components/modal';
 import { ImageContainer } from '../new/page';
+import { Button } from '@components/button';
 
 const DetailWrapper = styled.div`
   display: flex;
@@ -68,6 +69,7 @@ export default function DiaryDetail() {
   const [clientHeight, setClientHeight] = React.useState<number>(
     typeof window !== 'undefined' ? window.innerHeight : 750
   );
+  const [isFailedLoadComment, setIsFailedLoadComment] = React.useState(false);
 
   const selectedDiary = React.useMemo(() => {
     if (!selectedDate) return null;
@@ -101,7 +103,22 @@ export default function DiaryDetail() {
     };
   }, []);
 
-  // console.log('diary', diary);
+  React.useEffect(() => {
+    checkFailedLoadComment();
+  }, [diary]);
+
+  const checkFailedLoadComment = () => {
+    if (diary?.metaData) {
+      try {
+        const metaData = JSON.parse(diary?.metaData);
+        if (metaData.isFailedLoadComment) {
+          setIsFailedLoadComment(true);
+        } else {
+          setIsFailedLoadComment(false);
+        }
+      } catch {}
+    }
+  };
 
   if (isEmpty(diary)) {
     return null;
@@ -144,13 +161,33 @@ export default function DiaryDetail() {
           <Typography
             variant={'body4'}
             color={'gray.dark'}
-            style={{ textAlign: 'center' }}
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              textAlign: 'center',
+            }}
           >
             <div
               dangerouslySetInnerHTML={{
                 __html: diary?.comment,
               }}
             />
+
+            <Button
+              size={'small'}
+              color={'error.light'}
+              style={{
+                height: isFailedLoadComment ? 'auto' : 0,
+                marginTop: isFailedLoadComment ? '10px' : 0,
+                padding: isFailedLoadComment ? '5px 10px' : 0,
+                opacity: isFailedLoadComment ? 1 : 0,
+                transform: isFailedLoadComment ? 'scale(1)' : 'scale(0)',
+              }}
+            >
+              <Typography variant={'label2'} color={'primary.main'}>
+                다시 분석하기
+              </Typography>
+            </Button>
           </Typography>
         </Styled3DBox>
 

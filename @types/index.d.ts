@@ -50,7 +50,7 @@ type Diary = {
     imageID?: number;
     imageUrl?: string;
   }[];
-  metaData?: {};
+  metaData?: string;
 };
 
 type Inquiry = {
