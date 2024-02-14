@@ -52,7 +52,7 @@ const Typography = ({
 }: {
   component?: 'div' | 'span' | 'p' | 'pre';
   variant?: TypographyProps['$variant'];
-  color?: string;
+  color?: TypographyProps['color'];
   style?: React.CSSProperties;
   onClick?: () => void;
   children: React.ReactNode;
