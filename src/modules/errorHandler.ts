@@ -1,7 +1,12 @@
 import { AxiosError } from 'axios';
 
 export const commonErrorHandler = (error: Error) => {
-  const { response } = error as AxiosError<{ responseMessage: string }>;
+  const { response, code } = error as AxiosError<{ responseMessage: string }>;
+
+  if (code === 'ECONNABORTED') {
+    alert('요청 시간이 초과되었습니다.');
+    return;
+  }
 
   switch (response?.status) {
     // 비즈니스 에러 별도 처리
