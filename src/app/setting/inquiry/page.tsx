@@ -11,6 +11,7 @@ import { Button } from '@components/button';
 import { theme } from 'src/theme';
 import { Input } from '@components/form/style';
 import { useUserStore } from '@store/index';
+import LoadingComponent from '@components/loading';
 
 const TextArea = styled.textarea`
   width: 100%;
@@ -32,11 +33,20 @@ export default function Inquiry() {
     email: user?.email,
     content: '',
   });
+  const [isLoading, setIsLoading] = React.useState(false);
 
   const sendInquiryMutation = useMutation({
     mutationFn: async (inquiryData: Inquiry & { userAgent: string }) => {
-      const res = await axios.post('/api/user/inquiry', inquiryData);
+      const res = await axios.post('/api/user/inquiry', inquiryData, {
+        timeout: 10000,
+      });
       return res.data;
+    },
+    onMutate: () => {
+      setIsLoading(true);
+    },
+    onSettled: () => {
+      setIsLoading(false);
     },
   });
 
@@ -78,6 +88,8 @@ export default function Inquiry() {
         },
       }}
     >
+      {isLoading && <LoadingComponent />}
+
       <div
         style={{
           display: 'flex',
