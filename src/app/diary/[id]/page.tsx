@@ -4,6 +4,8 @@ import React from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import styled from 'styled-components';
 import { isEmpty } from 'lodash';
+import { useMutation } from '@tanstack/react-query';
+import axios from 'axios';
 
 import { Container } from '@components/layout';
 import { Typography } from '@components/typography';
@@ -19,6 +21,7 @@ import { StyledEmojiContainer, emotions } from '@components/diary/emotionList';
 import { ImageModal } from '@components/modal';
 import { ImageContainer } from '../new/page';
 import { Button } from '@components/button';
+import LoadingComponent from '@components/loading';
 
 const DetailWrapper = styled.div`
   display: flex;
@@ -57,7 +60,7 @@ export default function DiaryDetail() {
   } = useCalendarStore();
   const { user } = useUserStore();
   const { diary, setDiary } = useDiaryStore();
-  const { diaryList } = useDiaryListStore(user?.userID)();
+  const { diaryList, updateDiaryList } = useDiaryListStore(user?.userID)();
 
   const [modal, setModal] = React.useState<{
     open: boolean;
@@ -69,7 +72,26 @@ export default function DiaryDetail() {
   const [clientHeight, setClientHeight] = React.useState<number>(
     typeof window !== 'undefined' ? window.innerHeight : 750
   );
-  const [isFailedLoadComment, setIsFailedLoadComment] = React.useState(false);
+  const [isLoading, setIsLoading] = React.useState(false);
+
+  const metaData = diary?.metaData ? JSON.parse(diary?.metaData) : {};
+
+  const reAnalysisMutation = useMutation({
+    mutationFn: async () => {
+      const res = await axios.put(
+        `/api/diary/${id}/ai`,
+        {},
+        { timeout: 10000 }
+      );
+      return res.data;
+    },
+    onMutate: () => {
+      setIsLoading(true);
+    },
+    onSettled: () => {
+      setIsLoading(false);
+    },
+  });
 
   const selectedDiary = React.useMemo(() => {
     if (!selectedDate) return null;
@@ -110,13 +132,52 @@ export default function DiaryDetail() {
   const checkFailedLoadComment = () => {
     if (diary?.metaData) {
       try {
-        const metaData = JSON.parse(diary?.metaData);
         if (metaData.isFailedLoadComment) {
-          setIsFailedLoadComment(true);
+          setDiary({
+            ...diary,
+            metaData: JSON.stringify({
+              ...(diary?.metaData && JSON.parse(diary?.metaData)),
+              isFailedLoadComment: true,
+            }),
+          });
         } else {
-          setIsFailedLoadComment(false);
+          setDiary({
+            ...diary,
+            metaData: JSON.stringify({
+              ...(diary?.metaData && JSON.parse(diary?.metaData)),
+              isFailedLoadComment: false,
+            }),
+          });
         }
       } catch {}
+    }
+  };
+
+  const reAnalysis = async () => {
+    if (isLoading) return;
+
+    const { data } = await reAnalysisMutation.mutateAsync();
+    if (data) {
+      setDiary({
+        ...diary,
+        comment: data.comment,
+        metaData: JSON.stringify({
+          ...(diary?.metaData && JSON.parse(diary?.metaData)),
+          isFailedLoadComment: false,
+        }),
+      });
+      updateDiaryList(prev => {
+        const index = prev.findIndex(item => item.diaryID === diary.diaryID);
+        prev[index] = {
+          ...diary,
+          comment: data.comment,
+          metaData: JSON.stringify({
+            ...(diary?.metaData && JSON.parse(diary?.metaData)),
+            isFailedLoadComment: false,
+          }),
+        };
+        return [...prev];
+      });
     }
   };
 
@@ -134,6 +195,7 @@ export default function DiaryDetail() {
         backgroundColor: theme.palette.common.white,
       }}
     >
+      {isLoading && <LoadingComponent />}
       <ImageModal
         open={modal.open}
         onClose={() => setModal({ open: false, imageIndex: 0 })}
@@ -177,12 +239,15 @@ export default function DiaryDetail() {
               size={'small'}
               color={'error.light'}
               style={{
-                height: isFailedLoadComment ? 'auto' : 0,
-                marginTop: isFailedLoadComment ? '10px' : 0,
-                padding: isFailedLoadComment ? '5px 10px' : 0,
-                opacity: isFailedLoadComment ? 1 : 0,
-                transform: isFailedLoadComment ? 'scale(1)' : 'scale(0)',
+                height: metaData?.isFailedLoadComment ? 'auto' : 0,
+                marginTop: metaData?.isFailedLoadComment ? '10px' : 0,
+                padding: metaData?.isFailedLoadComment ? '5px 10px' : 0,
+                opacity: metaData?.isFailedLoadComment ? 1 : 0,
+                transform: metaData?.isFailedLoadComment
+                  ? 'scale(1)'
+                  : 'scale(0)',
               }}
+              onClick={reAnalysis}
             >
               <Typography variant={'label2'} color={'primary.main'}>
                 다시 분석하기
