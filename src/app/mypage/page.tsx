@@ -55,11 +55,6 @@ export default function MyPage() {
       headerProps={{
         back: true,
         bgcolor: theme.palette.common.white,
-        icon: (
-          <IconButton onClick={() => router.push('/setting')}>
-            <Icons.Setting />
-          </IconButton>
-        ),
         style: {
           position: 'sticky',
           top: 0,
