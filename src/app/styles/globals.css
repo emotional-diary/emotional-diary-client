@@ -25,13 +25,18 @@ body {
   height: 100%;
   background-color: #94B49F;
   overflow-x: hidden;
+
+  /* 드래그 방지 */
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;  
 }
 
-/* #__next {
-  height: 100%;
-  background-color: #94B49F;
-  overflow-x: hidden;
-} */
+/* 이미지 우클릭 방지 */
+img {
+  pointer-events: none;
+}
 
 p {
   margin: 0;
