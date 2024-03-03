@@ -6,7 +6,9 @@ import Resizer from 'react-image-file-resizer';
 import { useDiaryStore } from '@store/index';
 import { Typography } from '@components/typography';
 import { dateToSting } from '@utils/index';
+import { setLocalStorage } from '@utils/storage';
 import { theme } from 'src/theme';
+
 import 'react-quill/dist/quill.snow.css';
 
 const CustomToolbar = ({ date }: { date: string }) => (
@@ -98,6 +100,7 @@ const TextEditor = () => {
   const [clientHeight, setClientHeight] = React.useState<number>(
     typeof window !== 'undefined' ? window.innerHeight : 750
   );
+  const [timeoutID, setTimeoutID] = React.useState<number | undefined>();
 
   const quillRef = React.useRef<ReactQuill>(null);
 
@@ -201,18 +204,12 @@ const TextEditor = () => {
             content: value,
           });
 
-          // const images: string =
-          //   delta.ops?.[0]?.insert?.image ?? delta.ops?.[1]?.insert?.image;
-
-          // setPrevDiary(prevDiary => {
-          //   return {
-          //     ...prevDiary,
-          //     ...(images
-          //       ? { images: [...(prevDiary?.images ?? []), images] }
-          //       : { content: value }),
-          //   };
-          // });
-          // console.log('diary', diary);
+          // debounce to save diary content
+          clearTimeout(timeoutID);
+          const newTimeoutID = setTimeout(() => {
+            setLocalStorage('saved-diary-content', value);
+          }, 1000);
+          setTimeoutID(newTimeoutID as unknown as number);
         }}
         modules={{
           toolbar: { container: '#ql-toolbar' },

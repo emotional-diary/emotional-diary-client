@@ -66,11 +66,6 @@ export default function WriteDiary({
     };
   }, []);
 
-  React.useEffect(() => {
-    if (!diary?.content) return;
-    setLocalStorage('saved-diary-content', diary?.content);
-  }, [diary?.content]);
-
   return (
     <>
       <LoadingModal open={isLoading} />
