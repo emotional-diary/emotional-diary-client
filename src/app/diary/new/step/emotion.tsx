@@ -2,8 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 import { Typography } from '@components/typography';
-import { useDiaryStore } from '@store/index';
-import { theme } from 'src/theme';
+import { emotions } from '@constants/diary';
 
 export const StyledEmojiContainer = styled('div')`
   display: flex;
@@ -23,15 +22,6 @@ const StyledTitleContainer = styled('div')`
   border-radius: 5px;
 `;
 
-export const emotions = {
-  happy: 'emotion_happy',
-  angry: 'emotion_angry',
-  sad: 'emotion_sad',
-  uneasy: 'emotion_uneasy',
-  pain: 'emotion_pain',
-  comfortable: 'emotion_comfortable',
-};
-
 const backgroundByEmotion = {
   happy: '#FF6B6B',
   angry: '#000',
@@ -50,8 +40,13 @@ const textByEmotion = {
   comfortable: '편안해요',
 };
 
-export const EmotionList = () => {
-  const { diary, setDiary } = useDiaryStore();
+export default function EmotionList({
+  diary,
+  setDiary,
+}: {
+  diary: Diary;
+  setDiary: (diary: Diary) => void;
+}) {
   const [isFirstSelect, setIsFirstSelect] = React.useState(true);
 
   const handleSelectEmotion = (emoji: string) => {
@@ -114,4 +109,4 @@ export const EmotionList = () => {
       ))}
     </div>
   );
-};
+}

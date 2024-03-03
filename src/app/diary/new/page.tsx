@@ -2,15 +2,14 @@
 
 import React from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import dynamic from 'next/dynamic';
 import axios from 'axios';
 import { useMutation } from '@tanstack/react-query';
+import styled from 'styled-components';
 
 import { Container } from '@components/layout';
 import { Typography } from '@components/typography';
 import { theme } from 'src/theme';
 import { Button } from '@components/button';
-import { LoadingModal } from '@components/modal';
 import {
   useCalendarStore,
   useDiaryListStore,
@@ -18,12 +17,8 @@ import {
   useUserStore,
 } from '@store/index';
 import { changeDateFormat } from '@utils/index';
-import { EmotionList } from '@components/diary/emotionList';
-import styled from 'styled-components';
-
-const TextEditor = dynamic(() => import('@components/textEditor'), {
-  ssr: false,
-});
+import EmotionList from './step/emotion';
+import WriteDiary from './step/write';
 
 export const ImageContainer = styled.div`
   display: flex;
@@ -40,38 +35,6 @@ export const ImageContainer = styled.div`
     margin-right: 10px;
   }
 `;
-
-export const CloseButton = ({
-  onClick,
-  style,
-}: {
-  onClick?: () => void;
-  style?: React.CSSProperties;
-}) => (
-  <div
-    onClick={onClick}
-    style={{
-      position: 'absolute',
-      top: 5,
-      right: 15,
-      zIndex: 1,
-      width: 18,
-      height: 18,
-      borderRadius: '50%',
-      backgroundColor: theme.palette.common.white,
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      color: theme.palette.common.black,
-      fontWeight: 'bold',
-      cursor: 'pointer',
-
-      ...(style ?? {}),
-    }}
-  >
-    &#215;
-  </div>
-);
 
 const steps = [
   {
@@ -197,41 +160,9 @@ export default function NewDiary() {
         {steps[step]?.title}
       </Typography>
 
-      {step === 0 && <EmotionList />}
-
-      {/* write diary */}
+      {step === 0 && <EmotionList diary={diary} setDiary={setDiary} />}
       {step === 1 && (
-        <>
-          <LoadingModal open={isLoading} />
-          <TextEditor />
-
-          {diary?.images?.length > 0 && (
-            <ImageContainer style={{ paddingBottom: '10px' }}>
-              {diary.images?.map((image, index) => (
-                <div key={index} style={{ position: 'relative' }}>
-                  <CloseButton
-                    onClick={() => {
-                      setDiary({
-                        ...diary,
-                        images: diary.images?.filter((_, i) => i !== index),
-                      });
-                    }}
-                  />
-                  <img
-                    src={image.imageUrl}
-                    alt={'diary_image'}
-                    style={{
-                      width: 80,
-                      height: 80,
-                      borderRadius: 6,
-                      objectFit: 'cover',
-                    }}
-                  />
-                </div>
-              ))}
-            </ImageContainer>
-          )}
-        </>
+        <WriteDiary diary={diary} setDiary={setDiary} isLoading={isLoading} />
       )}
 
       <div
