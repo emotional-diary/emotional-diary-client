@@ -63,7 +63,7 @@ export default function NewDiary() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { user } = useUserStore();
-  const { diary, setDiary } = useDiaryStore();
+  const { diary, setDiary, resetDiary } = useDiaryStore();
   const { diaryList, setDiaryList } = useDiaryListStore(user?.userID)();
   const { calendar } = useCalendarStore();
   const [step, setStep] = React.useState(0); // 0: select emotion, 1: write diary
@@ -84,43 +84,44 @@ export default function NewDiary() {
       const res = await axios.post('/api/diary', diary);
       return res.data;
     },
+    onMutate: () => {
+      setIsLoading(true);
+    },
+    onSettled: () => {
+      setIsLoading(false);
+    },
   });
 
   const handleSaveDiary = async () => {
     const existContent = diary.content?.replace(/(<([^>]+)>)/gi, '').trim();
     if (isLoading) return;
     if (!existContent) return alert('내용을 추가해 주세요');
-    setIsLoading(true);
 
-    const { data } = await saveDiaryMutation.mutateAsync(
-      {
-        content: diary.content,
-        diaryAt: changeDateFormat(calendar.selectedDate as Date, true),
-        emotion: diary.emotion,
-        images:
-          diary?.images &&
-          diary.images
-            .map(image => image.imageUrl)
-            .filter((imageUrl): imageUrl is string => imageUrl !== undefined),
-      },
-      {
-        onError: error => {
-          setIsLoading(false);
-        },
-      }
-    );
-
-    // 신규 일기 데이터
-    const diaryData = {
-      ...diary,
-      ...data,
-    };
-    setDiary({
-      ...diaryData,
+    const { data, statusCode } = await saveDiaryMutation.mutateAsync({
+      content: diary.content,
+      diaryAt: changeDateFormat(calendar.selectedDate as Date, true),
+      emotion: diary.emotion,
+      images:
+        diary?.images &&
+        diary.images
+          .map(image => image.imageUrl)
+          .filter((imageUrl): imageUrl is string => imageUrl !== undefined),
     });
-    setDiaryList([diaryData, ...diaryList]);
 
-    router.replace(`/diary/${data?.diaryID}`);
+    if (statusCode === 200) {
+      window.localStorage.removeItem('saved-diary-content');
+
+      const diaryData = {
+        ...diary,
+        ...data,
+      };
+      setDiary({
+        ...diaryData,
+      });
+      setDiaryList([diaryData, ...diaryList]);
+
+      router.replace(`/diary/${data?.diaryID}`);
+    }
   };
 
   // console.log('diary', diary);
@@ -162,7 +163,12 @@ export default function NewDiary() {
 
       {step === 0 && <EmotionList diary={diary} setDiary={setDiary} />}
       {step === 1 && (
-        <WriteDiary diary={diary} setDiary={setDiary} isLoading={isLoading} />
+        <WriteDiary
+          diary={diary}
+          setDiary={setDiary}
+          resetDiary={resetDiary}
+          isLoading={isLoading}
+        />
       )}
 
       <div

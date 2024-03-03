@@ -6,6 +6,7 @@ import dynamic from 'next/dynamic';
 import { LoadingModal } from '@components/modal';
 import { ImageContainer } from '../page';
 import { theme } from 'src/theme';
+import { getLocalStorage, setLocalStorage } from '@utils/storage';
 
 const TextEditor = dynamic(() => import('@components/textEditor'), {
   ssr: false,
@@ -46,12 +47,30 @@ const CloseButton = ({
 export default function WriteDiary({
   diary,
   setDiary,
+  resetDiary,
   isLoading,
 }: {
   diary: Diary;
   setDiary: (diary: Diary) => void;
+  resetDiary: () => void;
   isLoading: boolean;
 }) {
+  React.useEffect(() => {
+    const savedDiaryContent = getLocalStorage<Diary['content']>(
+      'saved-diary-content'
+    );
+    setDiary({ ...diary, content: savedDiaryContent ?? '' });
+
+    return () => {
+      resetDiary();
+    };
+  }, []);
+
+  React.useEffect(() => {
+    if (!diary?.content) return;
+    setLocalStorage('saved-diary-content', diary?.content);
+  }, [diary?.content]);
+
   return (
     <>
       <LoadingModal open={isLoading} />

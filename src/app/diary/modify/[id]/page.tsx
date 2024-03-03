@@ -2,7 +2,6 @@
 
 import React from 'react';
 import { useRouter, useParams, useSearchParams } from 'next/navigation';
-import dynamic from 'next/dynamic';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 
@@ -10,7 +9,6 @@ import { Container } from '@components/layout';
 import { Typography } from '@components/typography';
 import { theme } from 'src/theme';
 import { Button } from '@components/button';
-import { LoadingModal } from '@components/modal';
 import {
   useCalendarStore,
   useDiaryListStore,
@@ -18,18 +16,38 @@ import {
   useUserStore,
 } from '@store/index';
 import { changeDateFormat } from '@utils/index';
-import { EmotionList } from '@components/diary/emotionList';
+import EmotionList from '../../new/step/emotion';
+import WriteDiary from '../../new/step/write';
 
-const TextEditor = dynamic(() => import('@components/textEditor'), {
-  ssr: false,
-});
+const steps = [
+  {
+    title: (
+      <div>
+        오늘 나의 기분을
+        <br />
+        선택해주세요
+      </div>
+    ),
+    buttonName: '다음',
+  },
+  {
+    title: (
+      <div>
+        오늘 하루 어떤일이
+        <br />
+        있었을까요?
+      </div>
+    ),
+    buttonName: '저장할래요',
+  },
+];
 
 export default function ModifyDiary() {
   const router = useRouter();
   const { id } = useParams() as { id: string };
   const searchParams = useSearchParams();
   const { user } = useUserStore();
-  const { diary, setDiary } = useDiaryStore();
+  const { diary, setDiary, resetDiary } = useDiaryStore();
   const { diaryList, updateDiaryList } = useDiaryListStore(user?.userID)();
   const { calendar } = useCalendarStore();
   const [step, setStep] = React.useState(0); // 0: select emotion, 1: write diary
@@ -40,9 +58,21 @@ export default function ModifyDiary() {
     : 0;
 
   const updateDiaryMutation = useMutation({
-    mutationFn: async (diary: Partial<Diary>) => {
+    mutationFn: async (
+      diary: Partial<
+        {
+          images: string[];
+        } & Omit<Diary, 'images'>
+      >
+    ) => {
       const res = await axios.patch('/api/diary', diary);
       return res.data;
+    },
+    onMutate: () => {
+      setIsLoading(true);
+    },
+    onSettled: () => {
+      setIsLoading(false);
     },
   });
 
@@ -50,37 +80,40 @@ export default function ModifyDiary() {
     const existContent = diary.content?.replace(/(<([^>]+)>)/gi, '').trim();
     if (isLoading) return;
     if (!existContent) return alert('내용을 추가해 주세요');
-    setIsLoading(true);
 
-    const { data } = await updateDiaryMutation.mutateAsync(
-      {
-        content: diary.content,
-        diaryAt: changeDateFormat(calendar.selectedDate as Date, true),
-        emotion: diary.emotion,
-        diaryID: diary.diaryID,
-      },
-      {
-        onError: error => {
-          setIsLoading(false);
-        },
-      }
-    );
-
-    const diaryData = {
-      ...diary,
-      ...data,
-    };
-    setDiary({
-      ...diaryData,
-    });
-    updateDiaryList(prev => {
-      const index = prev.findIndex(item => item.diaryID === diaryData.diaryID);
-      if (index === -1) return [diaryData, ...prev];
-      prev[index] = diaryData;
-      return [...prev];
+    const { data, statusCode } = await updateDiaryMutation.mutateAsync({
+      content: diary.content,
+      diaryAt: changeDateFormat(calendar.selectedDate as Date, true),
+      emotion: diary.emotion,
+      images:
+        diary?.images &&
+        diary.images
+          .map(image => image.imageUrl)
+          .filter((imageUrl): imageUrl is string => imageUrl !== undefined),
+      diaryID: diary.diaryID,
     });
 
-    router.replace(`/diary/${id}`);
+    if (statusCode === 200) {
+      window.localStorage.removeItem('saved-diary-content');
+
+      const diaryData = {
+        ...diary,
+        ...data,
+      };
+      setDiary({
+        ...diaryData,
+      });
+      updateDiaryList(prev => {
+        const index = prev.findIndex(
+          item => item.diaryID === diaryData.diaryID
+        );
+        if (index === -1) return [diaryData, ...prev];
+        prev[index] = diaryData;
+        return [...prev];
+      });
+
+      router.replace(`/diary/${id}`);
+    }
   };
 
   const handleNextStep = () => {
@@ -102,29 +135,6 @@ export default function ModifyDiary() {
     });
   }, [calendar]);
 
-  const steps = [
-    {
-      title: (
-        <div>
-          오늘 나의 기분을
-          <br />
-          선택해주세요
-        </div>
-      ),
-      buttonName: '다음',
-    },
-    {
-      title: (
-        <div>
-          오늘 하루 어떤일이
-          <br />
-          있었을까요?
-        </div>
-      ),
-      buttonName: '저장할래요',
-    },
-  ];
-
   return (
     <Container
       headerProps={{
@@ -141,24 +151,33 @@ export default function ModifyDiary() {
         {steps[step]?.title}
       </Typography>
 
-      {step === 0 && <EmotionList />}
-
-      {/* write diary */}
+      {step === 0 && <EmotionList diary={diary} setDiary={setDiary} />}
       {step === 1 && (
-        <>
-          <LoadingModal open={isLoading} />
-          <TextEditor />
-        </>
+        <WriteDiary
+          diary={diary}
+          setDiary={setDiary}
+          resetDiary={resetDiary}
+          isLoading={isLoading}
+        />
       )}
 
       <div
-        style={{
-          position: 'absolute',
-          bottom: 0,
-          left: 0,
-          width: '100%',
-          padding: '0 30px 30px 30px',
-        }}
+        style={
+          step === 0
+            ? {
+                display: 'flex',
+                width: 'calc(100% - 60px)',
+                margin: 'auto',
+              }
+            : {
+                width: '100%',
+                marginTop: 'auto',
+                paddingBottom: '30px',
+                paddingLeft: '30px',
+                paddingRight: '30px',
+                backgroundColor: theme.palette.background.paper,
+              }
+        }
       >
         <Button
           color={'secondary'}
