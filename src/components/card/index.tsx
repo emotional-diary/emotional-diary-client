@@ -13,7 +13,7 @@ import {
   useUserStore,
 } from '@store/index';
 import { dateToSting } from '@utils/index';
-import { emotions } from '@components/diary/emotionList';
+import { emotions } from '@constants/diary';
 
 const Card = styled.div`
   width: 100%;

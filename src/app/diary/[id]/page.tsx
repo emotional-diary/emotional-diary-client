@@ -17,11 +17,12 @@ import {
 } from '@store/index';
 import { dateToSting } from '@utils/index';
 import { theme } from 'src/theme';
-import { StyledEmojiContainer, emotions } from '@components/diary/emotionList';
+import { emotions } from '@constants/diary';
 import { ImageModal } from '@components/modal';
-import { ImageContainer } from '../new/page';
 import { Button } from '@components/button';
 import LoadingComponent from '@components/loading';
+import { ImageContainer } from '../new/page';
+import { StyledEmojiContainer } from '../new/step/emotion';
 
 const DetailWrapper = styled.div`
   display: flex;
