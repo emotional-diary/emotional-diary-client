@@ -1,14 +1,18 @@
 import { AxiosError } from 'axios';
 
 export const commonErrorHandler = (error: Error) => {
-  const { response, code } = error as AxiosError<{ responseMessage: string }>;
+  const { response, code } = error as AxiosError<{
+    responseMessage: string;
+    statusCode: number;
+  }>;
+  const status = response?.data?.statusCode || response?.status;
 
   if (code === 'ECONNABORTED') {
     alert('요청 시간이 초과되었습니다.');
     return;
   }
 
-  switch (response?.status) {
+  switch (status) {
     // 비즈니스 에러 별도 처리
     case 400:
       break;
@@ -25,7 +29,6 @@ export const commonErrorHandler = (error: Error) => {
     // AI 서버 에러
     case 498:
       alert(response?.data?.responseMessage);
-      window.location.href = '/login';
       break;
     case 500:
       alert('서버 오류가 발생했습니다.\n잠시 후 다시 시도해주세요.');
