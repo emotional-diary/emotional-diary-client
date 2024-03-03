@@ -32,9 +32,7 @@ export const getLocalStorage = <T>(key: string): T | null => {
     }
 
     return parsedItem?.value ?? null;
-  } catch (error) {
-    console.log('getLocalStorage error', error);
-
+  } catch {
     return null;
   }
 };
@@ -69,9 +67,7 @@ export const setLocalStorage = (
     });
 
     window.localStorage.setItem(key, item);
-  } catch (error) {
-    console.log('setLocalStorage error', error);
-  }
+  } catch {}
 };
 
 export const getSessionStorage = <T>(key: string): T | null => {
@@ -82,9 +78,7 @@ export const getSessionStorage = <T>(key: string): T | null => {
     const parsedItem = JSON.parse(item ?? '') as T;
 
     return parsedItem ?? null;
-  } catch (error) {
-    console.log('getSessionStorage error', error);
-
+  } catch {
     return null;
   }
 };
@@ -96,7 +90,5 @@ export const setSessionStorage = (key: string, value: string) => {
     const item = JSON.stringify(value);
 
     window.sessionStorage.setItem(key, item);
-  } catch (error) {
-    console.log('setSessionStorage error', error);
-  }
+  } catch {}
 };
