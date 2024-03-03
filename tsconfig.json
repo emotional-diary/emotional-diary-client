@@ -31,7 +31,10 @@
       ],
       "@store/*": [
         "./src/store/*"
-      ]
+      ],
+      "@constants/*": [
+        "./src/constants/*"
+      ],
     },
     "plugins": [
       {
