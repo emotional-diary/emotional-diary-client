@@ -127,33 +127,33 @@ export default function DiaryDetail() {
     };
   }, []);
 
-  React.useEffect(() => {
-    checkFailedLoadComment();
-  }, [diary]);
+  // React.useEffect(() => {
+  //   checkFailedLoadComment();
+  // }, [diary]);
 
-  const checkFailedLoadComment = () => {
-    if (diary?.metaData) {
-      try {
-        if (metaData.isFailedLoadComment) {
-          setDiary({
-            ...diary,
-            metaData: JSON.stringify({
-              ...(diary?.metaData && JSON.parse(diary?.metaData)),
-              isFailedLoadComment: true,
-            }),
-          });
-        } else {
-          setDiary({
-            ...diary,
-            metaData: JSON.stringify({
-              ...(diary?.metaData && JSON.parse(diary?.metaData)),
-              isFailedLoadComment: false,
-            }),
-          });
-        }
-      } catch {}
-    }
-  };
+  // const checkFailedLoadComment = () => {
+  //   if (diary?.metaData) {
+  //     try {
+  //       if (metaData.isFailedLoadComment) {
+  //         setDiary({
+  //           ...diary,
+  //           metaData: JSON.stringify({
+  //             ...(diary?.metaData && JSON.parse(diary?.metaData)),
+  //             isFailedLoadComment: true,
+  //           }),
+  //         });
+  //       } else {
+  //         setDiary({
+  //           ...diary,
+  //           metaData: JSON.stringify({
+  //             ...(diary?.metaData && JSON.parse(diary?.metaData)),
+  //             isFailedLoadComment: false,
+  //           }),
+  //         });
+  //       }
+  //     } catch {}
+  //   }
+  // };
 
   const reAnalysis = async () => {
     if (isLoading) return;
