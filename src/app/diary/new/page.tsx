@@ -177,7 +177,7 @@ export default function NewDiary() {
             ? {
                 display: 'flex',
                 width: 'calc(100% - 60px)',
-                margin: 'auto',
+                margin: '30px auto auto',
               }
             : {
                 width: '100%',
