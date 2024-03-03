@@ -6,6 +6,7 @@ import styled from 'styled-components';
 import { isEmpty } from 'lodash';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
+import Image from 'next/image';
 
 import { Container } from '@components/layout';
 import { Typography } from '@components/typography';
@@ -205,13 +206,13 @@ export default function DiaryDetail() {
 
       <DetailWrapper>
         <StyledEmojiContainer>
-          <img
+          <Image
             src={`/images/icons/${
               emotions[diary.emotion as keyof typeof emotions]
             }.png`}
             alt={diary.emotion as keyof typeof emotions}
-            width={'auto'}
-            height={'100%'}
+            width={120}
+            height={100}
             style={{
               maxHeight: 100,
               objectFit: 'contain',

@@ -3,6 +3,7 @@
 import React from 'react';
 import { useRouter } from 'next/navigation';
 import styled from 'styled-components';
+import Image from 'next/image';
 
 import * as Icons from '@components/icons';
 import { Button } from '@components/button';
@@ -152,13 +153,13 @@ export const DiaryListCard = ({
         </div>
 
         <div>
-          <img
+          <Image
             src={`/images/icons/${
               emotions[emotion as keyof typeof emotions]
             }.png`}
             alt={emotions[emotion as keyof typeof emotions]}
-            width={32}
-            height={32}
+            width={36}
+            height={36}
             style={{
               objectFit: 'contain',
             }}

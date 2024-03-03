@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import Image from 'next/image';
 
 import { Typography } from '@components/typography';
 import { emotions } from '@constants/diary';
@@ -82,13 +83,13 @@ export default function EmotionList({
                 : 'scale(0.9)',
           }}
         >
-          <img
+          <Image
             src={`/images/icons/${
               emotions[emoji as keyof typeof emotions]
             }.png`}
             alt={emoji}
-            width={'auto'}
-            height={'100%'}
+            width={120}
+            height={100}
             style={{
               maxHeight: 100,
               objectFit: 'contain',
