@@ -475,7 +475,7 @@ const SignUpForm = ({
 
   const handleUserBlur = (e: React.FocusEvent<HTMLInputElement>) => {
     switch (e.target.name) {
-      case 'nickname':
+      case 'name':
         if (!validateNickname()) {
           return false;
         }
