@@ -59,7 +59,7 @@ export default function WriteDiary({
     const savedDiaryContent = getLocalStorage<Diary['content']>(
       'saved-diary-content'
     );
-    setDiary({ ...diary, content: savedDiaryContent ?? '' });
+    setDiary({ ...diary, content: diary?.content ?? savedDiaryContent });
 
     return () => {
       resetDiary();
