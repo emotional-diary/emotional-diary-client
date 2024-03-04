@@ -473,36 +473,39 @@ const SignUpForm = ({
     }
   }, [joinData.password, passwordCheck]);
 
-  const handleUserBlur = (e: React.FocusEvent<HTMLInputElement>) => {
-    switch (e.target.name) {
-      case 'name':
-        if (!validateNickname()) {
-          return false;
-        }
-        break;
-      case 'password':
-        if (!validatePassword()) {
-          return false;
-        }
-        break;
-      case 'passwordCheck':
-        if (!validatePasswordCheck()) {
-          return false;
-        }
-        break;
-      default:
-        break;
-    }
+  const handleUserBlur = React.useCallback(
+    (e: React.FocusEvent<HTMLInputElement>) => {
+      switch (e.target.name) {
+        case 'name':
+          if (!validateNickname()) {
+            return false;
+          }
+          break;
+        case 'password':
+          if (!validatePassword()) {
+            return false;
+          }
+          break;
+        case 'passwordCheck':
+          if (!validatePasswordCheck()) {
+            return false;
+          }
+          break;
+        default:
+          break;
+      }
 
-    setValidation({
-      ...validation,
-      [e.target.name]: {
-        status: true,
-        message: '',
-      },
-    });
-    return true;
-  };
+      setValidation({
+        ...validation,
+        [e.target.name]: {
+          status: true,
+          message: '',
+        },
+      });
+      return true;
+    },
+    [joinData, passwordCheck, validation]
+  );
 
   const handleUserChange = React.useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
