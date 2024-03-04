@@ -35,8 +35,15 @@ p {
 }
 
 a {
-  color: inherit;
-  text-decoration: none;
+  color: #06c;
+}
+
+blockquote {
+  border-left: 4px solid #ccc;
+  margin-bottom: 5px;
+  margin-top: 5px;
+  margin-left: 0px;
+  padding-left: 16px;
 }
 
 * {
