@@ -87,7 +87,7 @@ export default function NewDiary() {
     onMutate: () => {
       setIsLoading(true);
     },
-    onSettled: () => {
+    onError: () => {
       setIsLoading(false);
     },
   });
