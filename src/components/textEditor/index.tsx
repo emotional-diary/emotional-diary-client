@@ -29,7 +29,6 @@ const CustomToolbar = ({ date }: { date: string }) => (
         <option value="justify"></option>
       </select>
 
-      <button className="ql-blockquote"></button>
       <button className="ql-image"></button>
     </div>
   </div>
